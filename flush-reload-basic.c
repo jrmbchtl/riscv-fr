@@ -61,7 +61,7 @@ void main(){
     uint64_t timings[2] = {0,0};
 
     int ctr = 0;
-    char buf;
+    void* buf;
     while(1){
         /*
          Victim
