@@ -28,7 +28,7 @@ static inline uint64_t rdtsc()
 // On our processor this is not sufficient -> eviction sets are necessary
 static inline void flush()
 {
-    asm volatile("fence.tso" ::
+    asm volatile("sfence.vma" ::
                      : "memory");
     asm volatile("fence" ::
                      : "memory");
