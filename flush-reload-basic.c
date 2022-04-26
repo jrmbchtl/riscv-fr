@@ -57,17 +57,17 @@ static inline uint64_t timed_load(void *p)
 void main()
 {
     // No pthreads on user level riscv so we do a simple poc
-    // void *victim_arr[2];
-    // victim_arr[0] = maccess;
-    // victim_arr[1] = flush;
+    void *victim_arr[2];
+    victim_arr[0] = maccess;
+    victim_arr[1] = flush;
 
-    char victim_arr[2] = {'a', 'b'};
+    // char victim_arr[2] = {'a', 'b'};
 
     uint64_t timings[2] = {0, 0};
 
     int ctr = 0;
-    // void* buf;
-    char buf;
+    void* buf;
+    // char buf;
     while (1)
     {
         /*
