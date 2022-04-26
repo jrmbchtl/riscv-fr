@@ -77,6 +77,7 @@ void main()
         ctr = (ctr + 1) % 6;
         flush();
         buf = victim_arr[0];
+        timed_load(main);
 
         /*
          Attacker
