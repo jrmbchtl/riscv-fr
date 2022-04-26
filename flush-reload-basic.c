@@ -5,8 +5,7 @@
 #include <unistd.h>
 
 /*
- !!THIS EXPLOIT DOES NOT WORK ON THE RISC-V PROCESSOR WE HAVE!!
- 
+
  Other processors may implement the fence.i instruction differently and flush the 
  cache. Our processor does not do this. This PoC can still be used to test for the 
  specific fence implementation, if it works the implementation is flush based.
@@ -49,14 +48,17 @@ static inline uint64_t timed_load(void *p){
 
 void main(){
     // No pthreads on user level riscv so we do a simple poc
-    void *victim_arr[2];
-    victim_arr[0] = maccess;
-    victim_arr[1] = flush;
+    // void *victim_arr[2];
+    // victim_arr[0] = maccess;
+    // victim_arr[1] = flush;
+
+    char victim_arr[256] = {"0"};
     
     uint64_t timings[2] = {0,0};
 
     int ctr = 0;
-    void* buf;
+    // void* buf;
+    char buf;
     while(1){
         /*
          Victim
@@ -64,7 +66,7 @@ void main(){
         */
         ctr = (ctr+1)%6;
         flush();
-        buf = victim_arr[1];
+        buf = victim_arr[255];
 
         /*
          Attacker
@@ -72,7 +74,7 @@ void main(){
          the one that is in cache
         */
         timings[0] = timed_load(victim_arr[0]);
-        timings[1] = timed_load(victim_arr[1]);
+        timings[1] = timed_load(victim_arr[255]);
         printf("%ld %ld: ",timings[0],timings[1]);
         if(timings[0] < timings[1]){
             printf("0\n");
