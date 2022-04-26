@@ -28,10 +28,8 @@ static inline uint64_t rdtsc()
 // On our processor this is not sufficient -> eviction sets are necessary
 static inline void flush()
 {
-    asm volatile("fence.i" ::
-                     : "memory");
-    asm volatile("fence" ::
-                     : "memory");
+    asm volatile("fence.i" ::: "memory");
+    asm volatile("fence" ::: "memory");
 }
 
 // ---------------------------------------------------------------------------
@@ -77,9 +75,13 @@ void main()
         ctr = (ctr + 1) % 6;
         flush();
         buf = victim_arr[0];
+        asm volatile("fence" ::: "memory");
         printf("1: %lu\n", timed_load(main));
+        asm volatile("fence" ::: "memory");
         printf("2: %lu\n", timed_load(main));
+        asm volatile("fence" ::: "memory");
         printf("3: %lu\n", timed_load(main));
+        asm volatile("fence" ::: "memory");
 
         /*
          Attacker
@@ -88,12 +90,19 @@ void main()
         */
         printf("%p\n", victim_arr[0]);
         // printf("%p\n", victim_arr[1]);
+        asm volatile("fence" ::: "memory");
         timings[0] = timed_load(victim_arr[0]);
+        asm volatile("fence" ::: "memory");
         timings[1] = timed_load(victim_arr[0]);
+        asm volatile("fence" ::: "memory");
         timings[2] = timed_load(victim_arr[0]);
+        asm volatile("fence" ::: "memory");
         timings[3] = timed_load(victim_arr[1]);
+        asm volatile("fence" ::: "memory");
         timings[4] = timed_load(victim_arr[1]);
+        asm volatile("fence" ::: "memory");
         timings[5] = timed_load(victim_arr[1]);
+        asm volatile("fence" ::: "memory");
         printf("%ld %ld %ld;%ld %ld %ld: ", timings[0], timings[1], timings[2], timings[3], timings[4], timings[5]);
         if (timings[0] < timings[1]) {
             printf("0\n");
