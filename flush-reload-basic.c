@@ -77,7 +77,9 @@ void main()
         ctr = (ctr + 1) % 6;
         flush();
         buf = victim_arr[0];
-        printf("%lu\n", timed_load(main));
+        printf("1: %lu\n", timed_load(main));
+        printf("2: %lu\n", timed_load(main));
+        printf("3: %lu\n", timed_load(main));
 
         /*
          Attacker
