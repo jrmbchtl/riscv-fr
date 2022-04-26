@@ -62,10 +62,6 @@ void main()
     // victim_arr[1] = flush;
 
     char victim_arr[2] = {'a', 'b'};
-    // for (int i = 0; i < 2; i++)
-    // {
-    //     victim_arr[i] = 'a';
-    // }
 
     uint64_t timings[2] = {0, 0};
 
@@ -80,7 +76,7 @@ void main()
         */
         ctr = (ctr + 1) % 6;
         flush();
-        buf = victim_arr[1];
+        buf = victim_arr[0];
 
         /*
          Attacker
@@ -90,12 +86,9 @@ void main()
         timings[0] = timed_load(&victim_arr[0]);
         timings[1] = timed_load(&victim_arr[1]);
         printf("%ld %ld: ", timings[0], timings[1]);
-        if (timings[0] < timings[1])
-        {
+        if (timings[0] < timings[1]) {
             printf("0\n");
-        }
-        else
-        {
+        } else {
             printf("1\n");
         }
     }
