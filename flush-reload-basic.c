@@ -52,8 +52,8 @@ void main(){
     // victim_arr[0] = maccess;
     // victim_arr[1] = flush;
 
-    char victim_arr[256];
-    for (int i = 0; i < 256; i++) {
+    char victim_arr[2048];
+    for (int i = 0; i < 2048; i++) {
         victim_arr[i] = 'a';
     }
     
@@ -76,6 +76,9 @@ void main(){
          Time both array indices and pick the one with the smaller time i.e 
          the one that is in cache
         */
+       // print &victim_arr[0]
+        printf("%p\n", &victim_arr[0]);
+        printf("%p\n", &victim_arr[255]);
         timings[0] = timed_load(&victim_arr[0]);
         timings[1] = timed_load(&victim_arr[255]);
         printf("%ld %ld: ",timings[0],timings[1]);
