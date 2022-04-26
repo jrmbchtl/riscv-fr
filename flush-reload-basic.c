@@ -94,7 +94,7 @@ void main()
         timings[3] = timed_load(victim_arr[1]);
         timings[4] = timed_load(victim_arr[1]);
         timings[5] = timed_load(victim_arr[1]);
-        printf("%ld %ld: ", timings[0], timings[1], timings[2], timings[3], timings[4], timings[5]);
+        printf("%ld %ld %ld;%ld %ld %ld: ", timings[0], timings[1], timings[2], timings[3], timings[4], timings[5]);
         if (timings[0] < timings[1]) {
             printf("0\n");
         } else {
