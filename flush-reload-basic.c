@@ -48,20 +48,20 @@ static inline uint64_t timed_load(void *p){
 
 void main(){
     // No pthreads on user level riscv so we do a simple poc
-    // void *victim_arr[2];
-    // victim_arr[0] = maccess;
-    // victim_arr[1] = flush;
+    void *victim_arr[2];
+    victim_arr[0] = maccess;
+    victim_arr[1] = flush;
 
-    char victim_arr[2048];
-    for (int i = 0; i < 2048; i++) {
-        victim_arr[i] = 'a';
-    }
+    // char victim_arr[2048];
+    // for (int i = 0; i < 2048; i++) {
+    //     victim_arr[i] = 'a';
+    // }
     
     uint64_t timings[2] = {0,0};
 
     int ctr = 0;
-    // void* buf;
-    char buf;
+    void* buf;
+    // char buf;
     while(1){
         /*
          Victim
@@ -69,18 +69,15 @@ void main(){
         */
         ctr = (ctr+1)%6;
         flush();
-        buf = victim_arr[255];
+        buf = victim_arr[1];
 
         /*
          Attacker
          Time both array indices and pick the one with the smaller time i.e 
          the one that is in cache
         */
-       // print &victim_arr[0]
-        printf("%p\n", &victim_arr[0]);
-        printf("%p\n", &victim_arr[255]);
         timings[0] = timed_load(&victim_arr[0]);
-        timings[1] = timed_load(&victim_arr[255]);
+        timings[1] = timed_load(&victim_arr[1]);
         printf("%ld %ld: ",timings[0],timings[1]);
         if(timings[0] < timings[1]){
             printf("0\n");
