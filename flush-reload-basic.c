@@ -61,11 +61,11 @@ void main()
     // victim_arr[0] = maccess;
     // victim_arr[1] = flush;
 
-    char victim_arr[2];
-    for (int i = 0; i < 2; i++)
-    {
-        victim_arr[i] = 'a';
-    }
+    char victim_arr[2] = {'a', 'b'};
+    // for (int i = 0; i < 2; i++)
+    // {
+    //     victim_arr[i] = 'a';
+    // }
 
     uint64_t timings[2] = {0, 0};
 
