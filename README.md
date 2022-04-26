@@ -1,2 +1,2 @@
 # riscv-fr
-Flush and Reload on RISC-V
+This is an example implementation for Flush and Reload on RISC-V, not meant for production.
