@@ -61,8 +61,8 @@ void main()
     // victim_arr[0] = maccess;
     // victim_arr[1] = flush;
 
-    char victim_arr[2048];
-    for (int i = 0; i < 2048; i++)
+    char victim_arr[2];
+    for (int i = 0; i < 2; i++)
     {
         victim_arr[i] = 'a';
     }
@@ -80,7 +80,7 @@ void main()
         */
         ctr = (ctr + 1) % 6;
         flush();
-        buf = victim_arr[2047];
+        buf = victim_arr[1];
 
         /*
          Attacker
@@ -88,7 +88,7 @@ void main()
          the one that is in cache
         */
         timings[0] = timed_load(&victim_arr[0]);
-        timings[1] = timed_load(&victim_arr[2047]);
+        timings[1] = timed_load(&victim_arr[1]);
         printf("%ld %ld: ", timings[0], timings[1]);
         if (timings[0] < timings[1])
         {
