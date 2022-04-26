@@ -63,7 +63,7 @@ void main()
 
     // char victim_arr[2] = {'a', 'b'};
 
-    uint64_t timings[2] = {0, 0};
+    uint64_t timings[6] = {0, 0, 0, 0, 0, 0};
 
     int ctr = 0;
     void* buf;
@@ -89,8 +89,12 @@ void main()
         printf("%p\n", victim_arr[0]);
         // printf("%p\n", victim_arr[1]);
         timings[0] = timed_load(victim_arr[0]);
-        timings[1] = timed_load(victim_arr[1]);
-        printf("%ld %ld: ", timings[0], timings[1]);
+        timings[1] = timed_load(victim_arr[0]);
+        timings[2] = timed_load(victim_arr[0]);
+        timings[3] = timed_load(victim_arr[1]);
+        timings[4] = timed_load(victim_arr[1]);
+        timings[5] = timed_load(victim_arr[1]);
+        printf("%ld %ld: ", timings[0], timings[1], timings[2], timings[3], timings[4], timings[5]);
         if (timings[0] < timings[1]) {
             printf("0\n");
         } else {
