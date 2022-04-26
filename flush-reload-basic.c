@@ -54,7 +54,7 @@ void main(){
 
     char victim_arr[256];
     for (int i = 0; i < 256; i++) {
-        victim_arr[i] = &'a';
+        victim_arr[i] = 'a';
     }
     
     uint64_t timings[2] = {0,0};
@@ -76,8 +76,8 @@ void main(){
          Time both array indices and pick the one with the smaller time i.e 
          the one that is in cache
         */
-        timings[0] = timed_load(victim_arr[0]);
-        timings[1] = timed_load(victim_arr[255]);
+        timings[0] = timed_load(&victim_arr[0]);
+        timings[1] = timed_load(&victim_arr[255]);
         printf("%ld %ld: ",timings[0],timings[1]);
         if(timings[0] < timings[1]){
             printf("0\n");
