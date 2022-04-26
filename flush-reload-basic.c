@@ -81,3 +81,8 @@ void main(){
         }
     }
 }
+
+// function with distance to rdtsc
+void dummy_function(){
+    printf("Dummy method\n");
+}
