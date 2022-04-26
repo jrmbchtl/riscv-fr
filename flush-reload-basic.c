@@ -50,9 +50,10 @@ static inline uint64_t timed_load(void *p){
 
 void main(){
     // No pthreads on user level riscv so we do a simple poc
-    static char victim_arr[26] = "01";
-    int victim_idx[6] = {1,0,0,1,0,1};
-
+    void *victim_arr[2];
+    victim_arr[0] = rdtsc;
+    victim_arr[1] = dummy_function;
+    
     uint64_t timings[2] = {0,0};
 
     int ctr = 0;
