@@ -52,7 +52,10 @@ void main(){
     // victim_arr[0] = maccess;
     // victim_arr[1] = flush;
 
-    char victim_arr[256] = {"0"};
+    char victim_arr[256];
+    for (int i = 0; i < 256; i++) {
+        victim_arr[i] = &'a';
+    }
     
     uint64_t timings[2] = {0,0};
 
