@@ -52,16 +52,26 @@ static inline uint64_t timed_load(void *p)
     return end - start;
 }
 
+void dummy_function_1()
+{
+    printf("dummy_function_1\n");
+}
+
+void dummy_function_2()
+{
+    printf("dummy_function_2\n");
+}
+
 void main()
 {
     // No pthreads on user level riscv so we do a simple poc
     void *victim_arr[2];
-    victim_arr[0] = maccess;
-    victim_arr[1] = flush;
+    victim_arr[0] = dummy_function_1;
+    victim_arr[1] = dummy_function_2;
 
     // char victim_arr[2] = {'a', 'b'};
 
-    uint64_t timings[6] = {0, 0, 0, 0, 0, 0};
+    uint64_t timings[2] = {0, 0};
 
     int ctr = 0;
     void* buf;
@@ -75,36 +85,16 @@ void main()
         ctr = (ctr + 1) % 6;
         flush();
         maccess(victim_arr[0]);
-        // buf = victim_arr[0];
-        asm volatile("fence" ::: "memory");
-        printf("1: %lu\n", timed_load(main));
-        asm volatile("fence" ::: "memory");
-        printf("2: %lu\n", timed_load(main));
-        asm volatile("fence" ::: "memory");
-        printf("3: %lu\n", timed_load(main));
-        asm volatile("fence" ::: "memory");
+        // maccess(timed_load);
 
         /*
          Attacker
          Time both array indices and pick the one with the smaller time i.e
          the one that is in cache
         */
-        // printf("%p\n", victim_arr[0]);
-        // printf("%p\n", victim_arr[1]);
-        asm volatile("fence" ::: "memory");
         timings[0] = timed_load(victim_arr[0]);
-        asm volatile("fence" ::: "memory");
-        timings[1] = timed_load(victim_arr[0]);
-        asm volatile("fence" ::: "memory");
-        timings[2] = timed_load(victim_arr[0]);
-        asm volatile("fence" ::: "memory");
-        timings[3] = timed_load(victim_arr[1]);
-        asm volatile("fence" ::: "memory");
-        timings[4] = timed_load(victim_arr[1]);
-        asm volatile("fence" ::: "memory");
-        timings[5] = timed_load(victim_arr[1]);
-        asm volatile("fence" ::: "memory");
-        printf("%ld %ld %ld;%ld %ld %ld: ", timings[0], timings[1], timings[2], timings[3], timings[4], timings[5]);
+        timings[1] = timed_load(victim_arr[1]);
+        printf("%ld %ld: ", timings[0], timings[1]);
         if (timings[0] < timings[1]) {
             printf("0\n");
         } else {
