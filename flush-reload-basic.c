@@ -85,7 +85,7 @@ void main()
         ctr = (ctr + 1) % 6;
         flush();
         maccess(victim_arr[0]);
-        // maccess(timed_load);
+        maccess(timed_load);
 
         /*
          Attacker
