@@ -74,7 +74,8 @@ void main()
         */
         ctr = (ctr + 1) % 6;
         flush();
-        buf = victim_arr[0];
+        buf = maccess(victim_arr[0]);
+        // buf = victim_arr[0];
         asm volatile("fence" ::: "memory");
         printf("1: %lu\n", timed_load(main));
         asm volatile("fence" ::: "memory");
