@@ -29,7 +29,7 @@ static inline uint64_t rdtsc() {
 static inline void flush(){
 //     asm volatile ("fence.i" ::: "memory");
 //     asm volatile ("fence" ::: "memory");
-    asm volatile ("cbo.flush");
+    asm volatile ("flush");
 }
 
 // ---------------------------------------------------------------------------
