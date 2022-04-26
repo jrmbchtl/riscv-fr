@@ -27,9 +27,8 @@ static inline uint64_t rdtsc() {
 // On a simple risc-v implementation this might flush the cache
 // On our processor this is not sufficient -> eviction sets are necessary
 static inline void flush(){
-//     asm volatile ("fence.i" ::: "memory");
-//     asm volatile ("fence" ::: "memory");
-    asm volatile ("flush");
+    asm volatile ("fence.i" ::: "memory");
+    asm volatile ("fence" ::: "memory");
 }
 
 // ---------------------------------------------------------------------------
