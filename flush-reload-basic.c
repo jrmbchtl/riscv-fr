@@ -47,6 +47,10 @@ static inline uint64_t timed_load(void *p){
     return end-start;
 } 
 
+// function with distance to rdtsc
+void dummy_function(){
+    printf("Dummy method\n");
+}
 
 void main(){
     // No pthreads on user level riscv so we do a simple poc
@@ -81,9 +85,4 @@ void main(){
             printf("1\n");
         }
     }
-}
-
-// function with distance to rdtsc
-void dummy_function(){
-    printf("Dummy method\n");
 }
