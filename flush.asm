@@ -1,6 +1,6 @@
 SECTION .TEXT
-    GLOBAL flush
+    GLOBAL flush_dcache
 
-flush:
+flush_dcache:
     dcache.iall
     ret
