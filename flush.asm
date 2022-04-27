@@ -1,4 +1,4 @@
-section .TEXT
+SECTION .TEXT
     GLOBAL flush
 
 flush:
