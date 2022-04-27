@@ -30,7 +30,7 @@ static inline void flush()
 {
     // asm volatile("fence.i" ::: "memory");
     // asm volatile("fence" ::: "memory");
-    asm volatile("icache.ialls" ::: "memory");
+    asm volatile("dcache.ciall" ::: "memory");
 }
 
 // ---------------------------------------------------------------------------
