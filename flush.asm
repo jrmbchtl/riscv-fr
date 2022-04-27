@@ -3,3 +3,4 @@ section .TEXT
 
 flush:
     dcache.iall
+    ret
