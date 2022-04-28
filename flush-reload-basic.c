@@ -67,16 +67,16 @@ void main()
 {
     // No pthreads on user level riscv so we do a simple poc
     void *victim_arr[2];
-    victim_arr[0] = dummy_function_1;
-    victim_arr[1] = dummy_function_2;
+    // victim_arr[0] = dummy_function_1;
+    // victim_arr[1] = dummy_function_2;
 
-    // char victim_arr[2] = {'a', 'b'};
+    char victim_arr[2] = {'a', 'b'};
 
     uint64_t timings[2] = {0, 0};
 
     int ctr = 0;
-    void* buf;
-    // char buf;
+    // void* buf;
+    char buf;
     while (1)
     {
         /*
@@ -85,8 +85,8 @@ void main()
         */
         ctr = (ctr + 1) % 6;
         flush();
-        maccess(victim_arr[1]);
-        maccess(timed_load);
+        // maccess(victim_arr[1]);
+        // maccess(timed_load);
 
         /*
          Attacker
