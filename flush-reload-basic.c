@@ -66,7 +66,7 @@ void dummy_function_2()
 void main()
 {
     // No pthreads on user level riscv so we do a simple poc
-    void *victim_arr[2];
+    // void *victim_arr[2];
     // victim_arr[0] = dummy_function_1;
     // victim_arr[1] = dummy_function_2;
 
