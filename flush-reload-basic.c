@@ -37,10 +37,7 @@ static inline void flush()
 static inline void maccess(void *p)
 {
     uint64_t val;
-    asm volatile("ld (%0), x1\n" : : "m"(p):);
-    // asm volatile("ld %0, %1\n" : "=r"(val)
-    //              : "m"(p)
-    //              :);
+    asm volatile("ld %0, %1\n" : "=r"(val) : "m"(p) :);
 }
 
 // ---------------------------------------------------------------------------
