@@ -95,6 +95,7 @@ void main()
         // printf("%ld\n", timed_load(dummy_function_1));
         timings[0] = timed_load(dummy_function_1);
         flush();
+        timed_load(dummy_function_2);
         timings[1] = timed_load(dummy_function_1);
         printf("%ld %ld: ", timings[0], timings[1]);
         if (timings[0] < timings[1]) {
