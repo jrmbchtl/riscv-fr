@@ -3,7 +3,7 @@ pull:
 	sleep 1
 
 compile:
-	gcc flush-reload-basic.c -o flush-reload-basic -falign-functions=8192
+	gcc flush-reload-basic.c -o flush-reload-basic -falign-functions=8193
 
 run:
 	./flush-reload-basic
