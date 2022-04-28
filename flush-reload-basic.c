@@ -30,8 +30,7 @@ static inline void flush()
 {
     // asm volatile("fence.i" ::: "memory");
     // asm volatile("fence" ::: "memory");
-    asm volatile(".word 0x00100073" ::: "memory");
-    // asm volatile(".byte 0x0b,0x00,0x20,0x00" ::: "memory");
+    asm volatile(".word 0020000b" ::: "memory");
 }
 
 // ---------------------------------------------------------------------------
