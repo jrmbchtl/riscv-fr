@@ -93,8 +93,8 @@ void main()
         // printf("%p\n", &victim_arr[0]);
         // printf("%p\n", &victim_arr[1023]);
         // printf("%ld\n", timed_load(dummy_function_1));
-        timings[0] = timed_load(victim_arr[0]);
-        timings[1] = timed_load(victim_arr[1]);
+        timings[0] = timed_load(dummy_function_1);
+        timings[1] = timed_load(dummy_function_2);
         printf("%ld %ld: ", timings[0], timings[1]);
         if (timings[0] < timings[1]) {
             printf("0\n");
