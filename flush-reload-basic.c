@@ -70,7 +70,7 @@ void main()
     // victim_arr[0] = dummy_function_1;
     // victim_arr[1] = dummy_function_2;
 
-    char victim_arr[2] = {'a', 'b'};
+    char victim_arr[1024] = {'a'};
 
     uint64_t timings[2] = {0, 0};
 
@@ -93,9 +93,10 @@ void main()
          Time both array indices and pick the one with the smaller time i.e
          the one that is in cache
         */
-        // printf("%p\n", victim_arr[1]);
+        printf("%p\n", victim_arr[0]);
+        printf("%p\n", victim_arr[1023]);
         timings[0] = timed_load(victim_arr[0]);
-        timings[1] = timed_load(victim_arr[1]);
+        timings[1] = timed_load(victim_arr[1023]);
         printf("%ld %ld: ", timings[0], timings[1]);
         if (timings[0] < timings[1]) {
             printf("0\n");
