@@ -98,10 +98,11 @@ void main()
         // printf("%ld\n", timed_load(dummy_function_1));
         timings[0] = timed_load(&victim_arr[0]);
         timings[1] = timed_load(&victim_arr[1023]);
-        printf("%ld %ld\n: ", timings[0], timings[1]);
-        // if (timings[0] < timings[1]) {
-        //     printf("0\n");
-        // } else {
+        printf("%ld %ld: \n", timings[0], timings[1]);
+        if (timings[0] < timings[1]) {
+            printf("0\n");
+        } 
+        //else {
         //     printf("1\n");
         // }
     }
