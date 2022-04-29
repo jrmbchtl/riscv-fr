@@ -85,39 +85,44 @@ void main()
     // char victim_arr[1024] = {'a'};
 
     uint64_t timings[2] = {0, 0};
-    uint64_t thresholds[4] = {0};
+    uint64_t threshold_tmp[4] = {0};
+    uint64_t thresholds[2] = {0, 0};
 
     int ctr = 0;
     void* buf;
-    // char buf;
 
     // get thresholds for cached victim_arr access
     square(0, 0);
     for (int i = 0; i < 1000; i++)
     {
-        thresholds[0] += timed_load(victim_arr[0]);
+        threshold_tmp[0] += timed_load(victim_arr[0]);
     }
     multiply(0, 0);
     for (int i = 0; i < 1000; i++)
     {
-        thresholds[1] += timed_load(victim_arr[1]);
+        threshold_tmp[1] += timed_load(victim_arr[1]);
     }
     for (int i = 0; i < 1000; i++)
     {
         flush();
-        thresholds[2] += timed_call(victim_arr[0]);
+        threshold_tmp[2] += timed_call(victim_arr[0]);
     }
     for (int i = 0; i < 1000; i++)
     {
         flush();
-        thresholds[3] += timed_call(victim_arr[1]);
+        threshold_tmp[3] += timed_call(victim_arr[1]);
     }
     for (int i = 0; i < 4; i++)
     {
-        thresholds[i] /= 1000;
+        threshold_tmp[i] /= 1000;
     }
 
-    printf("thresholds: %lu %lu %lu %lu\n", thresholds[0], thresholds[1], thresholds[2], thresholds[3]);
+    thresholds[0] = (threshold_tmp[0] + threshold_tmp[2]) / 2;
+    thresholds[1] = (threshold_tmp[1] + threshold_tmp[3]) / 2;
+
+    printf("thresholds: %lu %lu\n", thresholds[0], thresholds[1]);
+    
+
 
     // while (1)
     // {
