@@ -186,6 +186,7 @@ int main()
     FILE* fp = fopen("log.csv", "w");
 
     uint64_t min = 1000;
+    uint64_t counter = 100;
 
     asm volatile("fence.i" ::: "memory");
     asm volatile("fence" ::: "memory");
@@ -200,6 +201,11 @@ int main()
         {
             min = timings[0];
             printf("new min: %lu\n", min);
+        }
+        if (timings < 100)
+        {
+            counter++;
+            printf("counter: %lu\n", counter);
         }
         // if (timings[0] < threshold) 
         // {
