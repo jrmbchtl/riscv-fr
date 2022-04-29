@@ -56,9 +56,20 @@ static inline uint64_t timed_load(void *p)
 static inline uint64_t timed_call(uint64_t (*p)(uint64_t, uint64_t))
 {
     uint64_t start, end;
-    start = rdtsc();
+    asm volatile("rdcycle %0\n" : "=r"(start)::);
     p(0, 0);
-    end = rdtsc();
+    asm volatile("rdcycle %0\n" : "=r"(end)::);
+    return end - start;
+}
+
+static inline uint64_t timed_call_n_flush(uint64_t (*p)(uint64_t, uint64_t))
+{
+    uint64_t start, end;
+    asm volatile("rdcycle %0\n" : "=r"(start)::);
+    p(0, 0);
+    asm volatile("rdcycle %0\n" : "=r"(end)::);
+    asm volatile("fence.i" ::: "memory");
+    asm volatile("fence" ::: "memory");
     return end - start;
 }
 
@@ -172,9 +183,7 @@ int main()
 
     while(done == 0)
     {
-        timings[0] = timed_call(multiply);
-        asm volatile("fence.i" ::: "memory");
-        asm volatile("fence" ::: "memory");
+        timings[0] = timed_call_n_flush(multiply);
         // fprintf(fp, "%lu\n", timings[0]);
         if (timings[0] < threshold)
         {
