@@ -77,7 +77,7 @@ uint64_t multiply(uint64_t x, uint64_t y)
     return x * y;
 }
 
-void multiply_at_any_point()
+void multiply_at_any_point(size_t* done)
 {
     for (uint64_t i=0; i<1000; i++)
     {
@@ -87,6 +87,7 @@ void multiply_at_any_point()
         usleep(1000);
     }
     printf("Done\n");
+    done = 1;
 }
 
 int compare_uint64_t (const void * a, const void * b) 
@@ -180,18 +181,20 @@ int main()
     }
     printf("\n");
 
-    pthread_create(&id, NULL, (void*)multiply_at_any_point, NULL);
+    size_t done = 0;
+
+    pthread_create(&id, NULL, (void*)multiply_at_any_point, &done);
 
     // open log.csv
     FILE* fp = fopen("log.csv", "w");
 
     uint64_t min = 1000;
-    uint64_t counter = 100;
+    uint64_t counter = 0;
 
     asm volatile("fence.i" ::: "memory");
     asm volatile("fence" ::: "memory");
 
-    while(1)
+    while(done == 0)
     {
         timings[0] = timed_call(multiply);
         asm volatile("fence.i" ::: "memory");
