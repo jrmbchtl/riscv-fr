@@ -104,19 +104,6 @@ uint64_t median(uint64_t* list, uint64_t size)
     return median;
 }
 
-uint64_t min(uint64_t* list, uint64_t size)
-{
-    uint64_t min = list[0];
-    for (uint64_t i = 1; i < size; i++)
-    {
-        if (list[i] < min)
-        {
-            min = list[i];
-        }
-    }
-    return min;
-}
-
 int main()
 {
     // No pthreads on user level riscv so we do a simple poc
@@ -132,26 +119,16 @@ int main()
     pthread_t id;
 
     // get thresholds for cached victim_arr access
-    // multiply(0, 0);
+    multiply(0, 0);
     for (int i = 0; i < 10000; i++)
     {
-        // printf("0: %d\n", i);
-        // timed_call(dummy_function);
-        // multiply(0, 0);
-        // timed_load(dummy_function);
         chached_timings[i] = timed_call(multiply);
-        // printf("chached_timings[%d] = %lu\n", i, chached_timings[i]);
     }
     for (int i = 0; i < 10000; i++)
     {
-        // printf("1: %d\n", i);
-        // asm volatile("fence" ::: "memory");
         asm volatile("fence.i" ::: "memory");
         asm volatile("fence" ::: "memory");
-        // timed_load(dummy_function);
         unchached_timings[i] = timed_call(multiply);
-        // usleep(100);
-        // printf("unchached_timings[%d] = %lu\n", i, unchached_timings[i]);
     }
     printf("cached median = %lu\n", median(chached_timings, 10000));
     printf("uncached median = %lu\n", median(unchached_timings, 10000));
@@ -188,7 +165,6 @@ int main()
     // open log.csv
     FILE* fp = fopen("log.csv", "w");
 
-    uint64_t min = 1000;
     uint64_t counter = 0;
 
     asm volatile("fence.i" ::: "memory");
@@ -200,23 +176,15 @@ int main()
         asm volatile("fence.i" ::: "memory");
         asm volatile("fence" ::: "memory");
         fprintf(fp, "%lu\n", timings[0]);
-        // if (timings[0] < min)
-        // {
-        //     min = timings[0];
-        //     printf("new min: %lu\n", min);
-        // }
         if (timings[0] < threshold)
         {
             counter++;
         }
-        // if (timings[0] < threshold) 
-        // {
-        //     fprintf(fp, "1\n");
-        // } else {
-        //     fprintf(fp, "0\n");
-        // }
+        usleep(1000)
     }
     printf("counter: %lu\n", counter);
+
+    fclose(fp);
 
     // while (1)
     // {
