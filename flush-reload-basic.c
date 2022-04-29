@@ -89,10 +89,7 @@ void multiply_for_some_time(size_t* done)
 {
     for (uint64_t i=0; i<100000000; i++)
     {
-        // printf("%lu\n", i);
-        // sleep(1);
         multiply(0, 0);
-        // sleep(1);
     }
     printf("Done\n");
     *done = 1;
@@ -116,7 +113,6 @@ int main()
 {
     // No pthreads on user level riscv so we do a simple poc
 
-    // char victim_arr[1024] = {'a'};
 
     uint64_t seq[16] = {0,0,1,1,1,0,1,0,0,1,0,1,1,0,1,0};
 
@@ -135,8 +131,7 @@ int main()
     }
     for (int i = 0; i < 10000; i++)
     {
-        asm volatile("fence.i" ::: "memory");
-        asm volatile("fence" ::: "memory");
+        flush();
         timed_call(dummy_function);
         unchached_timings[i] = timed_call(multiply);
     }
