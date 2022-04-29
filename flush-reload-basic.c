@@ -113,12 +113,13 @@ int main()
     multiply(0, 0);
     for (int i = 0; i < 1000; i++)
     {
+        // timed_call(dummy_function);
         chached_timings[i] = timed_call(multiply);
     }
     for (int i = 0; i < 1000; i++)
     {
         flush();
-        timed_call(dummy_function);
+        // timed_call(dummy_function);
         unchached_timings[i] = timed_call(multiply);
     }
     printf("cached median = %lu\n", median(chached_timings, 1000));
@@ -133,7 +134,7 @@ int main()
     flush();
     while(1)
     {
-        timed_call(dummy_function);
+        // timings[1] = timed_call(dummy_function);
         timings[0] = timed_call(multiply);
         flush();
         printf("timing of square is %lu\n", timings[0]);
