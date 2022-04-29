@@ -99,19 +99,6 @@ uint64_t median(uint64_t* list, uint64_t size)
     return median;
 }
 
-uint64_t min(uint64_t* list, uint64_t size)
-{
-    uint64_t min = list[0];
-    for (uint64_t i=1; i<size; i++)
-    {
-        if (list[i] < min)
-        {
-            min = list[i];
-        }
-    }
-    return min;
-}
-
 int main()
 {
     // No pthreads on user level riscv so we do a simple poc
