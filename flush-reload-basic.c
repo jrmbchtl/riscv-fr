@@ -91,7 +91,7 @@ void multiply_for_some_time(size_t* done)
     {
         // printf("%lu\n", i);
         // sleep(1);
-        multiply(983475983475234, 76328742347727);
+        multiply(0, 0);
         // sleep(1);
     }
     printf("Done\n");
