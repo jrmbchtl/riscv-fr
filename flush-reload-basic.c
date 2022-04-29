@@ -150,10 +150,8 @@ int main()
     threshold = (median(chached_timings, 1000) + median(unchached_timings, 1000))/2;
 
     printf("threshold: %lu\n", threshold);
-
-
     
-    pthread_create(&id, NULL, (void*)multiply_at_any_point, NULL);
+    // pthread_create(&id, NULL, (void*)multiply_at_any_point, NULL);
 
     asm volatile("fence.i" ::: "memory");
     asm volatile("fence" ::: "memory");
@@ -171,9 +169,9 @@ int main()
         }
         usleep(100);
     }
-    printf("someone just multiplied!\n");
-    pthread_join(id, NULL);
-    printf("exit\n");
+    // printf("someone just multiplied!\n");
+    // pthread_join(id, NULL);
+    // printf("exit\n");
 
     // while (1)
     // {
