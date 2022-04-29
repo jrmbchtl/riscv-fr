@@ -152,6 +152,9 @@ int main()
 
     asm volatile("fence.i" ::: "memory");
     asm volatile("fence" ::: "memory");
+    usleep(100000);
+    asm volatile("fence.i" ::: "memory");
+    asm volatile("fence" ::: "memory");
     while(1)
     {
         // timings[1] = timed_load(dummy_function);
