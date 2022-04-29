@@ -104,7 +104,9 @@ int main()
     square(0, 0);
     for (int i = 0; i < 1000; i++)
     {
-        threshold_tmp[0] += timed_load(victim_arr[0]);
+        uint64_t tmp = timed_load(victim_arr[0]);
+        threshold_tmp[0] += tmp
+        printf("timed_load(victim_arr[0]) = %lu\n", tmp);
     }
     multiply(0, 0);
     for (int i = 0; i < 1000; i++)
