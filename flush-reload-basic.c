@@ -75,7 +75,7 @@ uint64_t multiply(uint64_t x, uint64_t y)
     return x * y;
 }
 
-void main()
+int main()
 {
     // No pthreads on user level riscv so we do a simple poc
     void *victim_arr[2];
@@ -121,7 +121,7 @@ void main()
     thresholds[1] = (threshold_tmp[1] + threshold_tmp[3]) / 2;
 
     printf("thresholds: %lu %lu\n", thresholds[0], thresholds[1]);
-    
+
 
 
     // while (1)
@@ -155,4 +155,6 @@ void main()
     //         printf("1\n");
     //     }
     // }
+
+    return 0;
 }
