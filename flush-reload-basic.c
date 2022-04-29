@@ -52,14 +52,14 @@ static inline uint64_t timed_load(void *p)
     return end - start;
 }
 
-static inline uint64_t timed_call(uint64_t (*p)(uint64_t, uint64_t))
-{
-    uint64_t start, end;
-    start = rdtsc();
-    p(0, 0);
-    end = rdtsc();
-    return end - start;
-}
+// static inline uint64_t timed_call(uint64_t (*p)(uint64_t, uint64_t))
+// {
+//     uint64_t start, end;
+//     start = rdtsc();
+//     p(0, 0);
+//     end = rdtsc();
+//     return end - start;
+// }
 
 uint64_t dummy_function(uint64_t x, uint64_t y)
 {
@@ -127,18 +127,18 @@ int main()
     {
         // timed_call(dummy_function);
         multiply(0, 0);
-        timed_call(dummy_function);
+        timed_load(dummy_function);
         chached_timings[i] = timed_load(multiply);
         printf("chached_timings[%d] = %lu\n", i, chached_timings[i]);
     }
     for (int i = 0; i < 1000; i++)
     {
         flush();
-        timed_call(dummy_function);
+        timed_load(dummy_function);
         unchached_timings[i] = timed_load(multiply);
         printf("unchached_timings[%d] = %lu\n", i, unchached_timings[i]);
     }
-    printf("cached median = %lu\n", min(chached_timings, 1000));
+    printf("cached median = %lu\n", median(chached_timings, 1000));
     printf("uncached median = %lu\n", median(unchached_timings, 1000));
     threshold = (median(chached_timings, 1000) + median(unchached_timings, 1000))/2;
 
