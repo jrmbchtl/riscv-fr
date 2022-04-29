@@ -98,7 +98,7 @@ void multiply_at_any_point(size_t* done)
     {
         // printf("%lu\n", i);
         // sleep(1);
-        multiply(0, 0);
+        multiply(983475983475234, 76328742347727);
         // sleep(1);
     }
     printf("Done\n");
