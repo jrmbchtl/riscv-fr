@@ -138,6 +138,7 @@ int main()
     {
         flush();
         timings[0] = timed_load(victim_arr[0]);
+        printf("timing of square is %lu\n", timings[0]);
         if (timings[0] < thresholds[0])
         {
             break;
