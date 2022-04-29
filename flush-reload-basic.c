@@ -53,9 +53,9 @@ static inline uint64_t timed_load(void *p)
 static inline uint64_t timed_call(uint64_t (*p)(uint64_t, uint64_t))
 {
     uint64_t start, end;
-    asm volatile("rdcycle %0\n" : "=r"(start)::);
+    start = rdtsc();
     p(0, 0);
-    asm volatile("rdcycle %0\n" : "=r"(end)::);
+    end = rdtsc();
     return end - start;
 }
 
@@ -63,11 +63,11 @@ static inline uint64_t timed_call_n_flush(uint64_t (*p)(uint64_t, uint64_t))
 {
     uint64_t start, end;
     asm volatile("fence" ::: "memory");
-    asm volatile("rdcycle %0\n" : "=r"(start)::);
+    start = rdtsc();
     asm volatile("fence" ::: "memory");
     p(0, 0);
     asm volatile("fence" ::: "memory");
-    asm volatile("rdcycle %0\n" : "=r"(end)::);
+    end = rdtsc();
     asm volatile("fence" ::: "memory");
     asm volatile("fence.i" ::: "memory");
     asm volatile("fence" ::: "memory");
