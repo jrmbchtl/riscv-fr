@@ -97,7 +97,7 @@ void main()
         */
         ctr = (ctr + 1) % 6;
         flush();
-        // timed_call(dummy_function);
+        timed_call(dummy_function);
         // square(0, 0);
         // maccess(victim_arr[1]);
         // maccess(timed_load);
