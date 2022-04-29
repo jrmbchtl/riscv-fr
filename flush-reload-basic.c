@@ -114,12 +114,14 @@ int main()
     {
         // timed_call(dummy_function);
         chached_timings[i] = timed_call(multiply);
+        printf("chached_timings[%d] = %lu\n", i, chached_timings[i]);
     }
     for (int i = 0; i < 1000; i++)
     {
         flush();
         // timed_call(dummy_function);
         unchached_timings[i] = timed_call(multiply);
+        printf("unchached_timings[%d] = %lu\n", i, unchached_timings[i]);
     }
     printf("cached median = %lu\n", median(chached_timings, 1000));
     printf("uncached median = %lu\n", median(unchached_timings, 1000));
