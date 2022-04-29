@@ -84,6 +84,21 @@ void square_at_any_point()
     sleep(5);
 }
 
+uint64_t compare_uint64_t(uint64_t x, uint64_t y)
+{
+    return x - y;
+}
+
+uint64_t median(uint64_t* list, uint64_t size)
+{
+    uint64_t* sorted = malloc(size * sizeof(uint64_t));
+    memcpy(sorted, list, size * sizeof(uint64_t));
+    qsort(sorted, size, sizeof(uint64_t), compare_uint64_t);
+    uint64_t median = sorted[size / 2];
+    free(sorted);
+    return median;
+}
+
 int main()
 {
     // No pthreads on user level riscv so we do a simple poc
@@ -94,6 +109,10 @@ int main()
     // char victim_arr[1024] = {'a'};
 
     uint64_t timings[2] = {0, 0};
+    uint64_t chached_timings_0[1000] = {0};
+    uint64_t chached_timings_1[1000] = {0};
+    uint64_t unchached_timings_0[1000] = {0};
+    uint64_t unchached_timings_1[1000] = {0};
     uint64_t threshold_tmp[4] = {0};
     uint64_t thresholds[2] = {0, 0};
 
@@ -104,29 +123,31 @@ int main()
     square(0, 0);
     for (int i = 0; i < 1000; i++)
     {
-        uint64_t tmp = timed_load(victim_arr[0]);
-        threshold_tmp[0] += tmp;
-        printf("timed_load(victim_arr[0]) = %lu\n", tmp);
+        chached_timings_0[i] = timed_load(victim_arr[0]);
     }
     multiply(0, 0);
     for (int i = 0; i < 1000; i++)
     {
-        threshold_tmp[1] += timed_load(victim_arr[1]);
+        chached_timings_1[i] = timed_load(victim_arr[1]);
     }
     for (int i = 0; i < 1000; i++)
     {
         flush();
-        threshold_tmp[2] += timed_call(victim_arr[0]);
+        unchached_timings_0[i] = timed_load(victim_arr[0]);
     }
     for (int i = 0; i < 1000; i++)
     {
         flush();
-        threshold_tmp[3] += timed_call(victim_arr[1]);
+        unchached_timings_1[i] = timed_load(victim_arr[1]);
     }
-    for (int i = 0; i < 4; i++)
-    {
-        threshold_tmp[i] /= 1000;
-    }
+    printf("threshold_tmp[0] = %lu\n", median(chached_timings_0, 1000));
+    printf("threshold_tmp[1] = %lu\n", median(chached_timings_1, 1000));
+    printf("threshold_tmp[2] = %lu\n", median(unchached_timings_0, 1000));
+    printf("threshold_tmp[3] = %lu\n", median(unchached_timings_1, 1000));
+    threshold_tmp[0] = median(chached_timings_0, 1000);
+    threshold_tmp[1] = median(chached_timings_1, 1000);
+    threshold_tmp[2] = median(unchached_timings_0, 1000);
+    threshold_tmp[3] = median(unchached_timings_1, 1000);
 
     thresholds[0] = (threshold_tmp[0] + threshold_tmp[2]) / 2;
     thresholds[1] = (threshold_tmp[1] + threshold_tmp[3]) / 2;
