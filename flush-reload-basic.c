@@ -79,12 +79,12 @@ uint64_t multiply(uint64_t x, uint64_t y)
 
 void multiply_at_any_point(size_t* done)
 {
-    for (uint64_t i=0; i<100; i++)
+    for (uint64_t i=0; i<10; i++)
     {
         // printf("%lu\n", i);
-        usleep(10000);
+        sleep(1);
         multiply(i, i);
-        usleep(10000);
+        sleep(1);
     }
     printf("Done\n");
     *done = 1;
@@ -180,7 +180,7 @@ int main()
         {
             counter++;
         }
-        usleep(1000);
+        usleep(10000);
     }
     printf("counter: %lu\n", counter);
 
