@@ -190,7 +190,7 @@ int main()
     while(done == 0)
     {
         timings[0] = timed_call_n_flush(multiply);
-        printf("%lu\n", timings[0]);
+        // printf("%lu\n", timings[0]);
         if (timings[0] < threshold)
         {
             counter++;
