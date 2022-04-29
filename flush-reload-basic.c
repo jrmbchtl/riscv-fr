@@ -20,8 +20,7 @@
 static inline uint64_t rdtsc()
 {
     uint64_t val;
-    asm volatile("rdcycle %0\n"
-                 : "=r"(val)::);
+    asm volatile("rdcycle %0\n" : "=r"(val)::);
     return val;
 }
 
@@ -32,7 +31,6 @@ static inline void flush()
 {
     asm volatile("fence.i" ::: "memory");
     asm volatile("fence" ::: "memory");
-    // asm volatile(".word 0x0020000b" ::: "memory");
 }
 
 // ---------------------------------------------------------------------------
@@ -56,24 +54,19 @@ static inline uint64_t timed_load(void *p)
 static inline uint64_t timed_call(uint64_t (*p)(uint64_t, uint64_t))
 {
     uint64_t start, end;
-    asm volatile("rdcycle %0\n" : "=r"(start)::);
+    start = rdtsc();
     p(0, 0);
-    asm volatile("rdcycle %0\n" : "=r"(end)::);
+    end = rdtsc();
     return end - start;
 }
 
 static inline uint64_t timed_call_n_flush(uint64_t (*p)(uint64_t, uint64_t))
 {
     uint64_t start, end;
-    asm volatile("fence" ::: "memory");
-    asm volatile("rdcycle %0\n" : "=r"(start)::);
-    asm volatile("fence" ::: "memory");
+    start = rdtsc();
     p(0, 0);
-    asm volatile("fence" ::: "memory");
-    asm volatile("rdcycle %0\n" : "=r"(end)::);
-    asm volatile("fence" ::: "memory");
-    asm volatile("fence.i" ::: "memory");
-    asm volatile("fence" ::: "memory");
+    end = rdtsc();
+    flush();
     return end - start;
 }
 
@@ -82,24 +75,17 @@ uint64_t dummy_function(uint64_t x, uint64_t y)
     return 0;
 }
 
-// uint64_t square(uint64_t x, uint64_t y)
-// {
-//     return x * x;
-// }
 
 uint64_t multiply(uint64_t x, uint64_t y)
 {
     return x * y;
 }
 
-void multiply_at_any_point(size_t* done)
+void multiply_for_some_time(size_t* done)
 {
     for (uint64_t i=0; i<100000000; i++)
     {
-        // printf("%lu\n", i);
-        // sleep(1);
-        multiply(983475983475234, 76328742347727);
-        // sleep(1);
+        multiply(0, 0);
     }
     printf("Done\n");
     *done = 1;
@@ -123,11 +109,10 @@ int main()
 {
     // No pthreads on user level riscv so we do a simple poc
 
-    // char victim_arr[1024] = {'a'};
-
+    // used to show that same-thread sidechannels work
     uint64_t seq[16] = {0,0,1,1,1,0,1,0,0,1,0,1,1,0,1,0};
 
-    uint64_t timings[2] = {0, 0};
+    uint64_t timing = 0;
     uint64_t chached_timings[10000] = {0};
     uint64_t unchached_timings[10000] = {0};
     uint64_t threshold = 0;
@@ -142,8 +127,7 @@ int main()
     }
     for (int i = 0; i < 10000; i++)
     {
-        asm volatile("fence.i" ::: "memory");
-        asm volatile("fence" ::: "memory");
+        flush();
         timed_call(dummy_function);
         unchached_timings[i] = timed_call(multiply);
     }
@@ -153,21 +137,18 @@ int main()
 
     printf("threshold: %lu\n", threshold);
 
-    asm volatile("fence.i" ::: "memory");
-    asm volatile("fence" ::: "memory");
+    flush();
 
     for (int i=0; i<16; i++)
     {
         if (seq[i] == 0)
         {
-            asm volatile("fence.i" ::: "memory");
-            asm volatile("fence" ::: "memory");
+            flush();
         } else {
             multiply(0, 0);
         }
-        timed_call(dummy_function);
-        timings[0] = timed_call(multiply);
-        if (timings[0] < threshold) 
+        timing = timed_call(multiply);
+        if (timing < threshold) 
         {
             printf("1");
         } else {
@@ -178,66 +159,25 @@ int main()
 
     size_t done = 0;
 
-    pthread_create(&id, NULL, (void*)multiply_at_any_point, &done);
+    // start thread that permanently accesses multiply
+    pthread_create(&id, NULL, (void*)multiply_for_some_time, &done);
 
-    // open log.csv
-    FILE* fp = fopen("log.csv", "w");
-
+    // count cache hits
     uint64_t counter = 0;
 
-    asm volatile("fence.i" ::: "memory");
-    asm volatile("fence" ::: "memory");
-
-    // usleep(500000);
+    flush();
 
     while(done == 0)
     {
-        timed_call(dummy_function);
-        timings[0] = timed_call(multiply);
-        // printf("%lu\n", timings[0]);
-        asm volatile("fence.i" ::: "memory");
-        asm volatile("fence" ::: "memory");
-        if (timings[0] < threshold)
+        timing = timed_call(multiply);
+        flush();
+        if (timing < threshold)
         {
             counter++;
         }
         // usleep(10000);
     }
     printf("counter: %lu\n", counter);
-
-    fclose(fp);
-
-    // while (1)
-    // {
-    //     /*
-    //      Victim
-    //      Get victim idx values into the cache
-    //     */
-    //     ctr = (ctr + 1) % 6;
-    //     flush();
-    //     timed_call(dummy_function);
-    //     square(0, 0);
-    //     // maccess(victim_arr[1]);
-    //     // maccess(timed_load);
-
-    //     /*
-    //      Attacker
-    //      Time both array indices and pick the one with the smaller time i.e
-    //      the one that is in cache
-    //     */
-    //     // square(0, 0);
-    //     timings[1] = timed_call(multiply);
-    //     timings[0] = timed_call(square);
-        
-        
-    //     printf("%ld %ld: ", timings[0], timings[1]);
-    //     if (timings[0] < timings[1]) {
-    //         printf("0\n");
-    //     } 
-    //     else {
-    //         printf("1\n");
-    //     }
-    // }
 
     return 0;
 }
