@@ -187,6 +187,8 @@ int main()
     while(1)
     {
         timings[0] = timed_call(multiply);
+        asm volatile("fence.i" ::: "memory");
+        asm volatile("fence" ::: "memory");
         if (timings[0] < threshold) 
         {
             fprintf(fp, "1\n");
