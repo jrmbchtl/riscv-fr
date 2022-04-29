@@ -1,8 +1,10 @@
+#include <pthread.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
 
 /*
  Other processors may implement the fence.i instruction differently and flush the
@@ -75,6 +77,13 @@ uint64_t multiply(uint64_t x, uint64_t y)
     return x * y;
 }
 
+void square_at_any_point()
+{
+    sleep(5);
+    printf("square(12, 0) = %lu\n", square(12, 0));
+    sleep(5);
+}
+
 int main()
 {
     // No pthreads on user level riscv so we do a simple poc
@@ -122,7 +131,21 @@ int main()
 
     printf("thresholds: %lu %lu\n", thresholds[0], thresholds[1]);
 
+    pthread_t id;
+    pthread_create(&id, NULL, (void*)square_at_any_point, NULL);
 
+    while(1)
+    {
+        flush();
+        timings[0] = timed_load(victim_arr[0]);
+        if (timings[0] < thresholds[0])
+        {
+            break;
+        }
+    }
+    printf("someone just squared!\n");
+    pthread_join(id, NULL);
+    printf("exit\n");
 
     // while (1)
     // {
