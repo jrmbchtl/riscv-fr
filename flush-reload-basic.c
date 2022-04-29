@@ -165,6 +165,7 @@ int main()
         {
             break;
         }
+        usleep(100);
     }
     printf("someone just multiplied!\n");
     pthread_join(id, NULL);
