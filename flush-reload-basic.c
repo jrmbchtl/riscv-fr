@@ -139,6 +139,10 @@ int main()
         flush();
         unchached_timings_1[i] = timed_load(victim_arr[1]);
     }
+    printf("threshold_tmp[0] = %lu\n", median(chached_timings_0, 1000));
+    printf("threshold_tmp[1] = %lu\n", median(chached_timings_1, 1000));
+    printf("threshold_tmp[2] = %lu\n", median(unchached_timings_0, 1000));
+    printf("threshold_tmp[3] = %lu\n", median(unchached_timings_1, 1000));
     threshold_tmp[0] = median(chached_timings_0, 1000);
     threshold_tmp[1] = median(chached_timings_1, 1000);
     threshold_tmp[2] = median(unchached_timings_0, 1000);
@@ -161,7 +165,7 @@ int main()
         {
             break;
         }
-        usleep(100000);
+        usleep(1000000);
     }
     printf("someone just squared!\n");
     pthread_join(id, NULL);
