@@ -200,11 +200,11 @@ int main()
         asm volatile("fence.i" ::: "memory");
         asm volatile("fence" ::: "memory");
         fprintf(fp, "%lu\n", timings[0]);
-        if (timings[0] < min)
-        {
-            min = timings[0];
-            printf("new min: %lu\n", min);
-        }
+        // if (timings[0] < min)
+        // {
+        //     min = timings[0];
+        //     printf("new min: %lu\n", min);
+        // }
         if (timings[0] < 100)
         {
             counter++;
