@@ -94,7 +94,7 @@ uint64_t multiply(uint64_t x, uint64_t y)
 
 void multiply_at_any_point(size_t* done)
 {
-    for (uint64_t i=0; i<100000000; i++)
+    for (uint64_t i=0; i<10000000000; i++)
     {
         // printf("%lu\n", i);
         // sleep(1);
