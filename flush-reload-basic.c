@@ -189,8 +189,10 @@ int main()
 
     while(done == 0)
     {
-        timings[0] = timed_call_n_flush(multiply);
+        timings[0] = timed_call(multiply);
         // printf("%lu\n", timings[0]);
+        asm volatile("fence.i" ::: "memory");
+        asm volatile("fence" ::: "memory");
         if (timings[0] < threshold)
         {
             counter++;
