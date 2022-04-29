@@ -155,7 +155,7 @@ int main()
     while(1)
     {
         flush();
-        timings[0] = timed_load(victim_arr[0]);
+        timings[0] = timed_call(victim_arr[0]);
         printf("timing of square is %lu\n", timings[0]);
         if (timings[0] < thresholds[0])
         {
