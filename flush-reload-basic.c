@@ -43,21 +43,20 @@ static inline void maccess(void *p)
 }
 
 // ---------------------------------------------------------------------------
-static inline uint64_t timed_load(void *p)
-{
-    uint64_t start, end;
-    start = rdtsc();
-    maccess(p);
-    end = rdtsc();
-    return end - start;
-}
+// static inline uint64_t timed_load(void *p)
+// {
+//     uint64_t start, end;
+//     start = rdtsc();
+//     maccess(p);
+//     end = rdtsc();
+//     return end - start;
+// }
 
 static inline uint64_t timed_call(uint64_t (*p)(uint64_t, uint64_t))
 {
     uint64_t start, end;
     start = rdtsc();
     p(0, 0);
-    end = rdtsc();
     end = rdtsc();
     return end - start;
 }
