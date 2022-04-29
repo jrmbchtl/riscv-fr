@@ -80,6 +80,7 @@ uint64_t multiply(uint64_t x, uint64_t y)
 void multiply_at_any_point()
 {
     sleep(5);
+    printf("%p\n", multiply);
     printf("multiply(12, 14) = %lu\n", multiply(12, 14));
     sleep(5);
 }
@@ -149,6 +150,7 @@ int main()
     pthread_t id;
     pthread_create(&id, NULL, (void*)multiply_at_any_point, NULL);
 
+    printf("%p\n", multiply);
     asm volatile("fence.i" ::: "memory");
     asm volatile("fence" ::: "memory");
     while(1)
