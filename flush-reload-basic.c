@@ -131,6 +131,8 @@ int main()
     }
     for (int i = 0; i < 10000; i++)
     {
+        asm volatile("fence.i" ::: "memory");
+        asm volatile("fence" ::: "memory");
         flush();
         timed_call(dummy_function);
         unchached_timings[i] = timed_call(multiply);
