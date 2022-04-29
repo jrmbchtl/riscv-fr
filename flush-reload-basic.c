@@ -138,6 +138,7 @@ int main()
         asm volatile("fence" ::: "memory");
         // timed_load(dummy_function);
         unchached_timings[i] = timed_load(multiply);
+        usleep(100000);
         // printf("unchached_timings[%d] = %lu\n", i, unchached_timings[i]);
     }
     printf("cached median = %lu\n", median(chached_timings, 1000));
