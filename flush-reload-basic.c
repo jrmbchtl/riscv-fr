@@ -132,11 +132,13 @@ int main()
     for (int i = 0; i < 1000; i++)
     {
         flush();
+        timed_call(dummy_function);
         unchached_timings_0[i] = timed_call(victim_arr[0]);
     }
     for (int i = 0; i < 1000; i++)
     {
         flush();
+        timed_call(dummy_function);
         unchached_timings_1[i] = timed_call(victim_arr[1]);
     }
     printf("threshold_tmp[0] = %lu\n", median(chached_timings_0, 1000));
