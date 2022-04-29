@@ -43,14 +43,14 @@ static inline void maccess(void *p)
 }
 
 // ---------------------------------------------------------------------------
-// static inline uint64_t timed_load(void *p)
-// {
-//     uint64_t start, end;
-//     start = rdtsc();
-//     maccess(p);
-//     end = rdtsc();
-//     return end - start;
-// }
+static inline uint64_t timed_load(void *p)
+{
+    uint64_t start, end;
+    start = rdtsc();
+    maccess(p);
+    end = rdtsc();
+    return end - start;
+}
 
 static inline uint64_t timed_call(uint64_t (*p)(uint64_t, uint64_t))
 {
@@ -127,14 +127,15 @@ int main()
     {
         // timed_call(dummy_function);
         multiply(0, 0);
-        chached_timings[i] = timed_call(multiply);
+        timed_call(dummy_function);
+        chached_timings[i] = timed_load(multiply);
         printf("chached_timings[%d] = %lu\n", i, chached_timings[i]);
     }
     for (int i = 0; i < 1000; i++)
     {
         flush();
-        // timed_call(dummy_function);
-        unchached_timings[i] = timed_call(multiply);
+        timed_call(dummy_function);
+        unchached_timings[i] = timed_load(multiply);
         printf("unchached_timings[%d] = %lu\n", i, unchached_timings[i]);
     }
     printf("cached median = %lu\n", min(chached_timings, 1000));
@@ -149,8 +150,8 @@ int main()
     flush();
     while(1)
     {
-        // timings[1] = timed_call(dummy_function);
-        timings[0] = timed_call(multiply);
+        timings[1] = timed_load(dummy_function);
+        timings[0] = timed_load(multiply);
         flush();
         printf("timing of square is %lu\n", timings[0]);
 
