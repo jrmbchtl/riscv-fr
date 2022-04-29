@@ -156,8 +156,6 @@ int main()
     threshold = (median(chached_timings, 1000) + median(unchached_timings, 1000))/2;
 
     printf("threshold: %lu\n", threshold);
-    
-    // pthread_create(&id, NULL, (void*)multiply_at_any_point, NULL);
 
     asm volatile("fence.i" ::: "memory");
     asm volatile("fence" ::: "memory");
@@ -181,23 +179,21 @@ int main()
     }
     printf("\n");
 
-    // for (int i=0; i<100; i++)
-    // {
-    //     // timings[1] = timed_load(dummy_function);
-    //     timings[0] = timed_call(multiply);
-    //     asm volatile("fence.i" ::: "memory");
-    //     asm volatile("fence" ::: "memory");
-    //     printf("timing of square is %lu\n", timings[0]);
+    pthread_create(&id, NULL, (void*)multiply_at_any_point, NULL);
 
-    //     if (timings[0] <= threshold)
-    //     {
-    //         break;
-    //     }
-    //     usleep(100);
-    // }
-    // printf("someone just multiplied!\n");
-    // pthread_join(id, NULL);
-    // printf("exit\n");
+    // open log.csv
+    FILE* fp = fopen("log.csv", "w");
+
+    while(1)
+    {
+        timings[0] = timed_call(multiply);
+        if (timings[0] < threshold) 
+        {
+            fprintf(fp, "1\n");
+        } else {
+            fprintf(fp, "0\n");
+        }
+    }
 
     // while (1)
     // {
