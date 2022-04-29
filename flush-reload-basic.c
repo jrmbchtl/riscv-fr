@@ -185,12 +185,22 @@ int main()
     // open log.csv
     FILE* fp = fopen("log.csv", "w");
 
+    uint64_t min = 1000;
+
+    asm volatile("fence.i" ::: "memory");
+    asm volatile("fence" ::: "memory");
+
     while(1)
     {
         timings[0] = timed_call(multiply);
         asm volatile("fence.i" ::: "memory");
         asm volatile("fence" ::: "memory");
         fprintf(fp, "%lu\n", timings[0]);
+        if (timings[0] < min)
+        {
+            min = timings[0];
+            printf("new min: %lu\n", min);
+        }
         // if (timings[0] < threshold) 
         // {
         //     fprintf(fp, "1\n");
