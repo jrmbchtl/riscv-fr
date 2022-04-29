@@ -80,7 +80,10 @@ uint64_t multiply(uint64_t x, uint64_t y)
 void multiply_at_any_point()
 {
     sleep(5);
-    printf("%p\n", multiply);
+    for (int i=0; i<100; i++)
+    {
+        multiply(i, i);
+    }
     printf("multiply(12, 14) = %lu\n", multiply(12, 14));
     sleep(5);
 }
@@ -123,7 +126,6 @@ int main()
     uint64_t unchached_timings[1000] = {0};
     uint64_t threshold = 0;
     pthread_t id;
-    pthread_create(&id, NULL, (void*)multiply_at_any_point, NULL);
 
     // get thresholds for cached victim_arr access
     // multiply(0, 0);
@@ -149,12 +151,10 @@ int main()
 
     printf("threshold: %lu\n", threshold);
 
-    pthread_join(id, NULL);
 
     
     pthread_create(&id, NULL, (void*)multiply_at_any_point, NULL);
 
-    printf("%p\n", multiply);
     asm volatile("fence.i" ::: "memory");
     asm volatile("fence" ::: "memory");
     while(1)
