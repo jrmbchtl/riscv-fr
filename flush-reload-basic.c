@@ -107,8 +107,9 @@ void main()
          Time both array indices and pick the one with the smaller time i.e
          the one that is in cache
         */
-        timings[1] = timed_load(victim_arr[1]);
-        timings[0] = timed_load(victim_arr[0]);
+        
+        timings[0] = timed_load(square);
+        timings[1] = timed_load(multiply);
         
         printf("%ld %ld: ", timings[0], timings[1]);
         if (timings[0] < timings[1]) {
