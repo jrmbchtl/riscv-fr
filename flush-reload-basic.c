@@ -192,7 +192,7 @@ int main()
 
     while(done == 0)
     {
-        v
+        timed_call(dummy_function);
         timings[0] = timed_call(multiply);
         // printf("%lu\n", timings[0]);
         asm volatile("fence.i" ::: "memory");
