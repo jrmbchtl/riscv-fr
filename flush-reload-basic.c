@@ -138,7 +138,7 @@ int main()
         flush();
         unchached_timings[i] = timed_call(multiply);
     }
-    printf("cached median = %lu\n", min(chached_timings, 10000));
+    printf("cached median = %lu\n", median(chached_timings, 10000));
     printf("uncached median = %lu\n", median(unchached_timings, 10000));
     threshold = (median(chached_timings, 1000) + median(unchached_timings, 1000))/2;
 
