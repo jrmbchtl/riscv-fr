@@ -77,10 +77,10 @@ uint64_t multiply(uint64_t x, uint64_t y)
     return x * y;
 }
 
-void square_at_any_point()
+void multiply_at_any_point()
 {
     sleep(5);
-    printf("square(12, 0) = %lu\n", square(12, 0));
+    printf("multiply(12, 0) = %lu\n", multiply(12, 14));
     sleep(5);
 }
 
