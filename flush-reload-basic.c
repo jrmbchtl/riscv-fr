@@ -74,12 +74,6 @@ static inline uint64_t timed_call_n_flush(uint64_t (*p)(uint64_t, uint64_t))
     return end - start;
 }
 
-uint64_t dummy_function(uint64_t x, uint64_t y)
-{
-    return 0;
-}
-
-
 uint64_t multiply(uint64_t x, uint64_t y)
 {
     return x * y;
@@ -153,7 +147,6 @@ int main()
         } else {
             multiply(0, 0);
         }
-        timed_call(dummy_function);
         timing = timed_call(multiply);
         if (timing < threshold) 
         {
@@ -176,7 +169,6 @@ int main()
 
     while(done == 0)
     {
-        timed_call(dummy_function);
         timing = timed_call(multiply);
         asm volatile("fence.i" ::: "memory");
         asm volatile("fence" ::: "memory");
