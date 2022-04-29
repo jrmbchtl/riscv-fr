@@ -87,7 +87,7 @@ void multiply_at_any_point(size_t* done)
         usleep(1000);
     }
     printf("Done\n");
-    done = 1;
+    *done = 1;
 }
 
 int compare_uint64_t (const void * a, const void * b) 
