@@ -155,23 +155,32 @@ int main()
     printf("uncached median = %lu\n", median(unchached_timings, 10000));
     threshold = (median(chached_timings, 1000) + median(unchached_timings, 1000))/2;
 
-    for (int i = 0; i < 10000; i++)
-    {
-        asm volatile("fence.i" ::: "memory");
-        asm volatile("fence" ::: "memory");
-        // timed_load(dummy_function);
-        unchached_timings[i] = timed_call(multiply);
-        // usleep(1000);
-        // printf("unchached_timings[%d] = %lu\n", i, unchached_timings[i]);
-    }
-    printf("uncached median = %lu\n", median(unchached_timings, 1000));
-
     printf("threshold: %lu\n", threshold);
     
     // pthread_create(&id, NULL, (void*)multiply_at_any_point, NULL);
 
     asm volatile("fence.i" ::: "memory");
     asm volatile("fence" ::: "memory");
+
+    for (int i=0; i<16; i++)
+    {
+        if (seq[i] == 0)
+        {
+            asm volatile("fence.i" ::: "memory");
+            asm volatile("fence" ::: "memory");
+        } else {
+            multiply(0, 0);
+        }
+        timings[0] = timed_call(multiply);
+        if (timings[0] < threshold) 
+        {
+            printf(1);
+        } else {
+            printf(0);
+        }
+    }
+    printf("\n");
+
     // for (int i=0; i<100; i++)
     // {
     //     // timings[1] = timed_load(dummy_function);
