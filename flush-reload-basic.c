@@ -20,7 +20,8 @@
 static inline uint64_t rdtsc()
 {
     uint64_t val;
-    asm volatile("rdcycle %0\n" : "=r"(val)::);
+    asm volatile("rdcycle %0\n"
+                 : "=r"(val)::);
     return val;
 }
 
@@ -31,6 +32,7 @@ static inline void flush()
 {
     asm volatile("fence.i" ::: "memory");
     asm volatile("fence" ::: "memory");
+    // asm volatile(".word 0x0020000b" ::: "memory");
 }
 
 // ---------------------------------------------------------------------------
@@ -54,19 +56,24 @@ static inline uint64_t timed_load(void *p)
 static inline uint64_t timed_call(uint64_t (*p)(uint64_t, uint64_t))
 {
     uint64_t start, end;
-    start = rdtsc();
+    asm volatile("rdcycle %0\n" : "=r"(start)::);
     p(0, 0);
-    end = rdtsc();
+    asm volatile("rdcycle %0\n" : "=r"(end)::);
     return end - start;
 }
 
 static inline uint64_t timed_call_n_flush(uint64_t (*p)(uint64_t, uint64_t))
 {
     uint64_t start, end;
-    start = rdtsc();
+    asm volatile("fence" ::: "memory");
+    asm volatile("rdcycle %0\n" : "=r"(start)::);
+    asm volatile("fence" ::: "memory");
     p(0, 0);
-    end = rdtsc();
-    flush();
+    asm volatile("fence" ::: "memory");
+    asm volatile("rdcycle %0\n" : "=r"(end)::);
+    asm volatile("fence" ::: "memory");
+    asm volatile("fence.i" ::: "memory");
+    asm volatile("fence" ::: "memory");
     return end - start;
 }
 
@@ -75,6 +82,10 @@ uint64_t dummy_function(uint64_t x, uint64_t y)
     return 0;
 }
 
+// uint64_t square(uint64_t x, uint64_t y)
+// {
+//     return x * x;
+// }
 
 uint64_t multiply(uint64_t x, uint64_t y)
 {
@@ -85,7 +96,10 @@ void multiply_for_some_time(size_t* done)
 {
     for (uint64_t i=0; i<100000000; i++)
     {
-        multiply(0, 0);
+        // printf("%lu\n", i);
+        // sleep(1);
+        multiply(983475983475234, 76328742347727);
+        // sleep(1);
     }
     printf("Done\n");
     *done = 1;
@@ -109,10 +123,11 @@ int main()
 {
     // No pthreads on user level riscv so we do a simple poc
 
-    // used to show that same-thread sidechannels work
+    // char victim_arr[1024] = {'a'};
+
     uint64_t seq[16] = {0,0,1,1,1,0,1,0,0,1,0,1,1,0,1,0};
 
-    uint64_t timing = 0;
+    uint64_t timings[2] = {0, 0};
     uint64_t chached_timings[10000] = {0};
     uint64_t unchached_timings[10000] = {0};
     uint64_t threshold = 0;
@@ -127,7 +142,8 @@ int main()
     }
     for (int i = 0; i < 10000; i++)
     {
-        flush();
+        asm volatile("fence.i" ::: "memory");
+        asm volatile("fence" ::: "memory");
         timed_call(dummy_function);
         unchached_timings[i] = timed_call(multiply);
     }
@@ -137,18 +153,21 @@ int main()
 
     printf("threshold: %lu\n", threshold);
 
-    flush();
+    asm volatile("fence.i" ::: "memory");
+    asm volatile("fence" ::: "memory");
 
     for (int i=0; i<16; i++)
     {
         if (seq[i] == 0)
         {
-            flush();
+            asm volatile("fence.i" ::: "memory");
+            asm volatile("fence" ::: "memory");
         } else {
             multiply(0, 0);
         }
-        timing = timed_call(multiply);
-        if (timing < threshold) 
+        timed_call(dummy_function);
+        timings[0] = timed_call(multiply);
+        if (timings[0] < threshold) 
         {
             printf("1");
         } else {
@@ -159,19 +178,21 @@ int main()
 
     size_t done = 0;
 
-    // start thread that permanently accesses multiply
     pthread_create(&id, NULL, (void*)multiply_for_some_time, &done);
 
-    // count cache hits
     uint64_t counter = 0;
 
-    flush();
+    asm volatile("fence.i" ::: "memory");
+    asm volatile("fence" ::: "memory");
+
 
     while(done == 0)
     {
-        timing = timed_call(multiply);
-        flush();
-        if (timing < threshold)
+        timed_call(dummy_function);
+        timings[0] = timed_call(multiply);
+        asm volatile("fence.i" ::: "memory");
+        asm volatile("fence" ::: "memory");
+        if (timings[0] < threshold)
         {
             counter++;
         }
