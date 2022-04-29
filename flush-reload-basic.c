@@ -121,6 +121,8 @@ int main()
 
     // char victim_arr[1024] = {'a'};
 
+    uint64_t seq[16] = {0,0,1,1,1,0,1,0,0,1,0,1,1,0,1,0};
+
     uint64_t timings[2] = {0, 0};
     uint64_t chached_timings[10000] = {0};
     uint64_t unchached_timings[10000] = {0};
@@ -131,7 +133,7 @@ int main()
     // multiply(0, 0);
     for (int i = 0; i < 10000; i++)
     {
-        printf("0: %d\n", i);
+        // printf("0: %d\n", i);
         // timed_call(dummy_function);
         multiply(0, 0);
         // timed_load(dummy_function);
@@ -140,7 +142,8 @@ int main()
     }
     for (int i = 0; i < 10000; i++)
     {
-        printf("1: %d\n", i);
+        // printf("1: %d\n", i);
+        // asm volatile("fence" ::: "memory");
         asm volatile("fence.i" ::: "memory");
         asm volatile("fence" ::: "memory");
         // timed_load(dummy_function);
