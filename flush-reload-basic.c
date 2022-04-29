@@ -195,7 +195,7 @@ int main()
         {
             counter++;
         }
-        usleep(500000);
+        usleep(100000);
     }
     printf("counter: %lu\n", counter);
 
