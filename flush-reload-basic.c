@@ -20,8 +20,7 @@
 static inline uint64_t rdtsc()
 {
     uint64_t val;
-    asm volatile("rdcycle %0\n"
-                 : "=r"(val)::);
+    asm volatile("rdcycle %0\n" : "=r"(val)::);
     return val;
 }
 
@@ -32,7 +31,6 @@ static inline void flush()
 {
     asm volatile("fence.i" ::: "memory");
     asm volatile("fence" ::: "memory");
-    // asm volatile(".word 0x0020000b" ::: "memory");
 }
 
 // ---------------------------------------------------------------------------
@@ -47,8 +45,7 @@ static inline uint64_t timed_load(void *p)
 {
     uint64_t start, end;
     start = rdtsc();
-    uint64_t val;
-    asm volatile("ld %0, %1\n" : "=r"(val) : "m"(p) :);
+    maccess(p);
     end = rdtsc();
     return end - start;
 }
@@ -82,10 +79,6 @@ uint64_t dummy_function(uint64_t x, uint64_t y)
     return 0;
 }
 
-// uint64_t square(uint64_t x, uint64_t y)
-// {
-//     return x * x;
-// }
 
 uint64_t multiply(uint64_t x, uint64_t y)
 {
