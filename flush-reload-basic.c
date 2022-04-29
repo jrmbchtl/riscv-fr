@@ -205,7 +205,7 @@ int main()
         //     min = timings[0];
         //     printf("new min: %lu\n", min);
         // }
-        if (timings[0] < 100)
+        if (timings[0] < threshold)
         {
             counter++;
             printf("counter: %lu\n", counter);
