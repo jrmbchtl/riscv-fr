@@ -185,7 +185,7 @@ int main()
     asm volatile("fence.i" ::: "memory");
     asm volatile("fence" ::: "memory");
 
-    usleep(500000);
+    // usleep(500000);
 
     while(done == 0)
     {
@@ -195,7 +195,7 @@ int main()
         {
             counter++;
         }
-        sleep(1);
+        usleep(500000);
     }
     printf("counter: %lu\n", counter);
 
