@@ -161,10 +161,10 @@ int main()
     flush();
     while(1)
     {
-        timings[0] = timed_call(victim_arr[0]);
+        timings[1] = timed_call(victim_arr[1]);
         flush();
-        printf("timing of square is %lu\n", timings[0]);
-        if (timings[0] < thresholds[0])
+        printf("timing of square is %lu\n", timings[1]);
+        if (timings[1] < thresholds[1])
         {
             break;
         }
