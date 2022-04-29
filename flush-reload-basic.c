@@ -103,7 +103,7 @@ int main()
 {
     // No pthreads on user level riscv so we do a simple poc
 
-
+    // show that same-thread side channels work
     uint64_t seq[16] = {0,0,1,1,1,0,1,0,0,1,0,1,1,0,1,0};
 
     uint64_t timing = 0;
@@ -112,7 +112,7 @@ int main()
     uint64_t threshold = 0;
     pthread_t id;
 
-    // get thresholds for cached victim_arr access
+    // get threshold for cached and uncached multiply access
     multiply(0, 0);
     for (int i = 0; i < 10000; i++)
     {
@@ -120,14 +120,12 @@ int main()
     }
     for (int i = 0; i < 10000; i++)
     {
-        // asm volatile("fence.i" ::: "memory");
-        // asm volatile("fence" ::: "memory");
         flush();
         unchached_timings[i] = timed_call(multiply);
     }
     printf("cached median = %lu\n", median(chached_timings, 10000));
     printf("uncached median = %lu\n", median(unchached_timings, 10000));
-    threshold = (median(chached_timings, 1000) + median(unchached_timings, 1000))/2;
+    threshold = (median(chached_timings, 10000) + median(unchached_timings, 10000))/2;
 
     printf("threshold: %lu\n", threshold);
 
