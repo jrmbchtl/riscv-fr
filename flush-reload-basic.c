@@ -47,7 +47,8 @@ static inline uint64_t timed_load(void *p)
 {
     uint64_t start, end;
     start = rdtsc();
-    maccess(p);
+    uint64_t val;
+    asm volatile("ld %0, %1\n" : "=r"(val) : "m"(p) :);
     end = rdtsc();
     return end - start;
 }
@@ -127,14 +128,15 @@ int main()
     {
         // timed_call(dummy_function);
         multiply(0, 0);
-        timed_load(dummy_function);
+        // timed_load(dummy_function);
         chached_timings[i] = timed_load(multiply);
         printf("chached_timings[%d] = %lu\n", i, chached_timings[i]);
     }
     for (int i = 0; i < 1000; i++)
     {
-        flush();
-        timed_load(dummy_function);
+        asm volatile("fence.i" ::: "memory");
+        asm volatile("fence" ::: "memory");
+        // timed_load(dummy_function);
         unchached_timings[i] = timed_load(multiply);
         printf("unchached_timings[%d] = %lu\n", i, unchached_timings[i]);
     }
@@ -147,12 +149,14 @@ int main()
     pthread_t id;
     pthread_create(&id, NULL, (void*)multiply_at_any_point, NULL);
 
-    flush();
+    asm volatile("fence.i" ::: "memory");
+    asm volatile("fence" ::: "memory");
     while(1)
     {
         timings[1] = timed_load(dummy_function);
         timings[0] = timed_load(multiply);
-        flush();
+        asm volatile("fence.i" ::: "memory");
+        asm volatile("fence" ::: "memory");
         printf("timing of square is %lu\n", timings[0]);
 
         if (timings[0] < threshold)
