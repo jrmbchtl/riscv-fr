@@ -122,6 +122,8 @@ int main()
     uint64_t chached_timings[1000] = {0};
     uint64_t unchached_timings[1000] = {0};
     uint64_t threshold = 0;
+    pthread_t id;
+    pthread_create(&id, NULL, (void*)multiply_at_any_point, NULL);
 
     // get thresholds for cached victim_arr access
     // multiply(0, 0);
@@ -147,7 +149,9 @@ int main()
 
     printf("threshold: %lu\n", threshold);
 
-    pthread_t id;
+    pthread_join(id, NULL);
+
+    
     pthread_create(&id, NULL, (void*)multiply_at_any_point, NULL);
 
     printf("%p\n", multiply);
