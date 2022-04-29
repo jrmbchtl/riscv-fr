@@ -133,7 +133,7 @@ int main()
     {
         asm volatile("fence.i" ::: "memory");
         asm volatile("fence" ::: "memory");
-        flush();
+        // flush();
         timed_call(dummy_function);
         unchached_timings[i] = timed_call(multiply);
     }
