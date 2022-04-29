@@ -129,7 +129,7 @@ int main()
 
     // get thresholds for cached victim_arr access
     // multiply(0, 0);
-    for (int i = 0; i < 100000; i++)
+    for (int i = 0; i < 10000; i++)
     {
         // timed_call(dummy_function);
         multiply(0, 0);
@@ -137,7 +137,7 @@ int main()
         chached_timings[i] = timed_call(multiply);
         // printf("chached_timings[%d] = %lu\n", i, chached_timings[i]);
     }
-    for (int i = 0; i < 100000; i++)
+    for (int i = 0; i < 10000; i++)
     {
         asm volatile("fence.i" ::: "memory");
         asm volatile("fence" ::: "memory");
