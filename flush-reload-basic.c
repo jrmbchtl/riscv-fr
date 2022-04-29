@@ -180,7 +180,7 @@ int main()
         {
             counter++;
         }
-        usleep(1000)
+        usleep(1000);
     }
     printf("counter: %lu\n", counter);
 
