@@ -142,7 +142,7 @@ int main()
         {
             break;
         }
-        // usleep(100000);
+        usleep(100000);
     }
     printf("someone just multiplied!\n");
     pthread_join(id, NULL);
