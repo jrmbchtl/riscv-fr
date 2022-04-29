@@ -79,13 +79,14 @@ uint64_t multiply(uint64_t x, uint64_t y)
 
 void multiply_at_any_point()
 {
-    for (int i=0; i<100; i++)
+    for (uint64_t i=0; i<100; i++)
     {
+        printf("%lu\n", i);
         usleep(1000);
         multiply(i, i);
         usleep(1000);
     }
-    printf("Done");
+    printf("Done\n");
 }
 
 int compare_uint64_t (const void * a, const void * b) 
