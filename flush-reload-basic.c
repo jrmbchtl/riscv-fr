@@ -189,12 +189,13 @@ int main()
         timings[0] = timed_call(multiply);
         asm volatile("fence.i" ::: "memory");
         asm volatile("fence" ::: "memory");
-        if (timings[0] < threshold) 
-        {
-            fprintf(fp, "1\n");
-        } else {
-            fprintf(fp, "0\n");
-        }
+        fprintf(fp, "%lu\n", timings[0]);
+        // if (timings[0] < threshold) 
+        // {
+        //     fprintf(fp, "1\n");
+        // } else {
+        //     fprintf(fp, "0\n");
+        // }
     }
 
     // while (1)
