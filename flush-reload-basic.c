@@ -79,12 +79,12 @@ uint64_t multiply(uint64_t x, uint64_t y)
 
 void multiply_at_any_point(size_t* done)
 {
-    for (uint64_t i=0; i<10000; i++)
+    for (uint64_t i=0; i<1000; i++)
     {
         // printf("%lu\n", i);
-        usleep(100);
+        usleep(1000);
         multiply(i, i);
-        usleep(100);
+        usleep(1000);
     }
     printf("Done\n");
     *done = 1;
@@ -208,7 +208,6 @@ int main()
         if (timings[0] < threshold)
         {
             counter++;
-            printf("counter: %lu\n", counter);
         }
         // if (timings[0] < threshold) 
         // {
@@ -217,6 +216,7 @@ int main()
         //     fprintf(fp, "0\n");
         // }
     }
+    printf("counter: %lu\n", counter);
 
     // while (1)
     // {
