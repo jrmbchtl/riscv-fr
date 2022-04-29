@@ -137,12 +137,14 @@ int main()
     multiply(0, 0);
     for (int i = 0; i < 10000; i++)
     {
+        timed_call(dummy_function);
         chached_timings[i] = timed_call(multiply);
     }
     for (int i = 0; i < 10000; i++)
     {
         asm volatile("fence.i" ::: "memory");
         asm volatile("fence" ::: "memory");
+        timed_call(dummy_function);
         unchached_timings[i] = timed_call(multiply);
     }
     printf("cached median = %lu\n", median(chached_timings, 10000));
@@ -163,6 +165,7 @@ int main()
         } else {
             multiply(0, 0);
         }
+        timed_call(dummy_function);
         timings[0] = timed_call(multiply);
         if (timings[0] < threshold) 
         {
@@ -189,6 +192,7 @@ int main()
 
     while(done == 0)
     {
+        v
         timings[0] = timed_call(multiply);
         // printf("%lu\n", timings[0]);
         asm volatile("fence.i" ::: "memory");
