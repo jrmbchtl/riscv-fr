@@ -155,7 +155,7 @@ int main()
         }
         timed_call(dummy_function);
         timing = timed_call(multiply);
-        if (timings[0] < threshold) 
+        if (timing < threshold) 
         {
             printf("1");
         } else {
