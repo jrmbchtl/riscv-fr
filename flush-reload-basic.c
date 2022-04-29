@@ -156,7 +156,7 @@ int main()
     printf("thresholds: %lu %lu\n", thresholds[0], thresholds[1]);
 
     pthread_t id;
-    pthread_create(&id, NULL, (void*)square_at_any_point, NULL);
+    pthread_create(&id, NULL, (void*)multiply_at_any_point, NULL);
 
     flush();
     while(1)
