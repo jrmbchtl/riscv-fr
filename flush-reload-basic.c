@@ -99,6 +99,19 @@ uint64_t median(uint64_t* list, uint64_t size)
     return median;
 }
 
+uint64_t min(uint64_t* list, uint64_t size)
+{
+    uint64_t min = list[0];
+    for (uint64_t i=1; i<size; i++)
+    {
+        if (list[i] < min)
+        {
+            min = list[i];
+        }
+    }
+    return min;
+}
+
 int main()
 {
     // No pthreads on user level riscv so we do a simple poc
@@ -120,12 +133,12 @@ int main()
     }
     for (int i = 0; i < 10000; i++)
     {
-        asm volatile("fence.i" ::: "memory");
-        asm volatile("fence" ::: "memory");
-        // flush();
+        // asm volatile("fence.i" ::: "memory");
+        // asm volatile("fence" ::: "memory");
+        flush();
         unchached_timings[i] = timed_call(multiply);
     }
-    printf("cached median = %lu\n", median(chached_timings, 10000));
+    printf("cached median = %lu\n", min(chached_timings, 10000));
     printf("uncached median = %lu\n", median(unchached_timings, 10000));
     threshold = (median(chached_timings, 1000) + median(unchached_timings, 1000))/2;
 
