@@ -175,7 +175,7 @@ int main()
         timings[0] = timed_call(multiply);
         asm volatile("fence.i" ::: "memory");
         asm volatile("fence" ::: "memory");
-        fprintf(fp, "%lu\n", timings[0]);
+        // fprintf(fp, "%lu\n", timings[0]);
         if (timings[0] < threshold)
         {
             counter++;
