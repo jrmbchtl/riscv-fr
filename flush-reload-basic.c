@@ -135,7 +135,7 @@ int main()
     {
         // printf("0: %d\n", i);
         // timed_call(dummy_function);
-        multiply(0, 0);
+        // multiply(0, 0);
         // timed_load(dummy_function);
         chached_timings[i] = timed_call(multiply);
         // printf("chached_timings[%d] = %lu\n", i, chached_timings[i]);
