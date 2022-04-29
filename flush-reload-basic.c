@@ -122,8 +122,8 @@ int main()
     // char victim_arr[1024] = {'a'};
 
     uint64_t timings[2] = {0, 0};
-    uint64_t chached_timings[1000] = {0};
-    uint64_t unchached_timings[1000] = {0};
+    uint64_t chached_timings[10000] = {0};
+    uint64_t unchached_timings[10000] = {0};
     uint64_t threshold = 0;
     pthread_t id;
 
@@ -148,8 +148,8 @@ int main()
         // usleep(100);
         // printf("unchached_timings[%d] = %lu\n", i, unchached_timings[i]);
     }
-    printf("cached median = %lu\n", median(chached_timings, 1000));
-    printf("uncached median = %lu\n", median(unchached_timings, 1000));
+    printf("cached median = %lu\n", median(chached_timings, 10000));
+    printf("uncached median = %lu\n", median(unchached_timings, 10000));
     threshold = (median(chached_timings, 1000) + median(unchached_timings, 1000))/2;
 
     for (int i = 0; i < 10000; i++)
