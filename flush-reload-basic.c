@@ -156,10 +156,12 @@ int main()
     pthread_t id;
     pthread_create(&id, NULL, (void*)square_at_any_point, NULL);
 
+    flush();
     while(1)
     {
-        flush();
+        
         timings[0] = timed_call(victim_arr[0]);
+        flush();
         printf("timing of square is %lu\n", timings[0]);
         if (timings[0] < thresholds[0])
         {
