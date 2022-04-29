@@ -122,22 +122,22 @@ int main()
     square(0, 0);
     for (int i = 0; i < 1000; i++)
     {
-        chached_timings_0[i] = timed_load(victim_arr[0]);
+        chached_timings_0[i] = timed_call(victim_arr[0]);
     }
     multiply(0, 0);
     for (int i = 0; i < 1000; i++)
     {
-        chached_timings_1[i] = timed_load(victim_arr[1]);
+        chached_timings_1[i] = timed_call(victim_arr[1]);
     }
     for (int i = 0; i < 1000; i++)
     {
         flush();
-        unchached_timings_0[i] = timed_load(victim_arr[0]);
+        unchached_timings_0[i] = timed_call(victim_arr[0]);
     }
     for (int i = 0; i < 1000; i++)
     {
         flush();
-        unchached_timings_1[i] = timed_load(victim_arr[1]);
+        unchached_timings_1[i] = timed_call(victim_arr[1]);
     }
     printf("threshold_tmp[0] = %lu\n", median(chached_timings_0, 1000));
     printf("threshold_tmp[1] = %lu\n", median(chached_timings_1, 1000));
@@ -159,7 +159,6 @@ int main()
     flush();
     while(1)
     {
-        
         timings[0] = timed_call(victim_arr[0]);
         flush();
         printf("timing of square is %lu\n", timings[0]);
