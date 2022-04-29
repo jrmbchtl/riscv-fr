@@ -174,9 +174,9 @@ int main()
         timings[0] = timed_call(multiply);
         if (timings[0] < threshold) 
         {
-            printf(1);
+            printf("1");
         } else {
-            printf(0);
+            printf("0");
         }
     }
     printf("\n");
