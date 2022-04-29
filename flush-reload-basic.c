@@ -202,7 +202,7 @@ int main()
             min = timings[0];
             printf("new min: %lu\n", min);
         }
-        if (timings < 100)
+        if (timings[0] < 100)
         {
             counter++;
             printf("counter: %lu\n", counter);
