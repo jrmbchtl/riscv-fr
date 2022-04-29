@@ -84,9 +84,9 @@ void square_at_any_point()
     sleep(5);
 }
 
-uint64_t compare_uint64_t(uint64_t x, uint64_t y)
+uint64_t* compare_uint64_t(uint64_t x, uint64_t y)
 {
-    return x - y;
+    return ( *(uint64_t*)x - *(uint64_t*)y );
 }
 
 uint64_t median(uint64_t* list, uint64_t size)
