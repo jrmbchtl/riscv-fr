@@ -62,15 +62,15 @@ static inline uint64_t timed_call(uint64_t (*p)(uint64_t, uint64_t))
     return end - start;
 }
 
-uint64_t dummy_function(uint64_t x, uint64_t y)
-{
-    return 0;
-}
+// uint64_t dummy_function(uint64_t x, uint64_t y)
+// {
+//     return 0;
+// }
 
-uint64_t square(uint64_t x, uint64_t y)
-{
-    return x * x;
-}
+// uint64_t square(uint64_t x, uint64_t y)
+// {
+//     return x * x;
+// }
 
 uint64_t multiply(uint64_t x, uint64_t y)
 {
@@ -101,59 +101,31 @@ uint64_t median(uint64_t* list, uint64_t size)
 int main()
 {
     // No pthreads on user level riscv so we do a simple poc
-    void *victim_arr[2];
-    victim_arr[0] = square;
-    victim_arr[1] = multiply;
 
     // char victim_arr[1024] = {'a'};
 
     uint64_t timings[2] = {0, 0};
-    uint64_t chached_timings_0[1000] = {0};
-    uint64_t chached_timings_1[1000] = {0};
-    uint64_t unchached_timings_0[1000] = {0};
-    uint64_t unchached_timings_1[1000] = {0};
-    uint64_t threshold_tmp[4] = {0};
-    uint64_t thresholds[2] = {0, 0};
-
-    int ctr = 0;
-    void* buf;
+    uint64_t chached_timings[1000] = {0};
+    uint64_t unchached_timings[1000] = {0};
+    uint64_t threshold = 0;
 
     // get thresholds for cached victim_arr access
-    square(0, 0);
-    for (int i = 0; i < 1000; i++)
-    {
-        chached_timings_0[i] = timed_call(victim_arr[0]);
-    }
     multiply(0, 0);
     for (int i = 0; i < 1000; i++)
     {
-        chached_timings_1[i] = timed_call(victim_arr[1]);
+        chached_timings[i] = timed_call(multiply);
     }
     for (int i = 0; i < 1000; i++)
     {
         flush();
-        timed_call(dummy_function);
-        unchached_timings_0[i] = timed_call(victim_arr[0]);
+        // timed_call(dummy_function);
+        unchached_timings[i] = timed_call(multiply);
     }
-    for (int i = 0; i < 1000; i++)
-    {
-        flush();
-        timed_call(dummy_function);
-        unchached_timings_1[i] = timed_call(victim_arr[1]);
-    }
-    printf("threshold_tmp[0] = %lu\n", median(chached_timings_0, 1000));
-    printf("threshold_tmp[1] = %lu\n", median(chached_timings_1, 1000));
-    printf("threshold_tmp[2] = %lu\n", median(unchached_timings_0, 1000));
-    printf("threshold_tmp[3] = %lu\n", median(unchached_timings_1, 1000));
-    threshold_tmp[0] = median(chached_timings_0, 1000);
-    threshold_tmp[1] = median(chached_timings_1, 1000);
-    threshold_tmp[2] = median(unchached_timings_0, 1000);
-    threshold_tmp[3] = median(unchached_timings_1, 1000);
+    printf("cached median = %lu\n", median(chached_timings, 1000));
+    printf("uncached median = %lu\n", median(unchached_timings, 1000));
+    threshold = (median(chached_timings, 1000) + median(unchached_timings, 1000))/2;
 
-    thresholds[0] = (threshold_tmp[0] + threshold_tmp[2]) / 2;
-    thresholds[1] = (threshold_tmp[1] + threshold_tmp[3]) / 2;
-
-    printf("thresholds: %lu %lu\n", thresholds[0], thresholds[1]);
+    printf("threshold: %lu\n", threshold);
 
     pthread_t id;
     pthread_create(&id, NULL, (void*)multiply_at_any_point, NULL);
@@ -161,16 +133,16 @@ int main()
     flush();
     while(1)
     {
-        timings[1] = timed_call(victim_arr[1]);
+        timings[0] = timed_call(multiply);
         flush();
         // printf("timing of square is %lu\n", timings[1]);
-        if (timings[1] < thresholds[1])
+        if (timings[0] < threshold)
         {
             break;
         }
         // usleep(100000);
     }
-    printf("someone just squared!\n");
+    printf("someone just multiplied!\n");
     pthread_join(id, NULL);
     printf("exit\n");
 
