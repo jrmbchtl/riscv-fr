@@ -85,39 +85,69 @@ void main()
     // char victim_arr[1024] = {'a'};
 
     uint64_t timings[2] = {0, 0};
+    uint64_t thresholds[4] = {0};
 
     int ctr = 0;
     void* buf;
     // char buf;
-    while (1)
-    {
-        /*
-         Victim
-         Get victim idx values into the cache
-        */
-        ctr = (ctr + 1) % 6;
-        flush();
-        timed_call(dummy_function);
-        square(0, 0);
-        // maccess(victim_arr[1]);
-        // maccess(timed_load);
 
-        /*
-         Attacker
-         Time both array indices and pick the one with the smaller time i.e
-         the one that is in cache
-        */
-        // square(0, 0);
-        timings[1] = timed_call(multiply);
-        timings[0] = timed_call(square);
-        
-        
-        printf("%ld %ld: ", timings[0], timings[1]);
-        if (timings[0] < timings[1]) {
-            printf("0\n");
-        } 
-        else {
-            printf("1\n");
-        }
+    // get thresholds for cached victim_arr access
+    square(0, 0);
+    for (int i = 0; i < 1000; i++)
+    {
+        thresholds[0] += timed_load(victim_arr[0]);
     }
+    multiply(0, 0);
+    for (int i = 0; i < 1000; i++)
+    {
+        thresholds[1] += timed_load(victim_arr[1]);
+    }
+    for (int i = 0; i < 1000; i++)
+    {
+        flush();
+        thresholds[2] += timed_call(victim_arr[0]);
+    }
+    for (int i = 0; i < 1000; i++)
+    {
+        flush();
+        thresholds[3] += timed_call(victim_arr[1]);
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        thresholds[i] /= 1000;
+    }
+
+    printf("thresholds: %lu %lu %lu %lu\n", thresholds[0], thresholds[1], thresholds[2], thresholds[3]);
+
+    // while (1)
+    // {
+    //     /*
+    //      Victim
+    //      Get victim idx values into the cache
+    //     */
+    //     ctr = (ctr + 1) % 6;
+    //     flush();
+    //     timed_call(dummy_function);
+    //     square(0, 0);
+    //     // maccess(victim_arr[1]);
+    //     // maccess(timed_load);
+
+    //     /*
+    //      Attacker
+    //      Time both array indices and pick the one with the smaller time i.e
+    //      the one that is in cache
+    //     */
+    //     // square(0, 0);
+    //     timings[1] = timed_call(multiply);
+    //     timings[0] = timed_call(square);
+        
+        
+    //     printf("%ld %ld: ", timings[0], timings[1]);
+    //     if (timings[0] < timings[1]) {
+    //         printf("0\n");
+    //     } 
+    //     else {
+    //         printf("1\n");
+    //     }
+    // }
 }
