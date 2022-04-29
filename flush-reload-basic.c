@@ -139,6 +139,7 @@ int main()
     }
     for (int i = 0; i < 10000; i++)
     {
+        printf("%d\n", i);
         asm volatile("fence.i" ::: "memory");
         asm volatile("fence" ::: "memory");
         // timed_load(dummy_function);
@@ -150,7 +151,7 @@ int main()
     printf("uncached median = %lu\n", median(unchached_timings, 1000));
     threshold = (median(chached_timings, 1000) + median(unchached_timings, 1000))/2;
 
-    for (int i = 0; i < 100000; i++)
+    for (int i = 0; i < 10000; i++)
     {
         asm volatile("fence.i" ::: "memory");
         asm volatile("fence" ::: "memory");
