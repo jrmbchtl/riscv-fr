@@ -131,6 +131,7 @@ int main()
     // multiply(0, 0);
     for (int i = 0; i < 10000; i++)
     {
+        printf("0: %d\n", i);
         // timed_call(dummy_function);
         multiply(0, 0);
         // timed_load(dummy_function);
@@ -139,7 +140,7 @@ int main()
     }
     for (int i = 0; i < 10000; i++)
     {
-        printf("%d\n", i);
+        printf("1: %d\n", i);
         asm volatile("fence.i" ::: "memory");
         asm volatile("fence" ::: "memory");
         // timed_load(dummy_function);
