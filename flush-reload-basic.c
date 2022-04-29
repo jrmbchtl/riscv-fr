@@ -185,6 +185,8 @@ int main()
     asm volatile("fence.i" ::: "memory");
     asm volatile("fence" ::: "memory");
 
+    usleep(500000)
+
     while(done == 0)
     {
         timings[0] = timed_call_n_flush(multiply);
