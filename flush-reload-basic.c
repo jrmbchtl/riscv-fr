@@ -116,7 +116,7 @@ int main()
 
     uint64_t seq[16] = {0,0,1,1,1,0,1,0,0,1,0,1,1,0,1,0};
 
-    uint64_t timings[2] = {0, 0};
+    uint64_t timing = 0;
     uint64_t chached_timings[10000] = {0};
     uint64_t unchached_timings[10000] = {0};
     uint64_t threshold = 0;
@@ -154,7 +154,7 @@ int main()
             multiply(0, 0);
         }
         timed_call(dummy_function);
-        timings[0] = timed_call(multiply);
+        timing = timed_call(multiply);
         if (timings[0] < threshold) 
         {
             printf("1");
@@ -177,10 +177,10 @@ int main()
     while(done == 0)
     {
         timed_call(dummy_function);
-        timings[0] = timed_call(multiply);
+        timing = timed_call(multiply);
         asm volatile("fence.i" ::: "memory");
         asm volatile("fence" ::: "memory");
-        if (timings[0] < threshold)
+        if (timing < threshold)
         {
             counter++;
         }
