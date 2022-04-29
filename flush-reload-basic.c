@@ -138,7 +138,6 @@ int main()
         asm volatile("fence" ::: "memory");
         // timed_load(dummy_function);
         unchached_timings[i] = timed_load(multiply);
-        usleep(10000);
         // printf("unchached_timings[%d] = %lu\n", i, unchached_timings[i]);
     }
     printf("cached median = %lu\n", median(chached_timings, 1000));
@@ -152,22 +151,18 @@ int main()
 
     asm volatile("fence.i" ::: "memory");
     asm volatile("fence" ::: "memory");
-    usleep(10000);
-    asm volatile("fence.i" ::: "memory");
-    asm volatile("fence" ::: "memory");
     while(1)
     {
         // timings[1] = timed_load(dummy_function);
         timings[0] = timed_load(multiply);
         asm volatile("fence.i" ::: "memory");
         asm volatile("fence" ::: "memory");
-        printf("timing of square is %lu\n", timings[0]);
+        // printf("timing of square is %lu\n", timings[0]);
 
-        if (timings[0] < threshold)
+        if (timings[0] <= threshold)
         {
             break;
         }
-        usleep(10000);
     }
     printf("someone just multiplied!\n");
     pthread_join(id, NULL);
