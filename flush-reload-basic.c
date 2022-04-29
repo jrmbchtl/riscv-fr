@@ -62,10 +62,10 @@ static inline uint64_t timed_call(uint64_t (*p)(uint64_t, uint64_t))
     return end - start;
 }
 
-// uint64_t dummy_function(uint64_t x, uint64_t y)
-// {
-//     return 0;
-// }
+uint64_t dummy_function(uint64_t x, uint64_t y)
+{
+    return 0;
+}
 
 // uint64_t square(uint64_t x, uint64_t y)
 // {
@@ -80,7 +80,7 @@ uint64_t multiply(uint64_t x, uint64_t y)
 void multiply_at_any_point()
 {
     sleep(5);
-    printf("multiply(12, 0) = %lu\n", multiply(12, 14));
+    printf("multiply(12, 14) = %lu\n", multiply(12, 14));
     sleep(5);
 }
 
@@ -118,7 +118,7 @@ int main()
     for (int i = 0; i < 1000; i++)
     {
         flush();
-        // timed_call(dummy_function);
+        timed_call(dummy_function);
         unchached_timings[i] = timed_call(multiply);
     }
     printf("cached median = %lu\n", median(chached_timings, 1000));
@@ -133,9 +133,11 @@ int main()
     flush();
     while(1)
     {
+        timed_call(dummy_function);
         timings[0] = timed_call(multiply);
         flush();
-        // printf("timing of square is %lu\n", timings[1]);
+        printf("timing of square is %lu\n", timings[1]);
+
         if (timings[0] < threshold)
         {
             break;
