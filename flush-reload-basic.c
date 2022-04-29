@@ -108,8 +108,9 @@ void main()
          the one that is in cache
         */
         // square(0, 0);
-        timings[0] = timed_call(square);
         timings[1] = timed_call(multiply);
+        timings[0] = timed_call(square);
+        
         
         printf("%ld %ld: ", timings[0], timings[1]);
         if (timings[0] < timings[1]) {
