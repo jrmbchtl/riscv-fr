@@ -136,7 +136,7 @@ int main()
         timed_call(dummy_function);
         timings[0] = timed_call(multiply);
         flush();
-        printf("timing of square is %lu\n", timings[1]);
+        printf("timing of square is %lu\n", timings[0]);
 
         if (timings[0] < threshold)
         {
