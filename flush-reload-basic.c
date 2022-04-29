@@ -163,12 +163,12 @@ int main()
     {
         timings[1] = timed_call(victim_arr[1]);
         flush();
-        printf("timing of square is %lu\n", timings[1]);
+        // printf("timing of square is %lu\n", timings[1]);
         if (timings[1] < thresholds[1])
         {
             break;
         }
-        usleep(100000);
+        // usleep(100000);
     }
     printf("someone just squared!\n");
     pthread_join(id, NULL);
