@@ -129,7 +129,7 @@ int main()
 
     // get thresholds for cached victim_arr access
     // multiply(0, 0);
-    for (int i = 0; i < 1000; i++)
+    for (int i = 0; i < 100000; i++)
     {
         // timed_call(dummy_function);
         multiply(0, 0);
@@ -137,7 +137,7 @@ int main()
         chached_timings[i] = timed_call(multiply);
         // printf("chached_timings[%d] = %lu\n", i, chached_timings[i]);
     }
-    for (int i = 0; i < 1000; i++)
+    for (int i = 0; i < 100000; i++)
     {
         asm volatile("fence.i" ::: "memory");
         asm volatile("fence" ::: "memory");
@@ -150,13 +150,13 @@ int main()
     printf("uncached median = %lu\n", median(unchached_timings, 1000));
     threshold = (median(chached_timings, 1000) + median(unchached_timings, 1000))/2;
 
-    for (int i = 0; i < 1000; i++)
+    for (int i = 0; i < 100000; i++)
     {
         asm volatile("fence.i" ::: "memory");
         asm volatile("fence" ::: "memory");
         // timed_load(dummy_function);
         unchached_timings[i] = timed_call(multiply);
-        usleep(100);
+        usleep(1000);
         // printf("unchached_timings[%d] = %lu\n", i, unchached_timings[i]);
     }
     printf("uncached median = %lu\n", median(unchached_timings, 1000));
