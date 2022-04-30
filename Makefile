@@ -3,7 +3,7 @@ pull:
 	sleep 1
 
 attack: attack.c vulnerable.so
-	gcc -o attack attack.c -g -lm -lpthread -ldl -lvulnerable -L.
+	gcc -o attack attack.c -g -lm -lpthread -ldl -l:vulnerable.so -L.
 
 vulnerable.so: vulnerable.c vulnerable.h
 	gcc -shared -fpic vulnerable.c -falign-functions=4096 -o vulnerable.so
