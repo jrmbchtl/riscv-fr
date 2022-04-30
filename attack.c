@@ -44,7 +44,7 @@ uint64_t median(uint64_t* list, uint64_t size) {
     return list[size/2];
 }
 
-uint64_t get_threshold(uint64_t (*p)(uint64_t, uint64_t)) {
+uint64_t get_threshold() {
     uint64_t cached_timings[1024] = {0};
     uint64_t uncached_timings[1024] = {0};
     
@@ -67,6 +67,6 @@ uint64_t get_threshold(uint64_t (*p)(uint64_t, uint64_t)) {
 
 int main() {
 
-    uint64_t threshold = get_threshold(multiply);
+    uint64_t threshold = get_threshold();
     return 0;
 }
