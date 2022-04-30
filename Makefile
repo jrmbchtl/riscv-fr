@@ -2,10 +2,13 @@ pull:
 	git pull
 	sleep 1
 
-compile:
-	gcc -pthread flush-reload-basic.c -o flush-reload-basic -falign-functions=128
+attack:
+	gcc -o attack attack.c -g -lm -lpthread -ldl -lenc -L.
+
+attack-me.so: attack-me.c attack-me.h
+	gcc -shared -fpic attack-me.c -falign-functions=4096 -o attack-me.so
 
 run:
-	./flush-reload-basic
+	LD_LIBRARY_PATH=. ./attack
 
 all: pull compile run
