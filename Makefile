@@ -3,7 +3,7 @@ pull:
 	sleep 1
 
 attack: attack.c attack-me.so attack-me.h
-	gcc -o attack attack.c -g -lm -lpthread -ldl -L.
+	gcc -o attack attack.c -g -lm -lpthread -ldl -lvulnerable -L.
 
 attack-me.so: attack-me.c attack-me.h
 	gcc -shared -fpic attack-me.c -falign-functions=4096 -o attack-me.so
