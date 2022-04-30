@@ -10,7 +10,7 @@ int main() {
 
     uint64_t counter = 0;
     while (1) {
-        usleep(100);
+        // usleep(100);
         multiply(0, 0);
         printf("counter: %lu\n", counter);
         counter++;
