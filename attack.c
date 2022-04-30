@@ -56,7 +56,7 @@ uint64_t get_threshold(uint64_t (*p)(uint64_t, uint64_t)) {
 
     uint64_t cached_median = median(cached_timings, 1024);
     uint64_t uncached_median = median(uncached_timings, 1024);
-    uint64_t threshold = cached_median * 2;
+    uint64_t threshold = (cached_median + uncached_median) / 2;
 
     printf("Cached median: %lu\n", cached_median);
     printf("Uncached median: %lu\n", uncached_median);
