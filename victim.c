@@ -8,11 +8,15 @@
 
 int main() {
 
-    sleep(1);
-    multiply(1, 2);
-    printf("multiplied successfully\n");
-    sleep(1);
-    printf("Done\n");
+    while (1) {
+        multiply(0, 0);
+    }
+
+    // sleep(1);
+    // multiply(1, 2);
+    // printf("multiplied successfully\n");
+    // sleep(1);
+    // printf("Done\n");
 
     return 0;
 }
