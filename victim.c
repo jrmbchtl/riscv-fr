@@ -13,7 +13,7 @@ int main() {
         // usleep(100);
         multiply(0, 0);
         // printf("counter: %lu\n", counter);
-        counter++;
+        // counter++;
     }
 
     // sleep(1);
