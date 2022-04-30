@@ -8,10 +8,10 @@
 
 int main() {
 
-    sleep(10);
+    sleep(1);
     multiply(1, 2);
     printf("multiplied successfully\n");
-    sleep(10);
+    sleep(1);
     printf("Done\n");
 
     return 0;
