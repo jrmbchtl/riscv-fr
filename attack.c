@@ -49,9 +49,9 @@ uint64_t get_threshold(uint64_t (*p)(uint64_t, uint64_t)) {
     uint64_t uncached_timings[1024] = {0};
     
     for (int i=0; i<1024; i++) {
-        cached_timings[i] = timed_call(p);
+        cached_timings[i] = timed_call(multiply);
         flush();
-        uncached_timings[i] = timed_call(p);
+        uncached_timings[i] = timed_call(multiply);
     }
 
     uint64_t cached_median = median(cached_timings, 1024);
