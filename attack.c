@@ -70,6 +70,7 @@ int main() {
     uint64_t threshold = get_threshold(multiply);
 
     flush();
+    uint64_t min = 500;
     while (1)
     {
         uint64_t timing = timed_call_n_flush(multiply);
@@ -80,6 +81,11 @@ int main() {
             printf("Timing is less than threshold\n");
             printf("exiting\n");
             break;
+        }
+        if (timing < min)
+        {
+            min = timing;
+            printf("Timing: %lu\n", timing);
         }
     }
 
