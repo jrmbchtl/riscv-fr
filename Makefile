@@ -2,7 +2,7 @@ pull:
 	git pull
 	sleep 1
 
-attack: attack-me.so
+attack: attack.c attack-me.so attack-me.h
 	gcc -o attack attack.c -g -lm -lpthread -ldl -L.
 
 attack-me.so: attack-me.c attack-me.h
