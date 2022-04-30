@@ -8,8 +8,12 @@
 
 int main() {
 
+    uint64_t counter = 0;
     while (1) {
+        sleep(1);
         multiply(0, 0);
+        printf("counter: %lu\n", counter);
+        counter++;
     }
 
     // sleep(1);
