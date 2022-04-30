@@ -10,6 +10,7 @@ int main() {
 
     sleep(2);
     multiply(1, 2);
+    printf("multiplied successfully\n");
     sleep(2);
     printf("Done\n");
 

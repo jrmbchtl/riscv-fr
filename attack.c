@@ -44,14 +44,14 @@ uint64_t median(uint64_t* list, uint64_t size) {
     return list[size/2];
 }
 
-uint64_t get_threshold() {
+uint64_t get_threshold(uint64_t (*p)(uint64_t, uint64_t)) {
     uint64_t cached_timings[1024] = {0};
     uint64_t uncached_timings[1024] = {0};
     
     for (int i=0; i<1024; i++) {
-        cached_timings[i] = timed_call(multiply);
+        cached_timings[i] = timed_call(p);
         flush();
-        uncached_timings[i] = timed_call(multiply);
+        uncached_timings[i] = timed_call(p);
     }
 
     uint64_t cached_median = median(cached_timings, 1024);
@@ -67,6 +67,21 @@ uint64_t get_threshold() {
 
 int main() {
 
-    uint64_t threshold = get_threshold();
+    uint64_t threshold = get_threshold(multiply);
+
+    flush();
+    while (1)
+    {
+        uint64_t timing = timed_call_n_flush(multiply);
+        if (timing < threshold)
+        {
+            printf("Timing: %lu\n", timing);
+            printf("Threshold: %lu\n", threshold);
+            printf("Timing is less than threshold\n");
+            printf("exiting\n");
+            break;
+        }
+    }
+
     return 0;
 }
