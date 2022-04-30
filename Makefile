@@ -11,4 +11,4 @@ vulnerable.so: vulnerable.c vulnerable.h
 run: attack vulnerable.so
 	LD_LIBRARY_PATH=. ./attack
 
-all: pull compile run
+all: pull run
