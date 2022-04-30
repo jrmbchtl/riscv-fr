@@ -12,7 +12,7 @@ int main() {
     while (1) {
         // usleep(100);
         multiply(0, 0);
-        printf("counter: %lu\n", counter);
+        // printf("counter: %lu\n", counter);
         counter++;
     }
 
