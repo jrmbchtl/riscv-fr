@@ -4,7 +4,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "attack-me.h"
+#include "attack-me.c"
 
 uint64_t rdtsc() {
     uint64_t val;
