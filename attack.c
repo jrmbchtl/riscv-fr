@@ -82,27 +82,29 @@ uint64_t get_threshold(uint64_t (*p)(uint64_t, uint64_t)) {
     printf("Cached median: %lu\n", cached_median);
     printf("Uncached median: %lu\n", uncached_median);
     printf("Threshold: %lu\n", threshold);
-    printf("Cached over: %lu\n", get_over(cached_timings, 1024, threshold));
-    printf("Uncached under: %lu\n", get_under(uncached_timings, 1024, threshold));
+    printf("Cached over: %lu of 1024\n", get_over(cached_timings, 1024, threshold));
+    printf("Uncached under: %lu of 1024\n", get_under(uncached_timings, 1024, threshold));
 
     return threshold;
 }
 
 void* spam(void* args) {
-    sleep(1);
     printf("Spamming...\n");
-    for(uint64_t i=0; i<100000; i++) {
-        multiply(32743465873465, 32487237423897);
+    for(uint64_t i=0; i<100000000; i++) {
+        multiply(0, 0);
     }
     printf("Done\n");
 }
 
 int main() {
 
-    uint64_t threshold = get_threshold(multiply);
-
     pthread_t spam_thread;
     pthread_create(&spam_thread, NULL, spam, NULL);
+    sleep(1);
+
+    uint64_t threshold = get_threshold(multiply);
+
+   
 
     flush();
     uint64_t min = 500;
