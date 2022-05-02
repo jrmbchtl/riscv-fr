@@ -78,8 +78,10 @@ uint64_t get_threshold(uint64_t (*p)(uint64_t, uint64_t)) {
     uint64_t uncached_timings[1024] = {0};
     
     for (int i=0; i<1024; i++) {
+        timed_call(dummy);
         cached_timings[i] = timed_call(p);
         flush();
+        timed_call(dummy);
         uncached_timings[i] = timed_call(p);
     }
 
@@ -106,9 +108,6 @@ void* spam(void* args) {
 }
 
 int main() {
-
-    
-
     uint64_t threshold = get_threshold(multiply);
 
     pthread_t spam_thread;
@@ -119,6 +118,7 @@ int main() {
     uint64_t min = 500;
     while (1)
     {
+        timed_call(dummy);
         uint64_t timing = timed_call_n_flush(multiply);
         if (timing < threshold)
         {
