@@ -89,7 +89,7 @@ uint64_t get_threshold(uint64_t (*p)(uint64_t, uint64_t)) {
 }
 
 void* spam(void* args) {
-    sleep(5);
+    // sleep(5);
     printf("Spamming...\n");
     for(uint64_t i=0; i<100000; i++) {
         multiply(0, 0);
