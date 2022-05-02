@@ -15,17 +15,25 @@ uint64_t rdtsc() {
 
 uint64_t timed_call(uint64_t (*p)(uint64_t, uint64_t)) {
     uint64_t start, end;
+    asm volatile("fence" ::: "memory");
     start = rdtsc();
+    asm volatile("fence" ::: "memory");
     p(0, 0);
+    asm volatile("fence" ::: "memory");
     end = rdtsc();
+    asm volatile("fence" ::: "memory");
     return end - start;
 }
 
 uint64_t timed_call_n_flush(uint64_t (*p)(uint64_t, uint64_t)) {
     uint64_t start, end;
+    asm volatile("fence" ::: "memory");
     start = rdtsc();
+    asm volatile("fence" ::: "memory");
     p(0, 0);
+    asm volatile("fence" ::: "memory");
     end = rdtsc();
+    asm volatile("fence" ::: "memory");
     asm volatile("fence.i" ::: "memory");
     asm volatile("fence" ::: "memory");
     return end - start;
