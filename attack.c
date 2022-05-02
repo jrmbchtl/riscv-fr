@@ -97,6 +97,7 @@ uint64_t get_threshold(uint64_t (*p)(uint64_t, uint64_t)) {
 }
 
 void* spam(void* args) {
+    sleep(1);
     printf("Spamming...\n");
     for(uint64_t i=0; i<100000000; i++) {
         multiply(0, 0);
@@ -106,13 +107,13 @@ void* spam(void* args) {
 
 int main() {
 
-    pthread_t spam_thread;
-    pthread_create(&spam_thread, NULL, spam, NULL);
-    sleep(1);
+    
 
     uint64_t threshold = get_threshold(multiply);
 
-   
+    pthread_t spam_thread;
+    pthread_create(&spam_thread, NULL, spam, NULL);
+    // sleep(1);
 
     flush();
     uint64_t min = 500;
