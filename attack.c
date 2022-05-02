@@ -87,9 +87,19 @@ uint64_t get_threshold(uint64_t (*p)(uint64_t, uint64_t)) {
     return threshold;
 }
 
+void spam() {
+    for(uint64_t i=0; i<10000000; i++) {
+        multiply(0, 0);
+    }
+    printf("Done\n");
+}
+
 int main() {
 
     uint64_t threshold = get_threshold(multiply);
+
+    pthread_t spam;
+    pthread_create(&spam, NULL, NULL);
 
     flush();
     uint64_t min = 500;

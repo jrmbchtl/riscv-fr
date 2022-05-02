@@ -1,6 +1,5 @@
 pull:
 	git pull
-	sleep 1
 
 attack: attack.c vulnerable.so
 	gcc -o attack attack.c -g -lm -lpthread -ldl -l:vulnerable.so -L.
