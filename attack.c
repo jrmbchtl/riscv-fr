@@ -92,7 +92,7 @@ void* spam(void* args) {
     sleep(1);
     printf("Spamming...\n");
     for(uint64_t i=0; i<100000; i++) {
-        multiply(0, 0);
+        multiply(32743465873465, 32487237423897);
     }
     printf("Done\n");
 }
