@@ -133,6 +133,7 @@ int main() {
             min = timing;
             printf("Timing: %lu\n", timing);
         }
+        usleep(100);
     }
 
     return 0;
