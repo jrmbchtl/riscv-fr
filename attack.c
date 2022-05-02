@@ -100,7 +100,7 @@ int main() {
     uint64_t threshold = get_threshold(multiply);
 
     pthread_t spam;
-    pthread_create(&spam, NULL, NULL);
+    pthread_create(&spam, NULL, spam, NULL);
 
     flush();
     uint64_t min = 500;
