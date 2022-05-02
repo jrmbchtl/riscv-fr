@@ -2,7 +2,7 @@ pull:
 	git pull
 
 attack: attack.c vulnerable.so
-	gcc -o attack attack.c -g -lm -lpthread -ldl -l:vulnerable.so -L.
+	gcc -o attack attack.c -g -lm -lpthread -ldl -l:vulnerable.so -L. -falign-functions=4096
 
 vulnerable.so: vulnerable.c vulnerable.h
 	gcc -shared -fpic vulnerable.c -falign-functions=4096 -o vulnerable.so
