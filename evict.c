@@ -78,15 +78,13 @@ uint64_t test_eviction_set(void* victim, void* eviction_set[], uint64_t size) {
     return 1;
 }
 
-struct Set reduce(struct Set eviction_set) {
+struct Set reduce(void* victim, struct Set eviction_set) {
     void* first_element = eviction_set.list[0];
     uint8_t first_element_set = 0;
     void* tmp = list_pop(eviction_set.list, eviction_set.size);
     eviction_set.size--;
-    while(1) {
-        // printf("%p\n", tmp);
-        
-        if (!test_eviction_set(tmp, eviction_set.list, eviction_set.size)) {
+    while(1) {      
+        if (!test_eviction_set(victim, eviction_set.list, eviction_set.size)) {
             if (!first_element_set) {
                 first_element_set = 1;
                 first_element = tmp;
@@ -96,6 +94,7 @@ struct Set reduce(struct Set eviction_set) {
         } else {
             // printf("new size: %lu\n", eviction_set.size);
         }
+        // assert test_eviction_set(first_element, eviction_set.list, eviction_set.size);
         tmp = list_pop(eviction_set.list, eviction_set.size);
         if (tmp == first_element) {
             list_append(eviction_set.list, eviction_set.size, tmp);
@@ -133,10 +132,10 @@ int main() {
     }
 
     struct Set new_eviction_set;
-    new_eviction_set = reduce(eviction_set);
+    new_eviction_set = reduce(dummy, eviction_set);
     while(eviction_set.size > new_eviction_set.size) {
         eviction_set = new_eviction_set;
-        new_eviction_set = reduce(eviction_set);
+        new_eviction_set = reduce(dummy, eviction_set);
         printf("New size: %lu\n", new_eviction_set.size);
     }
     eviction_set = new_eviction_set;
