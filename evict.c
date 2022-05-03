@@ -94,7 +94,9 @@ void reduce(void* victim, struct Set *eviction_set) {
         for (int counter=0; counter<TEST_CYCLES; counter++) {
             maccess(victim);
             for (uint64_t i = 0; i < (*eviction_set).size; i++) {
-                maccess((*eviction_set).list[i]);
+                if (i != index) {
+                    maccess((*eviction_set).list[i]);
+                }
             }
             uint64_t timing = timed_load(victim);
             if (timing < THRESHOLD) {
