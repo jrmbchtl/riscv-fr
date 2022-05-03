@@ -98,10 +98,11 @@ void reduce(void* victim, struct Set *eviction_set) {
             new_set.list[i-1] = (*eviction_set).list[i];
         }
         if (test_eviction_set(victim, &new_set)) {
+            printf("can remove %lu\n", index);
             *eviction_set = new_set;
         } else {
             index++;
-            printf("can't remove %lu\n", index);
+            // printf("can't remove %lu\n", index);
         }
         assert(test_eviction_set(victim, eviction_set));
     }
