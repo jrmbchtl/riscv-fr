@@ -100,6 +100,7 @@ void reduce(void* victim, struct Set *eviction_set) {
                 }
             }
             uint64_t timing = timed_load(victim);
+            assert(test_eviction_set(victim, eviction_set));
             if (timing < THRESHOLD) {
                 can_remove = 0;
                 // printf("can't remove\n");
