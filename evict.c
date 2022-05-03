@@ -130,8 +130,8 @@ int main() {
     printf("Reducing again\n");
     reduce(eviction_set);
 
-    for (int i=0; i<eviction_set.size; i++) {
-        printf("%p ", eviction_set.list[i]);
-    }
+    // for (int i=0; i<eviction_set.size; i++) {
+    //     printf("%p ", eviction_set.list[i]);
+    // }
 
 }
