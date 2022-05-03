@@ -4,8 +4,8 @@
 #include <string.h>
 #include <unistd.h>
 
-THRESHOLD = 100;
-TEST_CYCLES = 50;
+#define THRESHOLD 100
+#define TEST_CYCLES  50
 
 static inline uint64_t rdtsc() {
   uint64_t val;
