@@ -65,11 +65,11 @@ void* list_append(void* list[], uint64_t size, void* item) {
     return list[size];
 }
 
-uint64_t test_eviction_set(void* victim, void* eviction_set[], uint64_t size) {
+uint64_t test_eviction_set(void* victim, struct Set *eviction_set) {
     for (int counter=0; counter<TEST_CYCLES; counter++) {
         maccess(victim);
-        for (uint64_t i = 0; i < size; i++) {
-            maccess(eviction_set[i]);
+        for (uint64_t i = 0; i < (*eviction_set).size; i++) {
+            maccess((*eviction_set).list[i]);
         }
         uint64_t timing = timed_load(victim);
         if (timing < THRESHOLD) {
@@ -82,11 +82,11 @@ uint64_t test_eviction_set(void* victim, void* eviction_set[], uint64_t size) {
 struct Set reduce(void* victim, struct Set *eviction_set) {
     void* first_element = (*eviction_set).list[0];
     uint8_t first_element_set = 0;
-    assert(test_eviction_set(victim, (*eviction_set).list, (*eviction_set).size));
+    assert(test_eviction_set(victim, eviction_set));
     void* tmp = list_pop((*eviction_set).list, (*eviction_set).size);
     (*eviction_set).size--;
     while(1) {
-        if (!test_eviction_set(victim, (*eviction_set).list, (*eviction_set).size)) {
+        if (!test_eviction_set(victim, eviction_set)) {
             if (!first_element_set) {
                 first_element_set = 1;
                 first_element = tmp;
@@ -100,12 +100,12 @@ struct Set reduce(void* victim, struct Set *eviction_set) {
         tmp = list_pop((*eviction_set).list, (*eviction_set).size);
         if (tmp == first_element) {
             list_append((*eviction_set).list, (*eviction_set).size, tmp);
-            assert(test_eviction_set(victim, (*eviction_set).list, (*eviction_set).size));
+            assert(test_eviction_set(victim, eviction_set));
             break;
         }
         (*eviction_set).size--;
     }
-    assert(test_eviction_set(victim, (*eviction_set).list, (*eviction_set).size));
+    assert(test_eviction_set(victim, eviction_set));
     return (*eviction_set);
 }
 
@@ -128,7 +128,7 @@ int main() {
     uint64_t cached_timing = median(cached_timings, 1024);
     printf("Cached timing: %lu\n", cached_timing);
 
-    if (test_eviction_set(dummy, eviction_set.list, eviction_set.size)) {
+    if (test_eviction_set(dummy, &eviction_set)) {
         printf("Eviction set is working\n");
     } else {
         printf("Eviction set is not working... Exiting!\n");
@@ -137,11 +137,11 @@ int main() {
 
     printf("1\n");
     reduce(dummy, &eviction_set);
-    assert(test_eviction_set(dummy, eviction_set.list, eviction_set.size));
+    assert(test_eviction_set(dummy, &eviction_set));
     printf("2\n");
 
     // make sure that eviction set is working
-    if (test_eviction_set(dummy, eviction_set.list, eviction_set.size)) {
+    if (test_eviction_set(dummy, &eviction_set)) {
         printf("Eviction set is working\n");
     } else {
         printf("Eviction set is not working... Exiting!\n");
