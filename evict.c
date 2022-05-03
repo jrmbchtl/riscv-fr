@@ -84,7 +84,7 @@ struct Set reduce(struct Set eviction_set) {
     void* tmp = list_pop(eviction_set.list, eviction_set.size);
     eviction_set.size--;
     while(1) {
-        printf("%p\n", tmp);
+        // printf("%p\n", tmp);
         
         if (!test_eviction_set(tmp, eviction_set.list, eviction_set.size)) {
             if (!first_element_set) {
