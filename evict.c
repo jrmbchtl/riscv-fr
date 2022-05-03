@@ -89,6 +89,7 @@ void reduce(void* victim, struct Set *eviction_set) {
     uint64_t index = 0;
     uint8_t can_remove = 1;
     while (index < (*eviction_set).size) {
+        printf("%lu\n", index);
         assert(test_eviction_set(victim, eviction_set));
         for (int counter=0; counter<TEST_CYCLES; counter++) {
             maccess(victim);
