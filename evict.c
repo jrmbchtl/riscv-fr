@@ -7,7 +7,7 @@
 
 #define THRESHOLD 100
 #define TEST_CYCLES  50
-#define START_SIZE 16384
+#define START_SIZE 4096
 
 struct Set {
     void* list[16384];
@@ -85,28 +85,27 @@ uint64_t test_eviction_set(void* victim, struct Set *eviction_set) {
     return 1;
 }
 
-struct Set reduce(void* victim, struct Set eviction_set) {
+void reduce(void* victim, struct Set *eviction_set) {
     uint64_t index = 0;
-    while (index < (eviction_set).size) {
-        printf("%lu\n", index);
-        assert(test_eviction_set(victim, &eviction_set));
+    while (index < (*eviction_set).size) {
+        assert(test_eviction_set(victim, eviction_set));
         struct Set new_set;
-        new_set.size = (eviction_set).size - 1;
+        new_set.size = (*eviction_set).size - 1;
         for (uint64_t i = 0; i < index; i++) {
-            new_set.list[i] = (eviction_set).list[i];
+            new_set.list[i] = (*eviction_set).list[i];
         }
-        for (uint64_t i = index + 1; i < (eviction_set).size; i++) {
-            new_set.list[i-1] = (eviction_set).list[i];
+        for (uint64_t i = index + 1; i < (*eviction_set).size; i++) {
+            new_set.list[i-1] = (*eviction_set).list[i];
         }
         if (test_eviction_set(victim, &new_set)) {
-            eviction_set = new_set;
+            printf("can remove %lu\n", index);
+            *eviction_set = new_set;
         } else {
             index++;
-            // printf("can't remove %lu\n", index);
+            printf("can't remove %lu\n", index);
         }
-        assert(test_eviction_set(victim, &eviction_set));
+        assert(test_eviction_set(victim, eviction_set));
     }
-    return eviction_set;
 
     // void* first_element = (*eviction_set).list[0];
     // uint8_t first_element_set = 0;
@@ -165,7 +164,7 @@ int main() {
         return 0;
     }
 
-    eviction_set = reduce(dummy, eviction_set);
+    reduce(dummy, &eviction_set);
     assert(test_eviction_set(dummy, &eviction_set));
 
     // make sure that eviction set is working
