@@ -103,7 +103,7 @@ void reduce(void* victim, struct Set *eviction_set) {
                 break;
             }
         }
-
+        assert(test_eviction_set(victim, eviction_set));
         if (can_remove == 1) {
             list_remove((*eviction_set).list, (*eviction_set).size, index);
             (*eviction_set).size--;
