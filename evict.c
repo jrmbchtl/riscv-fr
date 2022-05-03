@@ -104,6 +104,7 @@ struct Set reduce(void* victim, struct Set eviction_set) {
         }
         eviction_set.size--;
     }
+    assert(test_eviction_set(victim, eviction_set.list, eviction_set.size));
     return eviction_set;
 }
 
