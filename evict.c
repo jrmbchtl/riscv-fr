@@ -136,7 +136,9 @@ int main() {
     }
 
     struct Set new_eviction_set;
+    print("1\n");
     new_eviction_set = reduce(dummy, eviction_set);
+    print("2\n");
     while(eviction_set.size > new_eviction_set.size) {
         eviction_set = new_eviction_set;
         new_eviction_set = reduce(dummy, eviction_set);
