@@ -6,7 +6,7 @@
 
 #define THRESHOLD 100
 #define TEST_CYCLES  50
-#define START_SIZE 8192
+#define START_SIZE 4096
 
 struct Set {
     void* list[16384];
@@ -124,7 +124,8 @@ int main() {
     if (test_eviction_set(dummy, eviction_set.list, eviction_set.size)) {
         printf("Eviction set is working\n");
     } else {
-        printf("Eviction set is not working\n");
+        printf("Eviction set is not working... Exiting!\n");
+        return 0;
     }
 
     struct Set new_eviction_set;
