@@ -141,5 +141,6 @@ int main() {
     // for (int i=0; i<eviction_set.size; i++) {
     //     printf("%p ", eviction_set.list[i]);
     // }
+    printf("\n");
 
 }
