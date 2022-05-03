@@ -136,8 +136,19 @@ int main() {
         return 0;
     }
 
+    uint64_t size = eviction_set.size;
     eviction_set = *reduce(dummy, &eviction_set);
     assert(test_eviction_set(dummy, &eviction_set));
+    while (eviction_set.size < size)
+    {
+        size = eviction_set.size;
+        eviction_set = *reduce(dummy, &eviction_set);
+        assert(test_eviction_set(dummy, &eviction_set));
+    }
+    
+
+    // eviction_set = *reduce(dummy, &eviction_set);
+    // assert(test_eviction_set(dummy, &eviction_set));
 
     // make sure that eviction set is working
     if (test_eviction_set(dummy, &eviction_set)) {
