@@ -137,15 +137,9 @@ int main() {
 
     struct Set new_eviction_set;
     printf("1\n");
-    new_eviction_set = reduce(dummy, eviction_set);
+    eviction_set = reduce(dummy, eviction_set);
+    assert(test_eviction_set(dummy, eviction_set.list, eviction_set.size));
     printf("2\n");
-    while(eviction_set.size > new_eviction_set.size) {
-        eviction_set = new_eviction_set;
-        new_eviction_set = reduce(dummy, eviction_set);
-        printf("New size: %lu\n", new_eviction_set.size);
-    }
-    eviction_set = new_eviction_set;
-    printf("Final size: %lu\n", eviction_set.size);
 
     // make sure that eviction set is working
     if (test_eviction_set(dummy, eviction_set.list, eviction_set.size)) {
