@@ -89,7 +89,7 @@ void reduce(void* victim, struct Set *eviction_set) {
     uint64_t index = 0;
     uint8_t can_remove = 1;
     while (index < (*eviction_set).size) {
-        printf("%lu\n", index);
+        // printf("%lu\n", index);
         assert(test_eviction_set(victim, eviction_set));
         for (int counter=0; counter<TEST_CYCLES; counter++) {
             maccess(victim);
@@ -103,7 +103,7 @@ void reduce(void* victim, struct Set *eviction_set) {
                 break;
             }
         }
-        printf("can remove: %d\n", can_remove);
+        // printf("can remove: %d\n", can_remove);
         assert(test_eviction_set(victim, eviction_set));
         if (can_remove == 1) {
             list_remove((*eviction_set).list, (*eviction_set).size, index);
