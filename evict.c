@@ -88,6 +88,7 @@ uint64_t test_eviction_set(void* victim, struct Set *eviction_set) {
 struct Set reduce(void* victim, struct Set *eviction_set) {
     uint64_t index = 0;
     while (index < (*eviction_set).size) {
+        printf("%lu\n", index);
         assert(test_eviction_set(victim, eviction_set));
         struct Set new_set;
         new_set.size = (*eviction_set).size - 1;
