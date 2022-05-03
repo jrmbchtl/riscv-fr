@@ -6,6 +6,12 @@
 
 #define THRESHOLD 100
 #define TEST_CYCLES  50
+#define START_SIZE 16384
+
+struct Set {
+    void* list[16384];
+    uint64_t size;
+} set;
 
 static inline uint64_t rdtsc() {
   uint64_t val;
@@ -45,6 +51,19 @@ void dummy() {
     return;
 }
 
+void* list_pop(void* list[], uint64_t size) {
+    void* tmp = list[0];
+    for (uint64_t i = 0; i < size - 1; i++) {
+        list[i] = list[i+1];
+    }
+    return tmp;
+}
+
+void* list_append(void* list[], uint64_t size, void* item) {
+    list[size] = item;
+    return list[size];
+}
+
 uint64_t test_eviction_set(void* victim, void* eviction_set[], uint64_t size) {
     for (int counter=0; counter<TEST_CYCLES; counter++) {
         maccess(victim);
@@ -59,11 +78,32 @@ uint64_t test_eviction_set(void* victim, void* eviction_set[], uint64_t size) {
     return 1;
 }
 
-int main() {
-    void* eviction_set[16384] = {0};
+void reduce(struct Set eviction_set) {
+    void* first_element = eviction_set.list[0];
+    void* tmp = list_pop(eviction_set.list, eviction_set.size);
+    while(1) {
+        eviction_set.size--;
+        if (!test_eviction_set(tmp, eviction_set.list, eviction_set.size)) {
+            list_append(eviction_set.list, eviction_set.size, tmp);
+            eviction_set.size++;
+        } else {
+            printf("new size: %lu\n", eviction_set.size);
+        }
+        tmp = list_pop(eviction_set.list, eviction_set.size);
+        if (tmp == first_element) {
+            break;
+        }
+    }
+}
 
-    for (int i = 0; i < 16384; i++) {
-        eviction_set[i] = dummy + i * 0x1000;
+int main() {
+
+    // initialize eviction set
+    struct Set eviction_set;
+    eviction_set.size = START_SIZE;
+
+    for (int i = 0; i < eviction_set.size; i++) {
+        eviction_set.list[i] = dummy + i * 0x1000;
     }
 
     uint64_t cached_timings[1024] = {0};
@@ -75,10 +115,16 @@ int main() {
     uint64_t cached_timing = median(cached_timings, 1024);
     printf("Cached timing: %lu\n", cached_timing);
 
-    if (test_eviction_set(dummy, eviction_set, 16384)) {
+    if (test_eviction_set(dummy, eviction_set.list, eviction_set.size)) {
         printf("Eviction set is working\n");
     } else {
         printf("Eviction set is not working\n");
+    }
+
+    reduce(eviction_set);
+
+    for (int i=0; i<eviction_set.size; i++) {
+        printf("%p\n", eviction_set.list[i]);
     }
 
 }
