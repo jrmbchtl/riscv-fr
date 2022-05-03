@@ -80,10 +80,15 @@ uint64_t test_eviction_set(void* victim, void* eviction_set[], uint64_t size) {
 
 void reduce(struct Set eviction_set) {
     void* first_element = eviction_set.list[0];
+    uint8_t first_element_set = 0;
     void* tmp = list_pop(eviction_set.list, eviction_set.size);
     while(1) {
         eviction_set.size--;
         if (!test_eviction_set(tmp, eviction_set.list, eviction_set.size)) {
+            if (!first_element_set) {
+                first_element_set = 1;
+                first_element = tmp;
+            }
             list_append(eviction_set.list, eviction_set.size, tmp);
             eviction_set.size++;
         } else {
