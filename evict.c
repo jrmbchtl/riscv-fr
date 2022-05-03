@@ -81,9 +81,10 @@ uint64_t test_eviction_set(void* victim, void* eviction_set[], uint64_t size) {
 struct Set reduce(void* victim, struct Set eviction_set) {
     void* first_element = eviction_set.list[0];
     uint8_t first_element_set = 0;
+    assert(test_eviction_set(victim, eviction_set.list, eviction_set.size));
     void* tmp = list_pop(eviction_set.list, eviction_set.size);
     eviction_set.size--;
-    while(1) {      
+    while(1) {
         if (!test_eviction_set(victim, eviction_set.list, eviction_set.size)) {
             if (!first_element_set) {
                 first_element_set = 1;
@@ -98,6 +99,7 @@ struct Set reduce(void* victim, struct Set eviction_set) {
         tmp = list_pop(eviction_set.list, eviction_set.size);
         if (tmp == first_element) {
             list_append(eviction_set.list, eviction_set.size, tmp);
+            assert(test_eviction_set(victim, eviction_set.list, eviction_set.size));
             break;
         }
         eviction_set.size--;
