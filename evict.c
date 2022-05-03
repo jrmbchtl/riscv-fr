@@ -169,10 +169,8 @@ int main() {
         return 0;
     }
 
-    printf("1\n");
     reduce(dummy, &eviction_set);
     assert(test_eviction_set(dummy, &eviction_set));
-    printf("2\n");
 
     // make sure that eviction set is working
     if (test_eviction_set(dummy, &eviction_set)) {
