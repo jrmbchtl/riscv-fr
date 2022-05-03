@@ -78,7 +78,7 @@ uint64_t test_eviction_set(void* victim, void* eviction_set[], uint64_t size) {
     return 1;
 }
 
-void reduce(struct Set eviction_set) {
+struct Set reduce(struct Set eviction_set) {
     void* first_element = eviction_set.list[0];
     uint8_t first_element_set = 0;
     void* tmp = list_pop(eviction_set.list, eviction_set.size);
@@ -92,13 +92,14 @@ void reduce(struct Set eviction_set) {
             list_append(eviction_set.list, eviction_set.size, tmp);
             eviction_set.size++;
         } else {
-            printf("new size: %lu\n", eviction_set.size);
+            // printf("new size: %lu\n", eviction_set.size);
         }
         tmp = list_pop(eviction_set.list, eviction_set.size);
         if (tmp == first_element) {
             break;
         }
     }
+    return eviction_set;
 }
 
 int main() {
@@ -126,9 +127,11 @@ int main() {
         printf("Eviction set is not working\n");
     }
 
-    reduce(eviction_set);
+    eviction_set = reduce(eviction_set);
+    printf("New size: %lu\n", eviction_set.size);
     printf("Reducing again\n");
-    reduce(eviction_set);
+    eviction_set = reduce(eviction_set);
+    printf("New size: %lu\n", eviction_set.size);
 
     // for (int i=0; i<eviction_set.size; i++) {
     //     printf("%p ", eviction_set.list[i]);
