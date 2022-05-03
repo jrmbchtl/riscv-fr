@@ -138,8 +138,8 @@ int main() {
     eviction_set = new_eviction_set;
     printf("Final size: %lu\n", eviction_set.size);
 
-    for (int i=0; i<eviction_set.size; i++) {
-        printf("%p ", eviction_set.list[i]);
-    }
+    // for (int i=0; i<eviction_set.size; i++) {
+    //     printf("%p ", eviction_set.list[i]);
+    // }
 
 }
