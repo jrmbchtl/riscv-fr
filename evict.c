@@ -127,9 +127,11 @@ int main() {
     }
 
     reduce(eviction_set);
+    printf("Reducing again\n");
+    reduce(eviction_set);
 
     for (int i=0; i<eviction_set.size; i++) {
-        printf("%p\n", eviction_set.list[i]);
+        printf("%p ", eviction_set.list[i]);
     }
 
 }
