@@ -82,9 +82,10 @@ struct Set reduce(struct Set eviction_set) {
     void* first_element = eviction_set.list[0];
     uint8_t first_element_set = 0;
     void* tmp = list_pop(eviction_set.list, eviction_set.size);
+    eviction_set.size--;
     while(1) {
         printf("%p\n", tmp);
-        eviction_set.size--;
+        
         if (!test_eviction_set(tmp, eviction_set.list, eviction_set.size)) {
             if (!first_element_set) {
                 first_element_set = 1;
@@ -97,8 +98,10 @@ struct Set reduce(struct Set eviction_set) {
         }
         tmp = list_pop(eviction_set.list, eviction_set.size);
         if (tmp == first_element) {
+            list_append(eviction_set.list, eviction_set.size, tmp);
             break;
         }
+        eviction_set.size--;
     }
     return eviction_set;
 }
