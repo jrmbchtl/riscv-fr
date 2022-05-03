@@ -93,7 +93,9 @@ struct Set reduce(void* victim, struct Set *eviction_set) {
             }
             list_append((*eviction_set).list, (*eviction_set).size, tmp);
             (*eviction_set).size++;
+            assert(test_eviction_set(victim, eviction_set));
         } else {
+            assert(test_eviction_set(victim, eviction_set));
             // printf("new size: %lu\n", eviction_set.size);
         }
         // assert test_eviction_set(first_element, eviction_set.list, eviction_set.size);
