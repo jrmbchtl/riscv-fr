@@ -99,7 +99,11 @@ void reduce(void* victim, struct Set *eviction_set) {
         }
         if (test_eviction_set(victim, &new_set)) {
             printf("can remove %lu\n", index);
-            *eviction_set = new_set;
+            for(uint64_t i=index; i<(*eviction_set).size-1; i++){
+                (*eviction_set).list[i] = new_set.list[i];
+            }
+            (*eviction_set).size = new_set.size;
+            // *eviction_set = new_set;
         } else {
             index++;
             // printf("can't remove %lu\n", index);
