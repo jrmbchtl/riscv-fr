@@ -17,4 +17,4 @@ run-victim: pull victim vulnerable.so
 	LD_LIBRARY_PATH=. ./victim
 
 evict: pull
-	gcc -o evict evict.c -falign-functions=4096
+	gcc -o evict evict.c -falign-functions=4096 && ./evict
