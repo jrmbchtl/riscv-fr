@@ -11,7 +11,7 @@ static inline uint64_t rdtsc() {
   return val;
 }
 
-static inline maccess(void *p) {
+static inline void maccess(void *p) {
     uint64_t val;
     asm volatile("ld %0, %1\n" :"=r" (val) : "m"(p):);
 }
