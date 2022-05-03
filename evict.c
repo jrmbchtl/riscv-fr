@@ -142,6 +142,14 @@ int main() {
     eviction_set = new_eviction_set;
     printf("Final size: %lu\n", eviction_set.size);
 
+    // make sure that eviction set is working
+    if (test_eviction_set(dummy, eviction_set.list, eviction_set.size)) {
+        printf("Eviction set is working\n");
+    } else {
+        printf("Eviction set is not working... Exiting!\n");
+        return 0;
+    }
+
     // for (int i=0; i<eviction_set.size; i++) {
     //     printf("%p ", eviction_set.list[i]);
     // }
