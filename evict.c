@@ -59,4 +59,11 @@ int main() {
     uint64_t cached_timing = median(cached_timings, 1024);
     printf("Cached timing: %lu\n", cached_timing);
 
+    maccess(dummy);
+    for (int i = 0; i < 1024; i++) {
+        timed_load(eviction_set[i]);
+    }
+
+    printf("new timng: %lu\n", timed_load(dummy));
+
 }
