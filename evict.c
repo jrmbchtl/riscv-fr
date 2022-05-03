@@ -156,7 +156,7 @@ int main() {
     eviction_set.size = START_SIZE;
 
     for (int i = 0; i < eviction_set.size; i++) {
-        eviction_set.list[i] = dummy + i * 0x1000;
+        eviction_set.list[i] = dummy + (i+1) * 0x1000;
     }
 
     uint64_t cached_timings[1024] = {0};
