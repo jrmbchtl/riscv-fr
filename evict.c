@@ -61,7 +61,7 @@ int main() {
 
     maccess(dummy);
     for (int i = 0; i < 16384; i++) {
-        timed_load(eviction_set[i]);
+        maccess(eviction_set[i]);
     }
 
     printf("new timng: %lu\n", timed_load(dummy));
