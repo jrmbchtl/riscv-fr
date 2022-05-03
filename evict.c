@@ -107,6 +107,7 @@ struct Set* reduce(void* victim, struct Set *eviction_set) {
         assert(test_eviction_set(victim, eviction_set));
     }
 
+    assert(test_eviction_set(victim, eviction_set));
     return eviction_set;
 }
 
