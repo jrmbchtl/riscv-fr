@@ -85,7 +85,7 @@ uint64_t test_eviction_set(void* victim, struct Set *eviction_set) {
     return 1;
 }
 
-void reduce(void* victim, struct Set *eviction_set) {
+struct Set* reduce(void* victim, struct Set *eviction_set) {
     uint64_t index = 0;
     while (index < (*eviction_set).size) {
         assert(test_eviction_set(victim, eviction_set));
@@ -102,40 +102,12 @@ void reduce(void* victim, struct Set *eviction_set) {
             *eviction_set = new_set;
         } else {
             index++;
-            printf("can't remove %lu\n", index);
+            // printf("can't remove %lu\n", index);
         }
         assert(test_eviction_set(victim, eviction_set));
     }
 
-    // void* first_element = (*eviction_set).list[0];
-    // uint8_t first_element_set = 0;
-    // assert(test_eviction_set(victim, eviction_set));
-    // void* tmp = list_pop((*eviction_set).list, (*eviction_set).size);
-    // (*eviction_set).size--;
-    // while(1) {
-    //     if (!test_eviction_set(victim, eviction_set)) {
-    //         if (!first_element_set) {
-    //             first_element_set = 1;
-    //             first_element = tmp;
-    //         }
-    //         list_append((*eviction_set).list, (*eviction_set).size, tmp);
-    //         (*eviction_set).size++;
-    //         assert(test_eviction_set(victim, eviction_set));
-    //     } else {
-    //         assert(test_eviction_set(victim, eviction_set));
-    //         // printf("new size: %lu\n", eviction_set.size);
-    //     }
-    //     // assert test_eviction_set(first_element, eviction_set.list, eviction_set.size);
-    //     assert(test_eviction_set(victim, eviction_set));
-    //     tmp = list_pop((*eviction_set).list, (*eviction_set).size);
-    //     if (tmp == first_element) {
-    //         list_append((*eviction_set).list, (*eviction_set).size, tmp);
-    //         assert(test_eviction_set(victim, eviction_set));
-    //         break;
-    //     }
-    //     (*eviction_set).size--;
-    // }
-    // assert(test_eviction_set(victim, eviction_set));
+    return eviction_set;
 }
 
 int main() {
@@ -164,7 +136,7 @@ int main() {
         return 0;
     }
 
-    reduce(dummy, &eviction_set);
+    eviction_set = *reduce(dummy, &eviction_set);
     assert(test_eviction_set(dummy, &eviction_set));
 
     // make sure that eviction set is working
