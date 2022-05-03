@@ -99,10 +99,11 @@ void reduce(void* victim, struct Set *eviction_set) {
             uint64_t timing = timed_load(victim);
             if (timing < THRESHOLD) {
                 can_remove = 0;
-                printf("can't remove\n");
+                // printf("can't remove\n");
                 break;
             }
         }
+        printf("can remove: %d\n", can_remove);
         assert(test_eviction_set(victim, eviction_set));
         if (can_remove == 1) {
             list_remove((*eviction_set).list, (*eviction_set).size, index);
