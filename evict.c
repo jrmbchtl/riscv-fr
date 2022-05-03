@@ -141,6 +141,7 @@ int main() {
     assert(test_eviction_set(dummy, &eviction_set));
     while (eviction_set.size < size)
     {
+        printf("current size: %lu\n", eviction_set.size);
         size = eviction_set.size;
         eviction_set = *reduce(dummy, &eviction_set);
         assert(test_eviction_set(dummy, &eviction_set));
