@@ -60,6 +60,12 @@ void* list_pop(void* list[], uint64_t size) {
     return tmp;
 }
 
+void list_remove(void* list[], uint64_t size, uint64_t index) {
+    for(int i=index+1; i<size-1; i++){
+        list[i-1] = list[i];
+    }
+}
+
 void* list_append(void* list[], uint64_t size, void* item) {
     list[size] = item;
     return list[size];
@@ -79,37 +85,61 @@ uint64_t test_eviction_set(void* victim, struct Set *eviction_set) {
     return 1;
 }
 
-struct Set reduce(void* victim, struct Set *eviction_set) {
-    void* first_element = (*eviction_set).list[0];
-    uint8_t first_element_set = 0;
-    assert(test_eviction_set(victim, eviction_set));
-    void* tmp = list_pop((*eviction_set).list, (*eviction_set).size);
-    (*eviction_set).size--;
-    while(1) {
-        if (!test_eviction_set(victim, eviction_set)) {
-            if (!first_element_set) {
-                first_element_set = 1;
-                first_element = tmp;
-            }
-            list_append((*eviction_set).list, (*eviction_set).size, tmp);
-            (*eviction_set).size++;
-            assert(test_eviction_set(victim, eviction_set));
-        } else {
-            assert(test_eviction_set(victim, eviction_set));
-            // printf("new size: %lu\n", eviction_set.size);
-        }
-        // assert test_eviction_set(first_element, eviction_set.list, eviction_set.size);
+void reduce(void* victim, struct Set *eviction_set) {
+    uint64_t index = 0;
+    uint8_t can_remove = 1;
+    while (index < (*eviction_set).size) {
         assert(test_eviction_set(victim, eviction_set));
-        tmp = list_pop((*eviction_set).list, (*eviction_set).size);
-        if (tmp == first_element) {
-            list_append((*eviction_set).list, (*eviction_set).size, tmp);
-            assert(test_eviction_set(victim, eviction_set));
-            break;
+        for (int counter=0; counter<TEST_CYCLES; counter++) {
+            maccess(victim);
+            for (uint64_t i = 0; i < (*eviction_set).size; i++) {
+                maccess((*eviction_set).list[i]);
+            }
+            uint64_t timing = timed_load(victim);
+            if (timing < THRESHOLD) {
+                can_remove = 0;
+                break;
+            }
         }
-        (*eviction_set).size--;
+
+        if (can_remove) {
+            list_remove((*eviction_set).list, (*eviction_set).size, index);
+            (*eviction_set).size--;
+        } else {
+            index++;
+        }
+        assert(test_eviction_set(victim, eviction_set));
     }
-    assert(test_eviction_set(victim, eviction_set));
-    return (*eviction_set);
+
+    // void* first_element = (*eviction_set).list[0];
+    // uint8_t first_element_set = 0;
+    // assert(test_eviction_set(victim, eviction_set));
+    // void* tmp = list_pop((*eviction_set).list, (*eviction_set).size);
+    // (*eviction_set).size--;
+    // while(1) {
+    //     if (!test_eviction_set(victim, eviction_set)) {
+    //         if (!first_element_set) {
+    //             first_element_set = 1;
+    //             first_element = tmp;
+    //         }
+    //         list_append((*eviction_set).list, (*eviction_set).size, tmp);
+    //         (*eviction_set).size++;
+    //         assert(test_eviction_set(victim, eviction_set));
+    //     } else {
+    //         assert(test_eviction_set(victim, eviction_set));
+    //         // printf("new size: %lu\n", eviction_set.size);
+    //     }
+    //     // assert test_eviction_set(first_element, eviction_set.list, eviction_set.size);
+    //     assert(test_eviction_set(victim, eviction_set));
+    //     tmp = list_pop((*eviction_set).list, (*eviction_set).size);
+    //     if (tmp == first_element) {
+    //         list_append((*eviction_set).list, (*eviction_set).size, tmp);
+    //         assert(test_eviction_set(victim, eviction_set));
+    //         break;
+    //     }
+    //     (*eviction_set).size--;
+    // }
+    // assert(test_eviction_set(victim, eviction_set));
 }
 
 int main() {
