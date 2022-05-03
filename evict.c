@@ -44,9 +44,9 @@ void dummy() {
 }
 
 int main() {
-    void* eviction_set[1024] = {0};
+    void* eviction_set[16384] = {0};
 
-    for (int i = 0; i < 1024; i++) {
+    for (int i = 0; i < 16384; i++) {
         eviction_set[i] = dummy + i * 0x1000;
     }
 
@@ -60,7 +60,7 @@ int main() {
     printf("Cached timing: %lu\n", cached_timing);
 
     maccess(dummy);
-    for (int i = 0; i < 1024; i++) {
+    for (int i = 0; i < 16384; i++) {
         timed_load(eviction_set[i]);
     }
 
