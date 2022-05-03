@@ -4,6 +4,8 @@
 #include <string.h>
 #include <unistd.h>
 
+THRESHOLD = 100;
+TEST_CYCLES = 50;
 
 static inline uint64_t rdtsc() {
   uint64_t val;
@@ -43,6 +45,20 @@ void dummy() {
     return;
 }
 
+uint64_t test_eviction_set(void* victim, void* eviction_set[], uint64_t size) {
+    for (int counter=0; counter<TEST_CYCLES; counter++) {
+        maccess(victim);
+        for (uint64_t i = 0; i < size; i++) {
+            maccess(eviction_set[i]);
+        }
+        uint64_t timing = timed_load(victim);
+        if (timing < THRESHOLD) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
 int main() {
     void* eviction_set[16384] = {0};
 
@@ -59,11 +75,10 @@ int main() {
     uint64_t cached_timing = median(cached_timings, 1024);
     printf("Cached timing: %lu\n", cached_timing);
 
-    maccess(dummy);
-    for (int i = 0; i < 16384; i++) {
-        maccess(eviction_set[i]);
+    if (test_eviction_set(dummy, eviction_set, 16384)) {
+        printf("Eviction set is working\n");
+    } else {
+        printf("Eviction set is not working\n");
     }
-
-    printf("new timng: %lu\n", timed_load(dummy));
 
 }
