@@ -85,7 +85,7 @@ uint64_t test_eviction_set(void* victim, struct Set *eviction_set) {
     return 1;
 }
 
-void reduce(void* victim, struct Set *eviction_set) {
+struct Set reduce(void* victim, struct Set *eviction_set) {
     uint64_t index = 0;
     while (index < (*eviction_set).size) {
         assert(test_eviction_set(victim, eviction_set));
@@ -98,18 +98,14 @@ void reduce(void* victim, struct Set *eviction_set) {
             new_set.list[i-1] = (*eviction_set).list[i];
         }
         if (test_eviction_set(victim, &new_set)) {
-            printf("can remove %lu\n", index);
-            for(uint64_t i=index; i<(*eviction_set).size-1; i++){
-                (*eviction_set).list[i] = new_set.list[i];
-            }
-            (*eviction_set).size = new_set.size;
-            // *eviction_set = new_set;
+            *eviction_set = new_set;
         } else {
             index++;
             // printf("can't remove %lu\n", index);
         }
         assert(test_eviction_set(victim, eviction_set));
     }
+    return *eviction_set;
 
     // void* first_element = (*eviction_set).list[0];
     // uint8_t first_element_set = 0;
@@ -168,7 +164,7 @@ int main() {
         return 0;
     }
 
-    reduce(dummy, &eviction_set);
+    eviction_set = reduce(dummy, &eviction_set);
     assert(test_eviction_set(dummy, &eviction_set));
 
     // make sure that eviction set is working
