@@ -87,33 +87,19 @@ uint64_t test_eviction_set(void* victim, struct Set *eviction_set) {
 
 void reduce(void* victim, struct Set *eviction_set) {
     uint64_t index = 0;
-    uint8_t can_remove = 1;
     while (index < (*eviction_set).size) {
         printf("%lu\n", index);
         assert(test_eviction_set(victim, eviction_set));
-        for (int counter=0; counter<TEST_CYCLES; counter++) {
-            assert(test_eviction_set(victim, eviction_set));
-            maccess(victim);
-            for (uint64_t i = 0; i < (*eviction_set).size; i++) {
-                if (i != index) {
-                    maccess((*eviction_set).list[i]);
-                }
-            }
-            uint64_t timing = timed_load(victim);
-            assert(test_eviction_set(victim, eviction_set));
-            if (timing < THRESHOLD) {
-                can_remove = 0;
-                // printf("can't remove\n");
-                assert(test_eviction_set(victim, eviction_set));
-                break;
-            }
-            assert(test_eviction_set(victim, eviction_set));
+        struct Set new_set;
+        new_set.size = (*eviction_set).size - 1;
+        for (uint64_t i = 0; i < index; i++) {
+            new_set.list[i] = (*eviction_set).list[i];
         }
-        // printf("can remove: %d\n", can_remove);
-        assert(test_eviction_set(victim, eviction_set));
-        if (can_remove == 1) {
-            list_remove((*eviction_set).list, (*eviction_set).size, index);
-            (*eviction_set).size--;
+        for (uint64_t i = index + 1; i < (*eviction_set).size; i++) {
+            new_set.list[i-1] = (*eviction_set).list[i];
+        }
+        if (test_eviction_set(victim, &new_set)) {
+            *eviction_set = new_set;
         } else {
             index++;
         }
