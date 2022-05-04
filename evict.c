@@ -173,6 +173,7 @@ int main() {
     // }
     printf("\n");
 
+    maccess(dummy);
     uint64_t timing = timed_load(dummy);
     uint64_t timing2 = timed_load(dummy);
 
