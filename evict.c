@@ -173,9 +173,10 @@ int main() {
     // }
     printf("\n");
 
+    rdtsc();
     maccess(dummy);
+    rdtsc();
     uint64_t timing = timed_load(dummy);
-    usleep(50);
     uint64_t timing2 = timed_load(dummy);
 
     printf("timing: %lu\n", timing);
