@@ -121,7 +121,7 @@ int main() {
     // initialize eviction set
     struct Set eviction_set;
     eviction_set.size = START_SIZE;
-    printf("%p\n", dummy)
+    printf("%p\n", dummy);
 
     for (int i = 0; i < eviction_set.size; i++) {
         eviction_set.list[i] = dummy + (i-4) * 0x1000;
