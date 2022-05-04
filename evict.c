@@ -71,43 +71,45 @@ void* list_append(void* list[], uint64_t size, void* item) {
     return list[size];
 }
 
-uint64_t test_eviction_set(void* victim, struct Set *eviction_set) {
+uint64_t test_eviction_set(struct Set eviction_set) {
     for (int counter=0; counter<TEST_CYCLES; counter++) {
-        maccess(victim);
-        for (uint64_t i = 0; i < (*eviction_set).size; i++) {
-            maccess((*eviction_set).list[i]);
+        for (uint64_t i = 0; i < eviction_set.size; i++) {
+            maccess(eviction_set.list[i]);
         }
-        uint64_t timing = timed_load(victim);
-        if (timing < THRESHOLD) {
-            return 0;
+
+        for (uint64_t i = 0; i < eviction_set.size; i++) {
+            uint64_t time = timed_load(eviction_set.list[i]);
+            if (time < THRESHOLD) {
+                return 0;
+            }
         }
     }
     return 1;
 }
 
-struct Set* reduce(void* victim, struct Set *eviction_set) {
+struct Set reduce(struct Set eviction_set) {
     uint64_t index = 0;
-    while (index < (*eviction_set).size) {
-        assert(test_eviction_set(victim, eviction_set));
+    while (index < eviction_set.size) {
+        assert(test_eviction_set(eviction_set));
         struct Set new_set;
-        new_set.size = (*eviction_set).size - 1;
+        new_set.size = eviction_set.size - 1;
         for (uint64_t i = 0; i < index; i++) {
-            new_set.list[i] = (*eviction_set).list[i];
+            new_set.list[i] = eviction_set.list[i];
         }
-        for (uint64_t i = index + 1; i < (*eviction_set).size; i++) {
-            new_set.list[i-1] = (*eviction_set).list[i];
+        for (uint64_t i = index + 1; i < eviction_set.size; i++) {
+            new_set.list[i-1] = eviction_set.list[i];
         }
-        if (test_eviction_set(victim, &new_set)) {
+        if (test_eviction_set(new_set)) {
             printf("can remove %lu\n", index);
-            *eviction_set = new_set;
+            eviction_set = new_set;
         } else {
             index++;
             // printf("can't remove %lu\n", index);
         }
-        assert(test_eviction_set(victim, eviction_set));
+        assert(test_eviction_set(eviction_set));
     }
 
-    assert(test_eviction_set(victim, eviction_set));
+    assert(test_eviction_set(eviction_set));
     return eviction_set;
 }
 
@@ -118,19 +120,19 @@ int main() {
     eviction_set.size = START_SIZE;
 
     for (int i = 0; i < eviction_set.size; i++) {
-        eviction_set.list[i] = dummy + (i+1) * 0x1000;
+        eviction_set.list[i] = dummy + i * 0x1000;
     }
 
     uint64_t cached_timings[1024] = {0};
 
-    maccess(dummy);
+    maccess(eviction_set.list[0]);
     for (int i = 0; i < 1024; i++) {
-        cached_timings[i] = timed_load(dummy);
+        cached_timings[i] = timed_load(eviction_set.list[0]);
     }
     uint64_t cached_timing = median(cached_timings, 1024);
     printf("Cached timing: %lu\n", cached_timing);
 
-    if (test_eviction_set(dummy, &eviction_set)) {
+    if (test_eviction_set(eviction_set)) {
         printf("Eviction set is working\n");
     } else {
         printf("Eviction set is not working... Exiting!\n");
@@ -138,14 +140,14 @@ int main() {
     }
 
     uint64_t size = eviction_set.size;
-    eviction_set = *reduce(dummy, &eviction_set);
-    assert(test_eviction_set(dummy, &eviction_set));
+    eviction_set = reduce(eviction_set);
+    assert(test_eviction_set(eviction_set));
     while (eviction_set.size < size)
     {
         printf("current size: %lu\n", eviction_set.size);
         size = eviction_set.size;
-        eviction_set = *reduce(dummy, &eviction_set);
-        assert(test_eviction_set(dummy, &eviction_set));
+        eviction_set = reduce(eviction_set);
+        assert(test_eviction_set(eviction_set));
     }
     
 
@@ -153,7 +155,7 @@ int main() {
     // assert(test_eviction_set(dummy, &eviction_set));
 
     // make sure that eviction set is working
-    if (test_eviction_set(dummy, &eviction_set)) {
+    if (test_eviction_set(eviction_set)) {
         printf("Eviction set is working\n");
     } else {
         printf("Eviction set is not working... Exiting!\n");
