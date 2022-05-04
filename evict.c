@@ -173,8 +173,11 @@ int main() {
     // }
     printf("\n");
 
-    printf("timing: %lu\n", timed_load(dummy));
+    uint64_t timing = timed_load(dummy);
+    uint64_t timing2 = timed_load(dummy);
+
+    printf("timing: %lu\n", timing);
     // usleep(20);
-    printf("timing: %lu\n", timed_load(dummy));
+    printf("timing: %lu\n", timing);
 
 }
