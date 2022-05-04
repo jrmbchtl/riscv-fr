@@ -174,7 +174,7 @@ int main() {
     printf("\n");
 
     printf("timing: %lu\n", timed_load(dummy));
-    usleep(20);
+    // usleep(20);
     printf("timing: %lu\n", timed_load(dummy));
 
 }
