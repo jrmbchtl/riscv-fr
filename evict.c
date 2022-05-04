@@ -130,8 +130,8 @@ int main() {
     printf("%p\n", dummy);
 
     eviction_set.list[0] = dummy_entry;
-    for (int i = 1; i < eviction_set.size; i++) {
-        eviction_set.list[i] = dummy + i * 0x2000;
+    for (int i = 0; i < eviction_set.size - 1; i++) {
+        eviction_set.list[i+1] = dummy + i * 0x2000;
     }
 
     uint64_t cached_timings[1024] = {0};
