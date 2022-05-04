@@ -175,6 +175,7 @@ int main() {
 
     maccess(dummy);
     uint64_t timing = timed_load(dummy);
+    usleep(50);
     uint64_t timing2 = timed_load(dummy);
 
     printf("timing: %lu\n", timing);
