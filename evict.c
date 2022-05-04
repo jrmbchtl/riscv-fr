@@ -48,6 +48,10 @@ uint64_t median(uint64_t* list, uint64_t size)
     return median;
 }
 
+void dummy_entry() {
+    return;
+}
+
 void dummy() {
     return;
 }
@@ -80,15 +84,10 @@ uint64_t test_eviction_set(struct Set eviction_set) {
         
         uint64_t time;
         for (uint64_t i = 0; i < eviction_set.size; i++) {
-            if (i == 0) {
-                time = timed_load(eviction_set.list[0] - 0x1000);
-            }
             time = timed_load(eviction_set.list[i]);
-            if (time < THRESHOLD) {
+            if (time < THRESHOLD && i != 0) {
                 printf("index %lu failed with time %lu and data %p\n", i, time, eviction_set.list[i]);
                 // return 0;
-            } else {
-                printf("index %lu passed with time %lu\n", i, time);
             }
         }
     }
@@ -128,8 +127,9 @@ int main() {
     eviction_set.size = START_SIZE;
     printf("%p\n", dummy);
 
-    for (int i = 0; i < eviction_set.size; i++) {
-        eviction_set.list[i] = dummy + (i-4) * 0x1000;
+    eviction_set.list[0] = dummy_entry;
+    for (int i = 1; i < eviction_set.size; i++) {
+        eviction_set.list[i] = dummy + i * 0x1000;
     }
 
     uint64_t cached_timings[1024] = {0};
