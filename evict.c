@@ -77,7 +77,7 @@ uint64_t test_eviction_set(struct Set eviction_set) {
             maccess(eviction_set.list[i]);
         }
 
-        for (uint64_t i = 0; i < eviction_set.size; i++) {
+        for (uint64_t i = 1; i < eviction_set.size; i++) {
             uint64_t time = timed_load(eviction_set.list[i]);
             if (time < THRESHOLD) {
                 printf("index %lu failed with time %lu and data %p\n", i, time, eviction_set.list[i]);
