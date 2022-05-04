@@ -52,6 +52,7 @@ void dummy() {
     return;
 }
 
+
 void* list_pop(void* list[], uint64_t size) {
     void* tmp = list[0];
     for (uint64_t i = 0; i < size - 1; i++) {
@@ -76,7 +77,7 @@ uint64_t test_eviction_set(struct Set eviction_set) {
         for (uint64_t i = 0; i < eviction_set.size; i++) {
             maccess(eviction_set.list[i]);
         }
-
+        timed_load(rdtsc);
         for (uint64_t i = 1; i < eviction_set.size; i++) {
             uint64_t time = timed_load(eviction_set.list[i]);
             if (time < THRESHOLD) {
