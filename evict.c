@@ -121,7 +121,7 @@ struct Set reduce(struct Set eviction_set) {
     return eviction_set;
 }
 
-int main() {
+int main() { 
 
     // initialize eviction set
     struct Set eviction_set;
@@ -172,5 +172,9 @@ int main() {
     //     printf("%p ", eviction_set.list[i]);
     // }
     printf("\n");
+
+    printf("timing: %lu\n", timed_load(dummy));
+    usleep(100);
+    printf("timing: %lu\n", timed_load(dummy));
 
 }
