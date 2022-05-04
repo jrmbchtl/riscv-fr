@@ -98,9 +98,8 @@ uint64_t test_eviction_set(struct Set eviction_set) {
 }
 
 struct Set reduce(struct Set eviction_set) {
-    uint64_t index = 0;
-    while (index < eviction_set.size) {
-        assert(test_eviction_set(eviction_set));
+    uint64_t index = eviction_set.size - 1;
+    while (index > 0) { // don't allow first element to be removed
         struct Set new_set;
         new_set.size = eviction_set.size - 1;
         for (uint64_t i = 0; i < index; i++) {
@@ -114,9 +113,8 @@ struct Set reduce(struct Set eviction_set) {
             eviction_set = new_set;
         } else {
             index++;
-            // printf("can't remove %lu\n", index);
+            printf("can't remove %lu\n", index);
         }
-        assert(test_eviction_set(eviction_set));
     }
 
     assert(test_eviction_set(eviction_set));
@@ -153,13 +151,6 @@ int main() {
     uint64_t size = eviction_set.size;
     eviction_set = reduce(eviction_set);
     assert(test_eviction_set(eviction_set));
-    while (eviction_set.size < size)
-    {
-        printf("current size: %lu\n", eviction_set.size);
-        size = eviction_set.size;
-        eviction_set = reduce(eviction_set);
-        assert(test_eviction_set(eviction_set));
-    }
     
 
     // eviction_set = *reduce(dummy, &eviction_set);
@@ -167,9 +158,9 @@ int main() {
 
     // make sure that eviction set is working
     if (test_eviction_set(eviction_set)) {
-        printf("Eviction set is working\n");
+        printf("Eviction set is still working\n");
     } else {
-        printf("Eviction set is not working... Exiting!\n");
+        printf("Eviction set is now broken... Exiting!\n");
         return 0;
     }
 
