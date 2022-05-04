@@ -90,6 +90,7 @@ uint64_t test_eviction_set(struct Set eviction_set) {
                 return 0;
             } else {
                 // printf("index %lu passed with time %lu\n", i, time);
+                usleep(1000);
             }
         }
     }
