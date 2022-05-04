@@ -75,9 +75,9 @@ void* list_append(void* list[], uint64_t size, void* item) {
 uint64_t test_eviction_set(struct Set eviction_set) {
     for (int counter=0; counter<TEST_CYCLES; counter++) {
         for (uint64_t i = 0; i < eviction_set.size; i++) {
-            maccess(eviction_set.list[i]);
+            timed_load(eviction_set.list[i]);
         }
-        timed_load(rdtsc);
+        
         for (uint64_t i = 1; i < eviction_set.size; i++) {
             uint64_t time = timed_load(eviction_set.list[i]);
             if (time < THRESHOLD) {
