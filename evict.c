@@ -157,6 +157,10 @@ int main() {
     // assert(test_eviction_set(dummy, &eviction_set));
 
     // make sure that eviction set is working
+    printf("%lu\n", eviction_set.size);
+    for (uint64_t i = 0; i < eviction_set.size; i++) {
+        printf("%p\n", eviction_set.list[i]);
+    }
     if (test_eviction_set(eviction_set)) {
         printf("Eviction set is still working\n");
     } else {
