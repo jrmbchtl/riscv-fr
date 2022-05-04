@@ -112,9 +112,9 @@ struct Set reduce(struct Set eviction_set) {
             printf("can remove %lu\n", index);
             eviction_set = new_set;
         } else {
-            index++;
             printf("can't remove %lu\n", index);
         }
+        index--;
     }
 
     assert(test_eviction_set(eviction_set));
