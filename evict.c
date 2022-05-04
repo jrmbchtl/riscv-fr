@@ -7,7 +7,7 @@
 
 #define THRESHOLD 100
 #define TEST_CYCLES  10
-#define START_SIZE 10000
+#define START_SIZE 8192
 
 struct Set {
     void* list[16384];
