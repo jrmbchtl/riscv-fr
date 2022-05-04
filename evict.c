@@ -6,7 +6,7 @@
 #include <unistd.h>
 
 #define THRESHOLD 100
-#define TEST_CYCLES  1
+#define TEST_CYCLES  10
 #define START_SIZE 16384
 
 struct Set {
