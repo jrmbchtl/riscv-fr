@@ -7,7 +7,7 @@
 
 #define THRESHOLD 100
 #define TEST_CYCLES  5
-#define START_SIZE 1
+#define START_SIZE 512
 #define PAGE_SIZE 4096
 
 struct Set {
