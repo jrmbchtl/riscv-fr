@@ -128,8 +128,11 @@ int main() {
     struct Set eviction_set;
     eviction_set.size = START_SIZE;
     uint64_t data[START_SIZE*PAGE_SIZE] = {0};
-
-    printf("%p\n", &data[0]);
+    
+    for(uint64_t i=0; i<100; i++) {
+        printf("%p\n", &data[0]);
+    }
+    
 
     // for (int i = 0; i < eviction_set.size; i++) {
     //     eviction_set.list[i] = dummy + i * 0x1000;
