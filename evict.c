@@ -128,19 +128,30 @@ int main() {
     struct Set eviction_set;
     eviction_set.size = START_SIZE;
     uint64_t data[START_SIZE*PAGE_SIZE] = {0};
+    uint64_t base = ((uint64_t)(&data[0])) % PAGE_SIZE;
     
     for(uint64_t i=0; i<100; i++) {
         printf("%p\n", &data[i]);
     }
 
+    uint64_t counter = 0;
     for (uint64_t i = 0; i < START_SIZE*PAGE_SIZE; i++) {
-        maccess(&data[i]);
+        if (((uint64_t)(&data[i])) % PAGE_SIZE == base) {
+            counter++;
+        }
     }
+    printf("counter: %lu\n", counter);
 
-    for (uint64_t i = 0; i < START_SIZE*PAGE_SIZE; i++) {
-        uint64_t time = timed_load(&data[i]);
-        printf("time: %lu with pointer %p\n", time, &data[i]);
-    }
+    // for (uint64_t i = 0; i < START_SIZE*PAGE_SIZE; i++) {
+    //     maccess(&data[i]);
+    // }
+
+    // for (uint64_t i = 0; i < START_SIZE*PAGE_SIZE; i++) {
+    //     uint64_t time = timed_load(&data[i]);
+    //     printf("time: %lu with pointer %p\n", time, &data[i]);
+    // }
+
+    printf("base %lu\n", base);
     
 
     // for (int i = 0; i < eviction_set.size; i++) {
