@@ -137,7 +137,7 @@ int main() {
 
     // printf("is eviction set valid? %d\n", test_eviction_set(eviction_set));
 
-    struct timespec remaining, request = {0, 1000};
+    struct timespec remaining, request = {0, 1};
 
     uint64_t timings[8];
     // usleep(1);
