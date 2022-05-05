@@ -20,4 +20,4 @@ evict: pull
 	gcc -o evict evict.c -falign-functions=4096 && ./evict
 
 sleepclear: pull
-	gcc -o sleepclear sleepclear.c && ./sleepclear
+	gcc -o sleepclear sleepclear.c -falign-functions=4096 && ./sleepclear
