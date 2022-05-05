@@ -31,7 +31,8 @@ int main() {
     struct timespec remaining, request = {0, 1};
 
     uint64_t start = rdtsc();
-    nanosleep(&request, &remaining);
+    // nanosleep(&request, &remaining);
+    usleep(1);
     uint64_t end = rdtsc();
     printf("been sleeping for %lu cycles\n", end - start);
 
