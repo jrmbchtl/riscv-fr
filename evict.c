@@ -136,6 +136,11 @@ int main() {
 
     printf("is eviction set valid? %d\n", test_eviction_set(eviction_set));
 
+    uint64_t time1, time2;
+    time1 = timed_load(eviction_set.list[0]);
+    time2 = timed_load(eviction_set.list[0]);
+    printf("time1: %lu, time2: %lu\n", time1, time2);
+
     // for (uint64_t i = 0; i < START_SIZE*PAGE_SIZE; i++) {
     //     maccess(&data[i]);
     // }
