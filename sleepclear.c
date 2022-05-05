@@ -30,6 +30,11 @@ int main() {
 
     struct timespec remaining, request = {0, 1};
 
+    uint64_t start = rdtsc();
+    nanosleep(&request, &remaining);
+    uint64_t end = rdtsc();
+    printf("been sleeping for %lu cycles\n", end - start);
+
     uint64_t timings[8];
     maccess(&victim);
     timings[0] = timed_load(&victim);
