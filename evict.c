@@ -137,11 +137,13 @@ int main() {
 
     // printf("is eviction set valid? %d\n", test_eviction_set(eviction_set));
 
+    struct timespec remaining, request = {0, 1000};
+
     uint64_t timings[8];
     // usleep(1);
-    nanosleep(1000);
+    nanosleep(&remaining, &request);
     timings[0] = timed_load(&victim);
-    nanosleep(1000);
+    nanosleep(&remaining, &request);
     timings[1] = timed_load(&victim);
     usleep(1);
     timings[2] = timed_load(&victim);
