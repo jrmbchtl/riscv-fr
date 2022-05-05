@@ -85,7 +85,7 @@ uint64_t test_eviction_set(struct Set eviction_set) {
         
         uint64_t time;
         for (uint64_t i = 0; i < eviction_set.size; i++) {
-            // usleep(50);
+            usleep(50);
             time = timed_load(eviction_set.list[i]);
             if (time < THRESHOLD) {
                 printf("index %lu failed with time %lu and data %p\n", i, time, eviction_set.list[i]);
@@ -138,6 +138,7 @@ int main() {
 
     uint64_t time1, time2;
     time1 = timed_load(eviction_set.list[0]);
+    usleep(50);
     time2 = timed_load(eviction_set.list[0]);
     printf("time1: %lu, time2: %lu\n", time1, time2);
 
