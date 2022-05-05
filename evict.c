@@ -132,6 +132,15 @@ int main() {
     for(uint64_t i=0; i<100; i++) {
         printf("%p\n", &data[i]);
     }
+
+    for (uint64_t i = 0; i < START_SIZE*PAGE_SIZE; i++) {
+        maccess(&data[i]);
+    }
+
+    for (uint64_t i = 0; i < START_SIZE*PAGE_SIZE; i++) {
+        uint64_t time = timed_load(&data[i]);
+        printf("time: %lu with pointer %p\n", time, &data[i]);
+    }
     
 
     // for (int i = 0; i < eviction_set.size; i++) {
