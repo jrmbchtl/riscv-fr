@@ -138,7 +138,7 @@ int main() {
 
     uint64_t time1, time2;
     time1 = timed_load(eviction_set.list[0]);
-    usleep(10);
+    usleep(1);
     time2 = timed_load(eviction_set.list[0]);
     printf("time1: %lu, time2: %lu\n", time1, time2);
 
