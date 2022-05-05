@@ -127,20 +127,14 @@ int main() {
     // initialize eviction set
     struct Set eviction_set;
     eviction_set.size = START_SIZE;
-    uint64_t data[START_SIZE*PAGE_SIZE] = {0};
-    uint64_t base = ((uint64_t)(&data[0])) % PAGE_SIZE;
-    
-    // for(uint64_t i=0; i<100; i++) {
-    //     printf("%p\n", &data[i]);
-    // }
 
-    uint64_t counter = 0;
-    for (uint64_t i = 0; i < START_SIZE*PAGE_SIZE; i++) {
-        if (((uint64_t)(&data[i])) % PAGE_SIZE == base) {
-            counter++;
-        }
+    uint64_t victim = 0;
+
+    for (uint64_t i = 0; i < eviction_set.size; i++) {
+        eviction_set.list[i] = (&victim) + i * PAGE_SIZE;
     }
-    printf("counter: %lu\n", counter);
+
+    printf("is eviction set valid? %d\n", test_eviction_set(eviction_set));
 
     // for (uint64_t i = 0; i < START_SIZE*PAGE_SIZE; i++) {
     //     maccess(&data[i]);
@@ -151,7 +145,6 @@ int main() {
     //     printf("time: %lu with pointer %p\n", time, &data[i]);
     // }
 
-    printf("base %lu\n", base);
     
 
     // for (int i = 0; i < eviction_set.size; i++) {
