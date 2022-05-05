@@ -35,6 +35,8 @@ int main() {
     usleep(1);
     uint64_t end = rdtsc();
     printf("been sleeping for %lu cycles\n", end - start);
+    printf("%lu\n", start);
+    printf("%lu\n", end);
 
     uint64_t timings[8];
     maccess(&victim);
