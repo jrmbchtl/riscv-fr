@@ -32,7 +32,7 @@ int main() {
 
     uint64_t start = rdtsc();
     // nanosleep(&request, &remaining);
-    usleep(1);
+    // usleep(1);
     uint64_t end = rdtsc();
     printf("been sleeping for %lu cycles\n", end - start);
     printf("%lu\n", start);
