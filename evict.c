@@ -138,9 +138,9 @@ int main() {
 
     uint64_t timings[8];
     // usleep(1);
-    nanosleep(1);
+    nanosleep(1000);
     timings[0] = timed_load(&victim);
-    nanosleep(1);
+    nanosleep(1000);
     timings[1] = timed_load(&victim);
     usleep(1);
     timings[2] = timed_load(&victim);
