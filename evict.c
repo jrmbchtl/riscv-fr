@@ -130,18 +130,28 @@ int main() {
 
     uint64_t victim = 0;
 
-    for (uint64_t i = 0; i < eviction_set.size; i++) {
-        eviction_set.list[i] = (&victim) + i * PAGE_SIZE;
+    // for (uint64_t i = 0; i < eviction_set.size; i++) {
+    //     eviction_set.list[i] = (&victim) + i * PAGE_SIZE;
+    // }
+
+    // printf("is eviction set valid? %d\n", test_eviction_set(eviction_set));
+
+    uint64_t timings[8];
+    usleep(1);
+    timings[0] = timed_load(&victim);
+    usleep(1);
+    timings[1] = timed_load(&victim);
+    usleep(1);
+    timings[2] = timed_load(&victim);
+    timings[3] = timed_load(&victim);
+    timings[4] = timed_load(&victim);
+    timings[5] = timed_load(&victim);
+    timings[6] = timed_load(&victim);
+    timings[7] = timed_load(&victim);
+
+    for (int i = 0; i < 8; i++) {
+        printf("timing %lu: %lu\n", i, timings[i]);
     }
-
-    printf("is eviction set valid? %d\n", test_eviction_set(eviction_set));
-
-    uint64_t time1, time2;
-    usleep(1);
-    time1 = timed_load(eviction_set.list[0]);
-    usleep(1);
-    time2 = timed_load(eviction_set.list[0]);
-    printf("time1: %lu, time2: %lu\n", time1, time2);
 
     // for (uint64_t i = 0; i < START_SIZE*PAGE_SIZE; i++) {
     //     maccess(&data[i]);
