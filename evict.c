@@ -137,6 +137,7 @@ int main() {
     printf("is eviction set valid? %d\n", test_eviction_set(eviction_set));
 
     uint64_t time1, time2;
+    usleep(1);
     time1 = timed_load(eviction_set.list[0]);
     usleep(1);
     time2 = timed_load(eviction_set.list[0]);
