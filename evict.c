@@ -130,7 +130,7 @@ int main() {
     uint64_t data[START_SIZE*PAGE_SIZE] = {0};
     
     for(uint64_t i=0; i<100; i++) {
-        printf("%p\n", &data[0]);
+        printf("%p\n", &data[i]);
     }
     
 
