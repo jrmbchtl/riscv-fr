@@ -45,5 +45,9 @@ int main() {
     timings[6] = timed_load(&victim);
     timings[7] = timed_load(&victim);
 
+    for (int i = 0; i < 8; i++) {
+        printf("%lu\n", timings[i]);
+    }
+
     return 0;
 }
