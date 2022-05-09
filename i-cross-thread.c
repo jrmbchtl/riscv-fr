@@ -34,18 +34,19 @@ void* thread_2(void* d) {
     printf("value of done: %d\n", *done);
     while (!*done) {
         before = rdtsc();
-        dummy();
-        after = rdtsc();
-        fprintf(fp, "%lu,%lu\n", before, after);
+        // dummy();
+        // after = rdtsc();
+        fprintf(fp, ",%lu", before);
     }
-    fclose(fp);    
+    fprintf(fp, "\n");
+    fclose(fp);
 }
 
 int main() {
     int done = 0;
     pthread_t spam;
     printf("Main started\n");
-    // pthread_create(&spam, NULL, thread_2, &done);
+    pthread_create(&spam, NULL, thread_2, &done);
     printf("value of done in main: %d\n", done);
     // usleep(100000);
 
@@ -55,16 +56,16 @@ int main() {
     flush();
     for (int i = 0; i < 1000; i++) {
         before = rdtsc();
-        dummy();
-        middle = rdtsc();
-        // flush();
-        after = rdtsc();
-        fprintf(fp, "%lu,%lu,%lu\n", before, middle, after);
+        // dummy();
+        // middle = rdtsc();
+        // // flush();
+        // after = rdtsc();
+        fprintf(fp, "%lu\n", before);
     }
     fclose(fp);
     done = 1;
     printf("Waiting for thread 2 to finish\n");
-    // pthread_join(spam, NULL);
+    pthread_join(spam, NULL);
 
 
     return 0;
