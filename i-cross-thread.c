@@ -44,7 +44,7 @@ int main() {
     int done = 0;
     pthread_t spam;
     printf("Main started\n");
-    pthread_create(&spam, NULL, (void *)thread_2, &done);
+    pthread_create(&spam, NULL, thread_2, &done);
     printf("value of done in main: %d\n", done);
 
     uint64_t before, middle, after;
