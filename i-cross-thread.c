@@ -63,6 +63,8 @@ int main() {
     }
     fclose(fp);
     done = 1;
+    printf("Waiting for thread 2 to finish\n");
+    pthread_join(spam, NULL);
 
 
     return 0;
