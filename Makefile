@@ -21,3 +21,6 @@ evict: pull
 
 sleepclear: pull
 	gcc -o sleepclear sleepclear.c -falign-functions=4096 && ./sleepclear
+
+i-cross-thread: pull
+	gcc -o i-cross-thread i-cross-thread.c -falign-functions=4096 && ./i-cross-thread

@@ -1,0 +1,63 @@
+#include <assert.h>
+#include <pthread.h>
+#include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <time.h>
+
+static inline uint64_t rdtsc()
+{
+    uint64_t val;
+    asm volatile("rdcycle %0\n" : "=r"(val)::);
+    return val;
+}
+
+static inline void flush()
+{
+    asm volatile("fence.i" ::: "memory");
+    asm volatile("fence" ::: "memory");
+}
+
+
+void dummy() {
+    return;
+}
+
+void thread_2(int* done) {
+    // open thread2.csv
+    FILE* fp = fopen("thread2.csv", "w");
+    uint64_t before, after;
+    while (!*done) {
+        before = rdtsc();
+        dummy();
+        after = rdtsc();
+        fprintf(fp, "%lu,%lu\n", before, after);
+    }
+    fclose(fp);    
+}
+
+int main() {
+    int done = 0;
+    pthread_t spam;
+    pthread_create(&spam, NULL, (void *)thread_2, &done);
+
+    uint64_t before, middle, after;
+    FILE* fp = fopen("thread1.csv", "w");
+
+    flush();
+    for (int i = 0; i < 100; i++) {
+        before = rdtsc();
+        dummy();
+        middle = rdtsc();
+        flush();
+        after = rdtsc();
+        fprintf(fp, "%lu,%lu,%lu\n", before, middle, after);
+    }
+    fclose(fp);
+    done = 1;
+
+
+    return 0;
+}
