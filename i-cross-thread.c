@@ -57,7 +57,7 @@ int main() {
         before = rdtsc();
         dummy();
         middle = rdtsc();
-        flush();
+        // flush();
         after = rdtsc();
         fprintf(fp, "%lu,%lu,%lu\n", before, middle, after);
     }
