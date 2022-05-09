@@ -29,6 +29,8 @@ void thread_2(int* done) {
     // open thread2.csv
     FILE* fp = fopen("thread2.csv", "w");
     uint64_t before, after;
+    printf("Thread 2 started\n");
+    printf("value of done: %d\n", *done);
     while (!*done) {
         before = rdtsc();
         dummy();
