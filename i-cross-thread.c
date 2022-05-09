@@ -64,7 +64,7 @@ int main() {
     FILE* fp = fopen("thread1.csv", "w");
 
     flush();
-    for (int i = 0; i < 1000; i++) {
+    for (int i = 0; i < 10000; i++) {
         before = rdtsc();
         // dummy();
         // middle = rdtsc();
