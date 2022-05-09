@@ -25,7 +25,7 @@ void dummy() {
     return;
 }
 
-void thread_2(void* d) {
+void* thread_2(void* d) {
     int *done = (int*)d;
     // open thread2.csv
     FILE* fp = fopen("thread2.csv", "w");
