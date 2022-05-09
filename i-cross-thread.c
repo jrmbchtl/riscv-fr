@@ -36,7 +36,7 @@ void* thread_2(void* d) {
         before = rdtsc();
         // dummy();
         // after = rdtsc();
-        fprintf(fp, ",%lu", before);
+        fprintf(fp, "%lu\n", before);
     }
     fprintf(fp, "\n");
     fclose(fp);
@@ -48,7 +48,7 @@ int main() {
     printf("Main started\n");
     pthread_create(&spam, NULL, thread_2, &done);
     printf("value of done in main: %d\n", done);
-    usleep(100000);
+    usleep(1000);
 
     uint64_t before, middle, after;
     FILE* fp = fopen("thread1.csv", "w");
