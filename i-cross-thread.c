@@ -45,7 +45,7 @@ int main() {
     int done = 0;
     pthread_t spam;
     printf("Main started\n");
-    pthread_create(&spam, NULL, thread_2, &done);
+    // pthread_create(&spam, NULL, thread_2, &done);
     printf("value of done in main: %d\n", done);
     // usleep(100000);
 
@@ -64,7 +64,7 @@ int main() {
     fclose(fp);
     done = 1;
     printf("Waiting for thread 2 to finish\n");
-    pthread_join(spam, NULL);
+    // pthread_join(spam, NULL);
 
 
     return 0;
