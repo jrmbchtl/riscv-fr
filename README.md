@@ -6,6 +6,8 @@ Facts:
  - fence.i has issues when used cross thread, gives sub 50% detectioin rate of 1 event on 100 million events.
  - `getconf PAGESIZE` shows that the page size is 4096 bytes, as also commonly used on other systems
  - calling a function does not cause a cache hit with a load instruction, since cache is split into d-cache (used when loading data) and i-cache (used when calling a function)
+  - minimun thread switch time is ~120,000 cycles
+  - minimum sleep time (nanosleep 1ns and usleep(1)) is 180,000 cycles, enough to evict in most cases
 
  Things to try:
  - using evict on data instead of instructions
