@@ -161,12 +161,15 @@ int main()
     asm volatile("fence.i" ::: "memory");
     asm volatile("fence" ::: "memory");
 
+    // open thread1.csv
+    FILE* fp = fopen("thread1.csv", "w");
 
     while(done == 0)
     {
         timing = timed_call(multiply);
         asm volatile("fence.i" ::: "memory");
         asm volatile("fence" ::: "memory");
+        fprintf(fp, "%lu\n", rdtsc());
         if (timing < threshold)
         {
             counter++;
