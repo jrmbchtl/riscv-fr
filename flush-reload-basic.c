@@ -75,7 +75,7 @@ uint64_t multiply(uint64_t x, uint64_t y)
     return x * y;
 }
 
-void multiply_for_some_time(size_t* done)
+void* multiply_for_some_time(size_t* done)
 {
     for (uint64_t i=0; i<100000000; i++)
     {
@@ -110,7 +110,7 @@ int main()
     uint64_t chached_timings[10000] = {0};
     uint64_t unchached_timings[10000] = {0};
     uint64_t threshold = 0;
-    pthread_t id;
+    pthread_t spam;
 
     // get threshold for cached and uncached multiply access
     multiply(0, 0);
@@ -153,7 +153,7 @@ int main()
 
     size_t done = 0;
 
-    pthread_create(&id, NULL, (void*)multiply_for_some_time, &done);
+    pthread_create(&spam, NULL, multiply_for_some_time, &done);
 
     uint64_t counter = 0;
 
