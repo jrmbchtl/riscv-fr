@@ -75,8 +75,9 @@ uint64_t multiply(uint64_t x, uint64_t y)
     return x * y;
 }
 
-void* multiply_for_some_time(size_t* done)
+void* multiply_for_some_time(void* d)
 {
+    size_t* done = (size_t*)d;
     for (uint64_t i=0; i<100000000; i++)
     {
         multiply(0, 0);
