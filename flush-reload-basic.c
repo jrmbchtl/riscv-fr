@@ -82,10 +82,6 @@ void* multiply_for_some_time(void* d)
     for (size_t i=0; i<100; i++) {
         usleep(10000);
     }
-    for (uint64_t i=0; i<100000000; i++)
-    {
-        multiply(0, 0);
-    }
     printf("Done\n");
     *done = 1;
 }
@@ -94,6 +90,7 @@ int compare_uint64_t (const void * a, const void * b)
 {
    return ( *(int*)a - *(int*)b );
 }
+
 uint64_t median(uint64_t* list, uint64_t size)
 {
     uint64_t* sorted = malloc(size * sizeof(uint64_t));
