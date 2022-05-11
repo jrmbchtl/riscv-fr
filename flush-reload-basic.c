@@ -186,21 +186,21 @@ int main()
 
         while(done == 0)
         {   
-            sample_t mul_timing = timed_call_2(multiply);
-            // sample_t sq_timing = timed_call_1(square);
+            // sample_t mul_timing = timed_call_2(multiply);
+            sample_t sq_timing = timed_call_1(square);
             flush();
             
-            // if (sq_timing.duration < threshold_1)
-            // {
-            //     fprintf(sq, "%lu\n", sq_timing.start - start);
-            //     sq_counter++;
-            // }
-
-            if (mul_timing.duration < threshold_2)
+            if (sq_timing.duration < threshold_1)
             {
-                fprintf(mul, "%lu\n", mul_timing.start - start);
-                mul_counter++;
+                fprintf(sq, "%lu\n", sq_timing.start - start);
+                sq_counter++;
             }
+
+            // if (mul_timing.duration < threshold_2)
+            // {
+            //     fprintf(mul, "%lu\n", mul_timing.start - start);
+            //     mul_counter++;
+            // }
         }
         // printf("sq_counter at run %d: %lu\n", i, sq_counter);
         // printf("mul_counter at run %d: %lu\n", i, mul_counter);

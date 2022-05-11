@@ -25,6 +25,8 @@ for i in range(len(mul)):
         pass
 
 # plot square data
-mul_data = pd.DataFrame(mul_data)
-mul_data.plot(kind='hist', bins=1000)
+# mul_data = pd.DataFrame(mul_data)
+# mul_data.plot(kind='hist', bins=100)
+sq_data = pd.DataFrame(sq_data)
+sq_data.plot(kind='hist', bins=100)
 plt.show()
