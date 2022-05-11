@@ -181,20 +181,21 @@ int main()
         flush();
 
         while(done == 0)
-        {
-            
+        {   
             sample_t mul_timing = timed_call_2(multiply);
             sample_t sq_timing = timed_call_1(square);
             flush();
             
-            if (mul_timing.duration < threshold_2)
-            {
-                mul_counter++;
-            }
             if (sq_timing.duration < threshold_1)
             {
                 sq_counter++;
             }
+
+            if (mul_timing.duration < threshold_2)
+            {
+                mul_counter++;
+            }
+            
         }
         printf("sq_counter at run %d: %lu\n", i, sq_counter);
         printf("mul_counter at run %d: %lu\n", i, mul_counter);
