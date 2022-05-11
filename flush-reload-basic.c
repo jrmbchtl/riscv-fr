@@ -113,7 +113,7 @@ void* calculate(void* d)
         usleep(2000);
         square(0);
         usleep(2000);
-        multiply(0,0); 
+        // multiply(0,0); 
     }
     usleep(1000);
     *done = 1;
