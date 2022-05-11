@@ -190,7 +190,6 @@ int main()
             if (sq_timing.duration < threshold_1)
             {
                 fprintf(sq, "%lu\n", sq_timing.start - start);
-                sq_counter++;
             }
         }
         pthread_join(spam, NULL);
