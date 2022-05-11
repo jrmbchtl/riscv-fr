@@ -6,6 +6,8 @@
 #include <unistd.h>
 
 
+#define SAMPLE_SIZE 10000
+
 /*
  Other processors may implement the fence.i instruction differently and flush the
  cache. Our processor does not do this. This PoC can still be used to test for the
@@ -50,7 +52,16 @@ static inline uint64_t timed_load(void *p)
     return end - start;
 }
 
-static inline uint64_t timed_call(uint64_t (*p)(uint64_t, uint64_t))
+static inline uint64_t timed_call_1(uint64_t (*p)(uint64_t))
+{
+    uint64_t start, end;
+    start = rdtsc();
+    p(0);
+    end = rdtsc();
+    return end - start;
+}
+
+static inline uint64_t timed_call_2(uint64_t (*p)(uint64_t, uint64_t))
 {
     uint64_t start, end;
     start = rdtsc();
@@ -59,7 +70,18 @@ static inline uint64_t timed_call(uint64_t (*p)(uint64_t, uint64_t))
     return end - start;
 }
 
-static inline uint64_t timed_call_n_flush(uint64_t (*p)(uint64_t, uint64_t))
+static inline uint64_t timed_call_n_flush_1(uint64_t (*p)(uint64_t))
+{
+    uint64_t start, end;
+    start = rdtsc();
+    p(0);
+    end = rdtsc();
+    asm volatile("fence.i" ::: "memory");
+    asm volatile("fence" ::: "memory");
+    return end - start;
+}
+
+static inline uint64_t timed_call_n_flush_2(uint64_t (*p)(uint64_t, uint64_t))
 {
     uint64_t start, end;
     start = rdtsc();
@@ -73,6 +95,11 @@ static inline uint64_t timed_call_n_flush(uint64_t (*p)(uint64_t, uint64_t))
 uint64_t multiply(uint64_t x, uint64_t y)
 {
     return x * y;
+}
+
+uint64_t square(uint64_t x)
+{
+    return x * x;
 }
 
 void* multiply_for_some_time(void* d)
@@ -106,71 +133,61 @@ uint64_t median(uint64_t* list, uint64_t size)
 int main()
 {
     // No pthreads on user level riscv so we do a simple poc
-
-    // show that same-thread side channels work
-    uint64_t seq[16] = {0,0,1,1,1,0,1,0,0,1,0,1,1,0,1,0};
-
     uint64_t timing = 0;
-    uint64_t chached_timings[10000] = {0};
-    uint64_t unchached_timings[10000] = {0};
-    uint64_t threshold = 0;
+    uint64_t chached_timings_1[SAMPLE_SIZE] = {0};
+    uint64_t chached_timings_2[SAMPLE_SIZE] = {0};
+    uint64_t unchached_timings_1[SAMPLE_SIZE] = {0};
+    uint64_t unchached_timings_2[SAMPLE_SIZE] = {0};
+    uint64_t threshold_1 = 0;
+    uint64_t threshold_2 = 0;
     pthread_t spam;
 
     // get threshold for cached and uncached multiply access
+    square(0);
+    for (size_t i=0; i<SAMPLE_SIZE; i++) {
+        chached_timings_1[i] = timed_call_1(multiply);
+    }
+    for (size_t i=0; i<SAMPLE_SIZE; i++) {
+        unchached_timings_1[i] = timed_call_n_flush_1(multiply);
+    }
+    printf("cached median 1 = %lu\n", median(chached_timings_1, SAMPLE_SIZE));
+    printf("uncached median 1 = %lu\n", median(unchached_timings_1, SAMPLE_SIZE));
+    threshold_1 = (median(chached_timings_1, SAMPLE_SIZE) + median(unchached_timings_1, SAMPLE_SIZE))/2;
+    printf("threshold 1: %lu\n", threshold_1);
+
     multiply(0, 0);
     for (int i = 0; i < 10000; i++)
     {
-        chached_timings[i] = timed_call(multiply);
+        chached_timings_2[i] = timed_call_2(multiply);
     }
     for (int i = 0; i < 10000; i++)
     {
         flush();
-        unchached_timings[i] = timed_call(multiply);
+        unchached_timings_2[i] = timed_call_2(multiply);
     }
-    printf("cached median = %lu\n", median(chached_timings, 10000));
-    printf("uncached median = %lu\n", median(unchached_timings, 10000));
-    threshold = (median(chached_timings, 10000) + median(unchached_timings, 10000))/2;
+    printf("cached median 2 = %lu\n", median(chached_timings_2, 10000));
+    printf("uncached median 2 = %lu\n", median(unchached_timings_2, 10000));
+    threshold_2 = (median(chached_timings_2, 10000) + median(unchached_timings_2, 10000))/2;
+    printf("threshold 2: %lu\n", threshold_2);
 
-    printf("threshold: %lu\n", threshold);
+    // for(size_t i=0; i<100; i++) {
+    //     size_t done = 0;
+    //     pthread_create(&spam, NULL, multiply_for_some_time, &done);
+    //     uint64_t counter = 0;
+    //     flush();
 
-    flush();
-
-    for (int i=0; i<16; i++)
-    {
-        if (seq[i] == 0)
-        {
-            flush();
-        } else {
-            multiply(0, 0);
-        }
-        timing = timed_call(multiply);
-        if (timing < threshold) 
-        {
-            printf("1");
-        } else {
-            printf("0");
-        }
-    }
-    printf("\n");
-
-    for(size_t i=0; i<100; i++) {
-        size_t done = 0;
-        pthread_create(&spam, NULL, multiply_for_some_time, &done);
-        uint64_t counter = 0;
-        flush();
-
-        while(done == 0)
-        {
-            timing = timed_call(multiply);
-            flush();
+    //     while(done == 0)
+    //     {
+    //         timing = timed_call(multiply);
+    //         flush();
             
-            if (timing < threshold)
-            {
-                counter++;
-            }
-        }
-        printf("counter at run %d: %lu\n", i, counter);
-    }
+    //         if (timing < threshold)
+    //         {
+    //             counter++;
+    //         }
+    //     }
+    //     printf("counter at run %d: %lu\n", i, counter);
+    // }
 
     return 0;
 }
