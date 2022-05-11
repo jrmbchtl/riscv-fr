@@ -175,13 +175,9 @@ int main()
     printf("threshold 2: %lu\n", threshold_2);
 
     FILE* sq = fopen("square.csv", "w");
-    FILE* mul = fopen("multiply.csv", "w");
-
     for(size_t i=0; i<1000; i++) {
         size_t done = 0;
         pthread_create(&spam, NULL, calculate, &done);
-        uint64_t mul_counter = 0;
-        uint64_t sq_counter = 0;
         uint64_t start = rdtsc();
         flush();
 
@@ -189,7 +185,6 @@ int main()
         {   
 
             sample_t sq_timing = timed_call_1(square);
-            sample_t mul_timing = timed_call_2(multiply);
             flush();
             
             if (sq_timing.duration < threshold_1)
@@ -197,16 +192,33 @@ int main()
                 fprintf(sq, "%lu\n", sq_timing.start - start);
                 sq_counter++;
             }
+        }
+        pthread_join(spam, NULL);
+    }
+    fclose(sq);
+
+    FILE* mul = fopen("multiply.csv", "w");
+    for(size_t i=0; i<1000; i++) {
+        size_t done = 0;
+        pthread_create(&spam, NULL, calculate, &done);
+        uint64_t start = rdtsc();
+        flush();
+
+        while(done == 0)
+        {   
+
+            sample_t mul_timing = timed_call_2(multiply);
+            flush();
 
             if (mul_timing.duration < threshold_2)
             {
                 fprintf(mul, "%lu\n", mul_timing.start - start);
-                mul_counter++;
             }
         }
-        // printf("sq_counter at run %d: %lu\n", i, sq_counter);
-        // printf("mul_counter at run %d: %lu\n", i, mul_counter);
+        pthread_join(spam, NULL);
     }
+    fclose(sq);
+    fclose(mul);
 
     return 0;
 }
