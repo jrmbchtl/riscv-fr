@@ -176,7 +176,7 @@ int main()
     FILE* sq = fopen("square.csv", "w");
     FILE* mul = fopen("multiply.csv", "w");
 
-    for(size_t i=0; i<100; i++) {
+    for(size_t i=0; i<1000; i++) {
         size_t done = 0;
         pthread_create(&spam, NULL, calculate, &done);
         uint64_t mul_counter = 0;
