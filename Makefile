@@ -26,5 +26,4 @@ i-cross-thread: pull
 	gcc -o i-cross-thread i-cross-thread.c -lpthread -falign-functions=4096 && ./i-cross-thread
 
 fr: pull
-	rm thread1.csv
 	gcc -o fr flush-reload-basic.c -lpthread -falign-functions=4096 && ./fr
