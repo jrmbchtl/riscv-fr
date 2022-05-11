@@ -173,11 +173,16 @@ int main()
     threshold_2 = (median(chached_timings_2, 10000) + median(unchached_timings_2, 10000))/2;
     printf("threshold 2: %lu\n", threshold_2);
 
+    FILE* sq = fopen("square.csv", "w");
+    FILE* mul = fopen("multiply.csv", "w");
+
     for(size_t i=0; i<100; i++) {
         size_t done = 0;
         pthread_create(&spam, NULL, calculate, &done);
         uint64_t mul_counter = 0;
         uint64_t sq_counter = 0;
+        fprintf(sq, "%lu", rdtsc());
+        fprintf(mul, "%lu", rdtsc());
         flush();
 
         while(done == 0)
@@ -188,15 +193,18 @@ int main()
             
             if (sq_timing.duration < threshold_1)
             {
+                fprintf(sq, ",%lu", sq_timing.start);
                 sq_counter++;
             }
 
             if (mul_timing.duration < threshold_2)
             {
+                fprintf(mul, ",%lu", mul_timing.start);
                 mul_counter++;
             }
             
         }
+        fprintf(sq, "\n");
         printf("sq_counter at run %d: %lu\n", i, sq_counter);
         printf("mul_counter at run %d: %lu\n", i, mul_counter);
     }
