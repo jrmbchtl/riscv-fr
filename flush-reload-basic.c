@@ -80,10 +80,10 @@ void* multiply_for_some_time(void* d)
     size_t* done = (size_t*)d;
 
     for (size_t i=0; i<100; i++) {
-        usleep(1000);
+        usleep(10000);
         multiply(0, 0);
     }
-    usleep(1000);
+    usleep(10000);
     // printf("Done\n");
     *done = 1;
 }
