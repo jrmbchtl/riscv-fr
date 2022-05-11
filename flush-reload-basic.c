@@ -182,8 +182,9 @@ int main()
 
         while(done == 0)
         {
-            sample_t sq_timing = timed_call_1(square);
+            
             sample_t mul_timing = timed_call_2(multiply);
+            sample_t sq_timing = timed_call_1(square);
             flush();
             
             if (mul_timing.duration < threshold_2)
