@@ -145,10 +145,10 @@ int main()
     // get threshold for cached and uncached multiply access
     square(0);
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
-        chached_timings_1[i] = timed_call_1(multiply);
+        chached_timings_1[i] = timed_call_1(square);
     }
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
-        unchached_timings_1[i] = timed_call_n_flush_1(multiply);
+        unchached_timings_1[i] = timed_call_n_flush_1(square);
     }
     printf("cached median 1 = %lu\n", median(chached_timings_1, SAMPLE_SIZE));
     printf("uncached median 1 = %lu\n", median(unchached_timings_1, SAMPLE_SIZE));
