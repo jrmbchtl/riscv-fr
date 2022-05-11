@@ -181,8 +181,7 @@ int main()
         pthread_create(&spam, NULL, calculate, &done);
         uint64_t mul_counter = 0;
         uint64_t sq_counter = 0;
-        fprintf(sq, "%lu", rdtsc());
-        fprintf(mul, "%lu", rdtsc());
+        uint64_t start = rdtsc();
         flush();
 
         while(done == 0)
@@ -193,19 +192,16 @@ int main()
             
             if (sq_timing.duration < threshold_1)
             {
-                fprintf(sq, ",%lu", sq_timing.start);
+                fprintf(sq, "%lu\n", sq_timing.start - start);
                 sq_counter++;
             }
 
             if (mul_timing.duration < threshold_2)
             {
-                fprintf(mul, ",%lu", mul_timing.start);
+                fprintf(mul, "%lu\n", mul_timing.start - start);
                 mul_counter++;
             }
-            
         }
-        fprintf(sq, "\n");
-        fprintf(mul, "\n");
         printf("sq_counter at run %d: %lu\n", i, sq_counter);
         printf("mul_counter at run %d: %lu\n", i, mul_counter);
     }
