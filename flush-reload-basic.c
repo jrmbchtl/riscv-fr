@@ -205,6 +205,7 @@ int main()
             
         }
         fprintf(sq, "\n");
+        fprintf(mul, "\n");
         printf("sq_counter at run %d: %lu\n", i, sq_counter);
         printf("mul_counter at run %d: %lu\n", i, mul_counter);
     }
