@@ -78,6 +78,10 @@ uint64_t multiply(uint64_t x, uint64_t y)
 void* multiply_for_some_time(void* d)
 {
     size_t* done = (size_t*)d;
+
+    for (size_t i=0; i<100; i++) {
+        usleep(10000);
+    }
     for (uint64_t i=0; i<100000000; i++)
     {
         multiply(0, 0);
@@ -130,15 +134,13 @@ int main()
 
     printf("threshold: %lu\n", threshold);
 
-    asm volatile("fence.i" ::: "memory");
-    asm volatile("fence" ::: "memory");
+    flush();
 
     for (int i=0; i<16; i++)
     {
         if (seq[i] == 0)
         {
-            asm volatile("fence.i" ::: "memory");
-            asm volatile("fence" ::: "memory");
+            flush();
         } else {
             multiply(0, 0);
         }
@@ -152,34 +154,24 @@ int main()
     }
     printf("\n");
 
-    size_t done = 0;
+    for(size_t i=0; i<100; i++) {
+        size_t done = 0;
+        pthread_create(&spam, NULL, multiply_for_some_time, &done);
+        uint64_t counter = 0;
+        flush();
 
-    pthread_create(&spam, NULL, multiply_for_some_time, &done);
-
-    uint64_t counter = 0;
-
-    asm volatile("fence.i" ::: "memory");
-    asm volatile("fence" ::: "memory");
-
-    // open thread1.csv
-    FILE* fp = fopen("thread1.csv", "w");
-
-    while(done == 0)
-    {
-        timing = timed_call(multiply);
-        asm volatile("fence.i" ::: "memory");
-        asm volatile("fence" ::: "memory");
-        
-        if (timing < threshold)
+        while(done == 0)
         {
-            fprintf(fp, "%lu,1\n", rdtsc());
-            counter++;
-        } else {
-            fprintf(fp, "%lu,0\n", rdtsc());
+            timing = timed_call(multiply);
+            flush();
+            
+            if (timing < threshold)
+            {
+                counter++;
+            }
         }
-        // usleep(10000);
+        printf("counter at run %d: %lu\n", i, counter);
     }
-    printf("counter: %lu\n", counter);
 
     return 0;
 }
