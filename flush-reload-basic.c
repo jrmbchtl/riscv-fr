@@ -109,7 +109,7 @@ void* calculate(void* d)
 {
     size_t* done = (size_t*)d;
 
-    for (size_t i=0; i<100; i++) {
+    for (size_t i=0; i<10; i++) {
         usleep(1000);
         if (i%2) multiply(0, 0);
         else square(0);

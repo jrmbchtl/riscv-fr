@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
 
 with open('square.csv', 'r') as f:
     sq = f.readlines()
@@ -23,5 +25,6 @@ for i in range(len(mul)):
         pass
 
 # plot square data
-sq_data = pd.DataFrame(sq_data)
-sq_data.plot.hist(bins=100)
+mul_data = pd.DataFrame(mul_data)
+mul_data.plot(kind='hist', bins=1000)
+plt.show()
