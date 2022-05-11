@@ -112,7 +112,7 @@ void* calculate(void* d)
     for (size_t i=0; i<10; i++) {
         usleep(1000);
         square(0);
-        // usleep(2000);
+        usleep(1000);
         multiply(0,0); 
     }
     usleep(1000);
