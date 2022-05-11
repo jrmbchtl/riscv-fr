@@ -6,7 +6,8 @@
 #include <unistd.h>
 
 
-#define SAMPLE_SIZE 10000
+#define SAMPLE_SIZE     10000
+#define RUNS            16000
 
 typedef struct {
     uint64_t start;
@@ -174,8 +175,9 @@ int main()
     threshold_2 = (median(chached_timings_2, 10000) + median(unchached_timings_2, 10000))/2;
     printf("threshold 2: %lu\n", threshold_2);
 
+    printf("Observing square...\n");
     FILE* sq = fopen("square.csv", "w");
-    for(size_t i=0; i<1000; i++) {
+    for(size_t i=0; i<RUNS; i++) {
         size_t done = 0;
         pthread_create(&spam, NULL, calculate, &done);
         uint64_t start = rdtsc();
@@ -196,8 +198,12 @@ int main()
     }
     fclose(sq);
 
+    printf("Done observing square\n");
+
+    printf("Observing multiply...\n");
+
     FILE* mul = fopen("multiply.csv", "w");
-    for(size_t i=0; i<1000; i++) {
+    for(size_t i=0; i<RUNS; i++) {
         size_t done = 0;
         pthread_create(&spam, NULL, calculate, &done);
         uint64_t start = rdtsc();
@@ -217,6 +223,7 @@ int main()
         pthread_join(spam, NULL);
     }
     fclose(mul);
+    printf("Done observing multiply\n");
 
     return 0;
 }
