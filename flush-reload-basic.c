@@ -216,7 +216,6 @@ int main()
         }
         pthread_join(spam, NULL);
     }
-    fclose(sq);
     fclose(mul);
 
     return 0;
