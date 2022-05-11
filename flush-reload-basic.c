@@ -110,11 +110,11 @@ void* calculate(void* d)
     size_t* done = (size_t*)d;
 
     for (size_t i=0; i<100; i++) {
-        usleep(10000);
+        usleep(1000);
         multiply(0, 0);
         square(0);
     }
-    usleep(10000);
+    usleep(1000);
     *done = 1;
 }
 
