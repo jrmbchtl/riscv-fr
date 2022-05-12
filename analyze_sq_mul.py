@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from cProfile import label
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -24,9 +25,8 @@ for i in range(len(mul)):
     except:
         pass
 
-# plot square data
-mul_data = pd.DataFrame(mul_data)
-ax = mul_data.plot(kind='hist', bins=100)
-sq_data = pd.DataFrame(sq_data)
-sq_data.plot(kind='hist', bins=100, ax=ax)
+mul_data = pd.DataFrame(mul_data, columns=['multiply'])
+ax = mul_data.plot(kind='hist', bins=100, title='multiply')
+sq_data = pd.DataFrame(sq_data, columns=['square'])
+sq_data.plot(kind='hist', bins=100, ax=ax, title='square')
 plt.show()
