@@ -21,7 +21,7 @@
  */
 
 #if !defined(POLARSSL_CONFIG_FILE)
-#include "mbedtls/config.h"
+#include "polarssl/config.h"
 #else
 #include POLARSSL_CONFIG_FILE
 #endif
