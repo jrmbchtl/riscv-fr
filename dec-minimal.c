@@ -37,7 +37,7 @@ int main()
 
     entropy_init( &entropy );
     ctr_drbg_init( &ctr_drbg, entropy_func, &entropy,
-                               (const unsigned char *) pers,
+                              (const unsigned char *) pers,
                                strlen( pers ) );
 
     pk_init( &pk );
@@ -56,8 +56,14 @@ int main()
                             ctr_drbg_random, &ctr_drbg );
     printf( "The decrypted result is: '%s'\n\n", result );
 
+    assert(result[0] == 'H');
+    assert(result[1] == 'e');
+    assert(result[2] == 'l');
+    assert(result[3] == 'l');
+    assert(result[4] == 'o');
+
     ctr_drbg_free( &ctr_drbg );
     entropy_free( &entropy );
-
+ 
     return 0;
 }
