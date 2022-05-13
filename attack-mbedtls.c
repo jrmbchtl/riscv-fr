@@ -152,6 +152,7 @@ int main()
     pk_decrypt( &pk, buf, ilen, result, &olen, sizeof(result),
                             ctr_drbg_random, &ctr_drbg );
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
+        printf("%d\n", i);
         for (size_t j=0; j<1024; j++) {
             result[j] = 0;
         }
@@ -160,6 +161,7 @@ int main()
     }
     flush();
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
+        printf("%d\n", i);
         for (size_t j=0; j<1024; j++) {
             result[j] = 0;
         }
