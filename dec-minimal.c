@@ -11,7 +11,7 @@
 
 #define KEYFILE "keyfile.key"
 
-int main( int argc, char *argv[] )
+int main()
 {
     FILE *f;
     int ret, c;
@@ -22,21 +22,9 @@ int main( int argc, char *argv[] )
     unsigned char result[1024];
     unsigned char buf[512];
     const char *pers = "pk_decrypt";
-    ((void) argv);
 
     memset(result, 0, sizeof( result ) );
     ret = 1;
-
-    if( argc != 2 )
-    {
-        polarssl_printf( "usage: pk_decrypt <key_file>\n" );
-
-#if defined(_WIN32)
-        polarssl_printf( "\n" );
-#endif
-
-        goto exit;
-    }
 
     polarssl_printf( "\n  . Seeding the random number generator..." );
     fflush( stdout );
@@ -50,12 +38,12 @@ int main( int argc, char *argv[] )
         goto exit;
     }
 
-    polarssl_printf( "\n  . Reading private key from '%s'", argv[1] );
+    polarssl_printf( "\n  . Reading private key from '%s'", KEYFILE );
     fflush( stdout );
 
     pk_init( &pk );
 
-    if( ( ret = pk_parse_keyfile( &pk, argv[1], "" ) ) != 0 )
+    if( ( ret = pk_parse_keyfile( &pk, KEYFILE, "" ) ) != 0 )
     {
         polarssl_printf( " failed\n  ! pk_parse_keyfile returned -0x%04x\n", -ret );
         goto exit;
