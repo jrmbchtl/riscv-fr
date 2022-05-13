@@ -175,8 +175,7 @@ int main()
     // printf("threshold: %lu\n", threshold);
 
     mpi b = {1};
-    t_uint t = 0;
-    printf("test: %ld", mpi_montmul(&b, &b, &b, &t, &b));
+    printf("test: %ld", mpi_exp_mod(&b, &b, &b, &b, &b));
 
 
     // printf("Observing square...\n");
