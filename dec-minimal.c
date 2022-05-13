@@ -53,20 +53,12 @@ int main()
      * Decrypt the encrypted RSA data and print the result.
      */
 
-    if( ( ret = pk_decrypt( &pk, buf, i, result, &olen, sizeof(result),
-                            ctr_drbg_random, &ctr_drbg ) ) != 0 )
-    {
-        polarssl_printf( " failed\n  ! pk_decrypt returned -0x%04x\n", -ret );
-        goto exit;
-    }
-
+    pk_decrypt( &pk, buf, i, result, &olen, sizeof(result),
+                            ctr_drbg_random, &ctr_drbg );
     polarssl_printf( "The decrypted result is: '%s'\n\n", result );
 
-    ret = 0;
-
-exit:
     ctr_drbg_free( &ctr_drbg );
     entropy_free( &entropy );
 
-    return( ret );
+    return 0;
 }
