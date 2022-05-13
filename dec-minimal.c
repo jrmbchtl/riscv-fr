@@ -10,6 +10,7 @@
 #include <string.h>
 
 #define KEYFILE "keyfile.key"
+#define CIPHERFILE "result-enc.txt"
 
 int main()
 {
@@ -37,14 +38,11 @@ int main()
      * Extract the RSA encrypted value from the text file
      */
 
-    f = fopen( "result-enc.txt", "rb" );
-
+    f = fopen( CIPHERFILE, "rb" );
     i = 0;
-
     while( fscanf( f, "%02X", &c ) > 0 &&
            i < (int) sizeof( buf ) )
         buf[i++] = (unsigned char) c;
-
     fclose( f );
 
     /*
