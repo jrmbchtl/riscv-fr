@@ -82,7 +82,7 @@ static inline sample_t timed_call_n_flush(pk_context *ctx, const unsigned char *
 {
     uint64_t start, end;
     start = rdtsc();
-    pk_decrypt(&ctx, input, ilen, output, &olen, osize,
+    pk_decrypt(ctx, input, ilen, output, olen, osize,
                             f_rng, p_rng);
     end = rdtsc();
     assert(output[0] == 'H');
