@@ -6,6 +6,7 @@
 #include "polarssl/entropy.h"
 #include "polarssl/ctr_drbg.h"
 
+#include <assert.h>
 #include <stdio.h>
 #include <string.h>
 
