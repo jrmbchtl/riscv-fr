@@ -26,20 +26,10 @@ int main()
     memset(result, 0, sizeof( result ) );
     ret = 1;
 
-    polarssl_printf( "\n  . Seeding the random number generator..." );
-    fflush( stdout );
-
     entropy_init( &entropy );
-    if( ( ret = ctr_drbg_init( &ctr_drbg, entropy_func, &entropy,
+    ctr_drbg_init( &ctr_drbg, entropy_func, &entropy,
                                (const unsigned char *) pers,
-                               strlen( pers ) ) ) != 0 )
-    {
-        polarssl_printf( " failed\n  ! ctr_drbg_init returned %d\n", ret );
-        goto exit;
-    }
-
-    polarssl_printf( "\n  . Reading private key from '%s'", KEYFILE );
-    fflush( stdout );
+                               strlen( pers ) );
 
     pk_init( &pk );
 
@@ -71,8 +61,6 @@ int main()
     /*
      * Decrypt the encrypted RSA data and print the result.
      */
-    polarssl_printf( "\n  . Decrypting the encrypted data" );
-    fflush( stdout );
 
     if( ( ret = pk_decrypt( &pk, buf, i, result, &olen, sizeof(result),
                             ctr_drbg_random, &ctr_drbg ) ) != 0 )
@@ -80,8 +68,6 @@ int main()
         polarssl_printf( " failed\n  ! pk_decrypt returned -0x%04x\n", -ret );
         goto exit;
     }
-
-    polarssl_printf( "\n  . OK\n\n" );
 
     polarssl_printf( "The decrypted result is: '%s'\n\n", result );
 
