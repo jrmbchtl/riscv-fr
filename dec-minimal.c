@@ -32,23 +32,14 @@ int main()
                                strlen( pers ) );
 
     pk_init( &pk );
-
-    if( ( ret = pk_parse_keyfile( &pk, KEYFILE, "" ) ) != 0 )
-    {
-        polarssl_printf( " failed\n  ! pk_parse_keyfile returned -0x%04x\n", -ret );
-        goto exit;
-    }
+    pk_parse_keyfile( &pk, KEYFILE, "" );
 
     /*
      * Extract the RSA encrypted value from the text file
      */
     ret = 1;
 
-    if( ( f = fopen( "result-enc.txt", "rb" ) ) == NULL )
-    {
-        polarssl_printf( "\n  ! Could not open %s\n\n", "result-enc.txt" );
-        goto exit;
-    }
+    f = fopen( "result-enc.txt", "rb" );
 
     i = 0;
 
