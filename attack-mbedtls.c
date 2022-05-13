@@ -5,6 +5,7 @@
 #include "polarssl/pk.h"
 #include "polarssl/entropy.h"
 #include "polarssl/ctr_drbg.h"
+#include "polarssl/bignum.h"
 
 #include <assert.h>
 #include <pthread.h>
@@ -151,27 +152,31 @@ int main()
     // get threshold for cached and uncached multiply access
     pk_decrypt( &pk, buf, ilen, result, &olen, sizeof(result),
                             ctr_drbg_random, &ctr_drbg );
-    for (size_t i=0; i<SAMPLE_SIZE; i++) {
-        // printf("%d\n", i);
-        for (size_t j=0; j<1024; j++) {
-            result[j] = 0;
-        }
-        chached_timings[i] = timed_call(&pk, buf, ilen, result, &olen, sizeof(result),
-                            ctr_drbg_random, &ctr_drbg).duration;
-    }
-    flush();
-    for (size_t i=0; i<SAMPLE_SIZE; i++) {
-        // printf("%d\n", i);
-        for (size_t j=0; j<1024; j++) {
-            result[j] = 0;
-        }
-        unchached_timings[i] = timed_call_n_flush(&pk, buf, ilen, result, &olen, sizeof(result),
-                            ctr_drbg_random, &ctr_drbg).duration;
-    }
-    printf("cached median = %lu\n", median(chached_timings, SAMPLE_SIZE));
-    printf("uncached median = %lu\n", median(unchached_timings, SAMPLE_SIZE));
-    threshold = (median(chached_timings, SAMPLE_SIZE) + median(unchached_timings, SAMPLE_SIZE))/2;
-    printf("threshold: %lu\n", threshold);
+    // for (size_t i=0; i<SAMPLE_SIZE; i++) {
+    //     // printf("%d\n", i);
+    //     for (size_t j=0; j<1024; j++) {
+    //         result[j] = 0;
+    //     }
+    //     chached_timings[i] = timed_call(&pk, buf, ilen, result, &olen, sizeof(result),
+    //                         ctr_drbg_random, &ctr_drbg).duration;
+    // }
+    // flush();
+    // for (size_t i=0; i<SAMPLE_SIZE; i++) {
+    //     // printf("%d\n", i);
+    //     for (size_t j=0; j<1024; j++) {
+    //         result[j] = 0;
+    //     }
+    //     unchached_timings[i] = timed_call_n_flush(&pk, buf, ilen, result, &olen, sizeof(result),
+    //                         ctr_drbg_random, &ctr_drbg).duration;
+    // }
+    // printf("cached median = %lu\n", median(chached_timings, SAMPLE_SIZE));
+    // printf("uncached median = %lu\n", median(unchached_timings, SAMPLE_SIZE));
+    // threshold = (median(chached_timings, SAMPLE_SIZE) + median(unchached_timings, SAMPLE_SIZE))/2;
+    // printf("threshold: %lu\n", threshold);
+
+    mpi b = {1};
+    t_uint t = 0;
+    printf("test: %ld", mpi_montmul(&b, &b, &b, &t, &b));
 
 
     // printf("Observing square...\n");
@@ -197,5 +202,8 @@ int main()
     // }
     // fclose(sq);
 
+
+    ctr_drbg_free( &ctr_drbg );
+    entropy_free( &entropy );
     return 0;
 }
