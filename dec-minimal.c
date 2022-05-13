@@ -62,9 +62,9 @@ int main()
         buf[i++] = (unsigned char) c;
     fclose( f );
 
-    for (i=0; i<sizeof(buf); i++)
+    for (int j=0; j<sizeof(buf); j++)
     {
-        printf("%02X ", buf[i]);
+        printf("%02X ", buf[j]);
     }
     printf("\n%d\n\n", i);
 
