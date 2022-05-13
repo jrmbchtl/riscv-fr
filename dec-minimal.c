@@ -47,12 +47,12 @@ int main()
      * Extract the RSA encrypted value from the text file
      */
 
-    // f = fopen( CIPHERFILE, "rb" );
-    // i = 0;
-    // while( fscanf( f, "%02X", &c ) > 0 &&
-    //        i < (int) sizeof( buf ) )
-    //     buf[i++] = (unsigned char) c;
-    // fclose( f );
+    f = fopen( CIPHERFILE, "rb" );
+    i = 0;
+    while( fscanf( f, "%02X", &c ) > 0 &&
+           i < (int) sizeof( buf ) )
+        buf[i++] = (unsigned char) c;
+    fclose( f );
 
     /*
      * Decrypt the encrypted RSA data and print the result.
