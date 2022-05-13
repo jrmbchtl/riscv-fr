@@ -51,22 +51,22 @@ int main()
     {
         printf("%02X ", buf[i]);
     }
-    printf("\n\n");
-
+    i = 0;
     while(buf[i] != 0) i++;
+    printf("\n%d\n\n", i);
 
-    // f = fopen( CIPHERFILE, "rb" );
-    // i = 0;
-    // while( fscanf( f, "%02X", &c ) > 0 &&
-    //        i < (int) sizeof( buf ) )
-    //     buf[i++] = (unsigned char) c;
-    // fclose( f );
+    f = fopen( CIPHERFILE, "rb" );
+    i = 0;
+    while( fscanf( f, "%02X", &c ) > 0 &&
+           i < (int) sizeof( buf ) )
+        buf[i++] = (unsigned char) c;
+    fclose( f );
 
-    // for (i=0; i<sizeof(buf); i++)
-    // {
-    //     printf("%02X ", buf[i]);
-    // }
-    // printf("\n\n");
+    for (i=0; i<sizeof(buf); i++)
+    {
+        printf("%02X ", buf[i]);
+    }
+    printf("\n%d\n\n", i);
 
     /*
      * Decrypt the encrypted RSA data and print the result.
