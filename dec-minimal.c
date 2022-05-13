@@ -1,41 +1,6 @@
-/*
- *  Public key-based simple decryption program
- *
- *  Copyright (C) 2006-2013, ARM Limited, All Rights Reserved
- *
- *  This file is part of mbed TLS (https://tls.mbed.org)
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License along
- *  with this program; if not, write to the Free Software Foundation, Inc.,
- *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
-
-#if !defined(POLARSSL_CONFIG_FILE)
 #include "polarssl/config.h"
-#else
-#include POLARSSL_CONFIG_FILE
-#endif
-
-#if defined(POLARSSL_PLATFORM_C)
 #include "polarssl/platform.h"
-#else
-#include <stdio.h>
-#define polarssl_printf     printf
-#endif
 
-#if defined(POLARSSL_BIGNUM_C) && defined(POLARSSL_PK_PARSE_C) && \
-    defined(POLARSSL_FS_IO) && defined(POLARSSL_ENTROPY_C) && \
-    defined(POLARSSL_CTR_DRBG_C)
 #include "polarssl/error.h"
 #include "polarssl/pk.h"
 #include "polarssl/entropy.h"
@@ -43,20 +8,9 @@
 
 #include <stdio.h>
 #include <string.h>
-#endif
 
+#define KEYFILE "keyfile.key"
 
-#if !defined(POLARSSL_BIGNUM_C) || !defined(POLARSSL_PK_PARSE_C) ||  \
-    !defined(POLARSSL_FS_IO) || !defined(POLARSSL_ENTROPY_C) || \
-    !defined(POLARSSL_CTR_DRBG_C)
-int main( void )
-{
-    polarssl_printf("POLARSSL_BIGNUM_C and/or POLARSSL_PK_PARSE_C and/or "
-           "POLARSSL_FS_IO and/or POLARSSL_ENTROPY_C and/or "
-           "POLARSSL_CTR_DRBG_C not defined.\n");
-    return( 0 );
-}
-#else
 int main( int argc, char *argv[] )
 {
     FILE *f;
@@ -149,17 +103,5 @@ exit:
     ctr_drbg_free( &ctr_drbg );
     entropy_free( &entropy );
 
-#if defined(POLARSSL_ERROR_C)
-    polarssl_strerror( ret, (char *) buf, sizeof(buf) );
-    polarssl_printf( "  !  Last error was: %s\n", buf );
-#endif
-
-#if defined(_WIN32)
-    polarssl_printf( "  + Press Enter to exit this program.\n" );
-    fflush( stdout ); getchar();
-#endif
-
     return( ret );
 }
-#endif /* POLARSSL_BIGNUM_C && POLARSSL_PK_PARSE_C && POLARSSL_FS_IO &&
-          POLARSSL_ENTROPY_C && POLARSSL_CTR_DRBG_C */
