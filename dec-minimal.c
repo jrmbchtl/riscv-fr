@@ -14,7 +14,7 @@
 int main()
 {
     FILE *f;
-    int ret, c;
+    int c;
     size_t i, olen = 0;
     pk_context pk;
     entropy_context entropy;
@@ -24,7 +24,6 @@ int main()
     const char *pers = "pk_decrypt";
 
     memset(result, 0, sizeof( result ) );
-    ret = 1;
 
     entropy_init( &entropy );
     ctr_drbg_init( &ctr_drbg, entropy_func, &entropy,
@@ -37,7 +36,6 @@ int main()
     /*
      * Extract the RSA encrypted value from the text file
      */
-    ret = 1;
 
     f = fopen( "result-enc.txt", "rb" );
 
@@ -55,7 +53,7 @@ int main()
 
     pk_decrypt( &pk, buf, i, result, &olen, sizeof(result),
                             ctr_drbg_random, &ctr_drbg );
-    polarssl_printf( "The decrypted result is: '%s'\n\n", result );
+    printf( "The decrypted result is: '%s'\n\n", result );
 
     ctr_drbg_free( &ctr_drbg );
     entropy_free( &entropy );
