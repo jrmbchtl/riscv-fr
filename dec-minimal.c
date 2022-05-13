@@ -25,7 +25,7 @@ int main() {
     fflush( stdout );
 
     entropy_init( &entropy );
-    tr_drbg_init( &ctr_drbg, entropy_func, &entropy,
+    ctr_drbg_init( &ctr_drbg, entropy_func, &entropy,
                                (const unsigned char *) pers,
                                strlen( pers ) );
 
