@@ -174,7 +174,8 @@ int main()
     // threshold = (median(chached_timings, SAMPLE_SIZE) + median(unchached_timings, SAMPLE_SIZE))/2;
     // printf("threshold: %lu\n", threshold);
 
-    mpi b = {1};
+    mpi b;
+    mpi_init( &b);
     printf("test: %ld", mpi_exp_mod(&b, &b, &b, &b, &b));
 
 
