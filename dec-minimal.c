@@ -55,18 +55,18 @@ int main()
     while(buf[i] != 0) i++;
     printf("\n%d\n\n", i);
 
-    f = fopen( CIPHERFILE, "rb" );
-    i = 0;
-    while( fscanf( f, "%02X", &c ) > 0 &&
-           i < (int) sizeof( buf ) )
-        buf[i++] = (unsigned char) c;
-    fclose( f );
+    // f = fopen( CIPHERFILE, "rb" );
+    // i = 0;
+    // while( fscanf( f, "%02X", &c ) > 0 &&
+    //        i < (int) sizeof( buf ) )
+    //     buf[i++] = (unsigned char) c;
+    // fclose( f );
 
-    for (int j=0; j<sizeof(buf); j++)
-    {
-        printf("%02X ", buf[j]);
-    }
-    printf("\n%d\n\n", i);
+    // for (int j=0; j<sizeof(buf); j++)
+    // {
+    //     printf("%02X ", buf[j]);
+    // }
+    // printf("\n%d\n\n", i);
 
     /*
      * Decrypt the encrypted RSA data and print the result.
