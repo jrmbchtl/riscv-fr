@@ -13,6 +13,23 @@
 #define KEYFILE "keyfile.key"
 #define CIPHERFILE "result-enc.txt"
 
+#define biL    (ciL << 3)               /* bits  in limb  */
+#define ciL    (sizeof(t_uint))         /* chars in limb  */
+
+static void mpi_montg_init( t_uint *mm, const mpi *N )
+{
+    t_uint x, m0 = N->p[0];
+    unsigned int i;
+
+    x  = m0;
+    x += ( ( m0 + 2 ) & 4 ) << 1;
+
+    for( i = biL; i >= 8; i /= 2 )
+        x *= ( 2 - ( m0 * x ) );
+
+    *mm = ~x + 1;
+}
+
 int main()
 {
     FILE *f;
@@ -65,6 +82,58 @@ int main()
 
     ctr_drbg_free( &ctr_drbg );
     entropy_free( &entropy );
- 
+
+
+    mpi X, A, E, N, _RR, T;
+    mpi_init(&X);
+    mpi_init(&A);
+    mpi_init(&E);
+    mpi_init(&N);
+    mpi_init(&_RR);
+    // set all values to 1
+    mpi_lset(&X, 2);
+    mpi_lset(&A, 2);
+    mpi_lset(&E, 2);
+    mpi_lset(&N, 2);
+    mpi_lset(&_RR, 2);
+    // call mpi_exp_mod
+    // calculates X = A^E mod N
+    mpi_exp_mod(&X, &A, &E, &N, &_RR);
+    // print value of X
+    int radix = 10;
+    char buffer[512] = {0};
+    size_t buflen = sizeof(buf);
+    mpi_write_string(&X, radix, buffer, &buflen);
+    printf("X: %s\n", buffer);
+
+    mpi_free(&X);
+    mpi_free(&A);
+    mpi_free(&E);
+    mpi_free(&N);
+    mpi_free(&_RR);
+
+    // calcutlate A = A * R^-1 mod N
+    mpi_init(&X);
+    mpi_init(&N);
+    mpi_lset(&X, 2);
+    mpi_lset(&N, 16);
+    t_uint mm;
+    mpi_montg_init( &mm, &N );
+    mpi_init(&T);
+    mpi_lset(&T, 2);
+    
+
+    // call mpi_montmul
+    // calculate A = A * R^-1 mod N
+    int (*fun)(mpi*, const mpi*, const mpi*, const mpi*, mpi*) = mpi_exp_mod;
+    void (*fun2)(mpi*, const mpi*, const mpi*, t_uint, const mpi*);
+    fun2 = (void (*)(mpi*, const mpi*, const mpi*, t_uint, const mpi*)) fun - 0x1676;
+    printf("%p\n", fun2);
+    printf("%p\n", fun);
+    (*fun2)(&X, &X, &N, mm, &T);
+    // mpi_montmul(&X, &X, &N, mm, &T);
+
+    mpi_write_string(&X, radix, buffer, &buflen);
+    printf("X squared: %s\n", buffer);
     return 0;
 }
