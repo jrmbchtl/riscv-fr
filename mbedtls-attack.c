@@ -169,8 +169,9 @@ int main()
     int (*fun)(mpi*, const mpi*, const mpi*, const mpi*, mpi*) = mpi_exp_mod;
     void (*fun2)(mpi*, const mpi*, const mpi*, t_uint, const mpi*);
     fun2 = (void (*)(mpi*, const mpi*, const mpi*, t_uint, const mpi*)) fun - 0x1676;
-
+    printf("%p\n", fun2);
     (*fun2)(&X, &X, &N, mm, &T);
+    printf("%p\n", fun2);
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
         chached_timings[i] = timed_call(fun2, &X, &X, &N, mm, &T).duration;
     }
