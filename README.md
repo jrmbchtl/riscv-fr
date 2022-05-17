@@ -11,3 +11,12 @@ Facts:
 
  Things to try:
  - using evict on data instead of instructions
+
+get keys:
+ - ./gen_key rsa_keysize=1024
+ - openssl rsa -in keyfile.key -pubout > keyfile.pub
+ - ./pk_encrypt keyfile.pub Hello
+ - ./pk_decrypt keyfile.key
+
+mpi_montmul: 0x55555556b000
+mpi_exp_mod: 0x55555556d360
