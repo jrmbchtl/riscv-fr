@@ -168,7 +168,7 @@ int main()
     mpi_lset(&T, 2);
     int (*fun)(mpi*, const mpi*, const mpi*, const mpi*, mpi*) = mpi_exp_mod;
     void (*fun2)(mpi*, const mpi*, const mpi*, t_uint, const mpi*);
-    fun2 = (void (*)(mpi*, const mpi*, const mpi*, t_uint, const mpi*)) fun - 0x2360;
+    fun2 = (void (*)(mpi*, const mpi*, const mpi*, t_uint, const mpi*)) fun - 0x1676;
 
     (*fun2)(&X, &X, &N, mm, &T);
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
