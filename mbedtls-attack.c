@@ -124,7 +124,7 @@ void* calculate(void* d)
 
     pk_decrypt( &pk, buf, i, result, &olen, sizeof(result),
                             ctr_drbg_random, &ctr_drbg );
-    printf( "The decrypted result is: '%s'\n\n", result );
+    // printf( "The decrypted result is: '%s'\n\n", result );
 
     assert(result[0] == 'H');
     assert(result[1] == 'e');
@@ -161,14 +161,6 @@ int main(int argc, char *argv[])
     uint64_t threshold = 0;
     pthread_t spam;
 
-    // printf("mpi_div_mpi: %p\n", mpi_div_mpi);
-    // printf("mpi_div_int: %p\n", mpi_div_int);
-    // printf("mpi_mod_mpi: %p\n", mpi_mod_mpi);
-    // printf("mpi_mod_int: %p\n", mpi_mod_int);
-    // printf("mpi_exp_mod: %p\n", mpi_exp_mod);
-    // printf("mpi_gcd: %p\n", mpi_gcd);
-    // printf("mpi_fill_random: %p\n", mpi_fill_random);
-
     mpi X, N, T;
     mpi_init(&X);
     mpi_init(&N);
@@ -181,9 +173,7 @@ int main(int argc, char *argv[])
     int (*fun)(mpi*, const mpi*, const mpi*, const mpi*, mpi*) = mpi_exp_mod;
     void (*fun2)(mpi*, const mpi*, const mpi*, t_uint, const mpi*);
     fun2 = (void (*)(mpi*, const mpi*, const mpi*, t_uint, const mpi*)) fun - OFFSET + OFFSET_OFFSET;
-    printf("%p\n", fun2);
     (*fun2)(&X, &X, &N, mm, &T);
-    printf("%p\n", fun2);
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
         chached_timings[i] = timed_call(fun2, &X, &X, &N, mm, &T).duration;
     }
@@ -191,10 +181,35 @@ int main(int argc, char *argv[])
         unchached_timings[i] = timed_call_n_flush(fun2, &X, &X, &N, mm, &T).duration;
     }
 
-    printf("cached median 1 = %lu\n", median(chached_timings, SAMPLE_SIZE));
-    printf("uncached median 1 = %lu\n", median(unchached_timings, SAMPLE_SIZE));
+    printf("cached median = %lu\n", median(chached_timings, SAMPLE_SIZE));
+    printf("uncached median = %lu\n", median(unchached_timings, SAMPLE_SIZE));
     threshold = (median(chached_timings, SAMPLE_SIZE) + median(unchached_timings, SAMPLE_SIZE))/2;
-    printf("threshold 1: %lu\n", threshold);
+    printf("threshold: %lu\n", threshold);
+
+    printf("Observing mpi_montmul...\n");
+    FILE* sq = fopen("montmul.csv", "w");
+    for(size_t i=0; i<RUNS; i++) {
+        size_t done = 0;
+        pthread_create(&spam, NULL, calculate, &done);
+        uint64_t start = rdtsc();
+        flush();
+
+        while(done == 0)
+        {   
+
+            sample_t timing = timed_call(fun2, &X, &X, &N, mm, &T);
+            flush();
+            
+            if (timing.duration < threshold)
+            {
+                fprintf(sq, "%lu\n", timing.start - start);
+            }
+        }
+        pthread_join(spam, NULL);
+    }
+    fclose(sq);
+
+    printf("Done observing mpi_montmul\n");
 
     return 0;
 }
