@@ -158,6 +158,14 @@ int main()
     uint64_t threshold = 0;
     pthread_t spam;
 
+    printf("%p\n", mpi_div_mpi);
+    printf("%p\n", mpi_div_int);
+    printf("%p\n", mpi_mod_mpi);
+    printf("%p\n", mpi_mod_int);
+    printf("%p\n", mpi_exp_mod);
+    printf("%p\n", mpi_gcd);
+    printf("%p\n", mpi_fill_random);
+
     mpi X, N, T;
     mpi_init(&X);
     mpi_init(&N);
