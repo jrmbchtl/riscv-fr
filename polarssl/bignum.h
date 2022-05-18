@@ -673,8 +673,6 @@ int mpi_mod_int( t_uint *r, const mpi *A, t_sint b );
  *                 multiple calls, which speeds up things a bit. It can
  *                 be set to NULL if the extra performance is unneeded.
  */
-static void mpi_montmul( mpi *A, const mpi *B, const mpi *N, t_uint mm, const mpi *T );
-
 int mpi_exp_mod( mpi *X, const mpi *A, const mpi *E, const mpi *N, mpi *_RR );
 
 /**
