@@ -19,7 +19,7 @@
 #define CIPHERFILE "result-enc.txt"
 
 #define SAMPLE_SIZE     10000
-#define RUNS            1000
+#define RUNS            16000
 // from gdb
 #define OFFSET          0x2000
 
