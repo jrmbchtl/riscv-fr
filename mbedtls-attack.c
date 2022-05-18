@@ -21,9 +21,7 @@
 #define SAMPLE_SIZE     10000
 #define RUNS            100
 // from gdb
-#define OFFSET          0x14EC
-// through bruteforcing
-#define OFFSET_OFFSET   -0x8
+#define OFFSET          0x2000
 
 #define biL    (ciL << 3)               /* bits  in limb  */
 #define ciL    (sizeof(t_uint))         /* chars in limb  */
@@ -180,7 +178,7 @@ int main(int argc, char *argv[])
     mpi_lset(&T, 2);
     int (*fun)(mpi*, const mpi*, const mpi*, const mpi*, mpi*) = mpi_exp_mod;
     void (*fun2)(mpi*, const mpi*, const mpi*, t_uint, const mpi*);
-    fun2 = (void (*)(mpi*, const mpi*, const mpi*, t_uint, const mpi*)) fun - OFFSET + OFFSET_OFFSET;
+    fun2 = (void (*)(mpi*, const mpi*, const mpi*, t_uint, const mpi*)) fun - OFFSET;
     (*fun2)(&X, &X, &N, mm, &T);
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
         chached_timings[i] = timed_call(fun2, &X, &X, &N, mm, &T).duration;
