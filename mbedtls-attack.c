@@ -20,7 +20,10 @@
 
 #define SAMPLE_SIZE     10000
 #define RUNS            100
+// from gdb
 #define OFFSET          0x14EC
+// through bruteforcing
+#define OFFSET_OFFSET   -0x8
 
 #define biL    (ciL << 3)               /* bits  in limb  */
 #define ciL    (sizeof(t_uint))         /* chars in limb  */
@@ -152,10 +155,6 @@ uint64_t median(uint64_t* list, uint64_t size)
 
 int main(int argc, char *argv[])
 {
-    assert(argc == 2);
-    char* tmp = argv[1];
-    int n = atoi(tmp);
-
     uint64_t timing = 0;
     uint64_t chached_timings[SAMPLE_SIZE] = {0};
     uint64_t unchached_timings[SAMPLE_SIZE] = {0};
@@ -181,7 +180,7 @@ int main(int argc, char *argv[])
     mpi_lset(&T, 2);
     int (*fun)(mpi*, const mpi*, const mpi*, const mpi*, mpi*) = mpi_exp_mod;
     void (*fun2)(mpi*, const mpi*, const mpi*, t_uint, const mpi*);
-    fun2 = (void (*)(mpi*, const mpi*, const mpi*, t_uint, const mpi*)) fun - OFFSET + n;
+    fun2 = (void (*)(mpi*, const mpi*, const mpi*, t_uint, const mpi*)) fun - OFFSET + OFFSET_OFFSET;
     printf("%p\n", fun2);
     (*fun2)(&X, &X, &N, mm, &T);
     printf("%p\n", fun2);
