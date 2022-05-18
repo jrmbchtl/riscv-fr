@@ -19,7 +19,7 @@
 #define CIPHERFILE "result-enc.txt"
 
 #define SAMPLE_SIZE     10000
-#define RUNS            100000
+#define RUNS            100
 // from gdb
 #define OFFSET          0x14EC
 // through bruteforcing
@@ -155,6 +155,14 @@ uint64_t median(uint64_t* list, uint64_t size)
 
 int main(int argc, char *argv[])
 {
+    printf("%p\n", mpi_div_mpi);
+    printf("%p\n", mpi_div_int);
+    printf("%p\n", mpi_mod_mpi);
+    printf("%p\n", mpi_mod_int);
+    printf("%p\n", mpi_exp_mod);
+    printf("%p\n", mpi_gcd);
+    printf("%p\n", mpi_fill_random);
+
     uint64_t timing = 0;
     uint64_t chached_timings[SAMPLE_SIZE] = {0};
     uint64_t unchached_timings[SAMPLE_SIZE] = {0};
