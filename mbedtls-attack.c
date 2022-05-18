@@ -152,9 +152,9 @@ uint64_t median(uint64_t* list, uint64_t size)
 
 int main(int argc, char *argv[])
 {
+    assert(argc == 2);
     char* tmp = argv[1];
     int n = atoi(tmp);
-    printf("n = %d\n", n);
 
     uint64_t timing = 0;
     uint64_t chached_timings[SAMPLE_SIZE] = {0};
@@ -162,13 +162,13 @@ int main(int argc, char *argv[])
     uint64_t threshold = 0;
     pthread_t spam;
 
-    printf("mpi_div_mpi: %p\n", mpi_div_mpi);
-    printf("mpi_div_int: %p\n", mpi_div_int);
-    printf("mpi_mod_mpi: %p\n", mpi_mod_mpi);
-    printf("mpi_mod_int: %p\n", mpi_mod_int);
-    printf("mpi_exp_mod: %p\n", mpi_exp_mod);
-    printf("mpi_gcd: %p\n", mpi_gcd);
-    printf("mpi_fill_random: %p\n", mpi_fill_random);
+    // printf("mpi_div_mpi: %p\n", mpi_div_mpi);
+    // printf("mpi_div_int: %p\n", mpi_div_int);
+    // printf("mpi_mod_mpi: %p\n", mpi_mod_mpi);
+    // printf("mpi_mod_int: %p\n", mpi_mod_int);
+    // printf("mpi_exp_mod: %p\n", mpi_exp_mod);
+    // printf("mpi_gcd: %p\n", mpi_gcd);
+    // printf("mpi_fill_random: %p\n", mpi_fill_random);
 
     mpi X, N, T;
     mpi_init(&X);
@@ -181,7 +181,7 @@ int main(int argc, char *argv[])
     mpi_lset(&T, 2);
     int (*fun)(mpi*, const mpi*, const mpi*, const mpi*, mpi*) = mpi_exp_mod;
     void (*fun2)(mpi*, const mpi*, const mpi*, t_uint, const mpi*);
-    fun2 = (void (*)(mpi*, const mpi*, const mpi*, t_uint, const mpi*)) fun - OFFSET;
+    fun2 = (void (*)(mpi*, const mpi*, const mpi*, t_uint, const mpi*)) fun - OFFSET + n;
     printf("%p\n", fun2);
     (*fun2)(&X, &X, &N, mm, &T);
     printf("%p\n", fun2);
