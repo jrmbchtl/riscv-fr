@@ -19,7 +19,7 @@
 #define CIPHERFILE "result-enc.txt"
 
 #define SAMPLE_SIZE     10000
-#define RUNS            10000
+#define RUNS            100000
 // from gdb
 #define OFFSET          0x14EC
 // through bruteforcing
