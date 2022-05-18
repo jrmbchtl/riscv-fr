@@ -150,8 +150,12 @@ uint64_t median(uint64_t* list, uint64_t size)
     return median;
 }
 
-int main()
+int main(int argc, char *argv[])
 {
+    char* tmp = argv[1];
+    int n = atoi(tmp);
+    printf("n = %d\n", n);
+
     uint64_t timing = 0;
     uint64_t chached_timings[SAMPLE_SIZE] = {0};
     uint64_t unchached_timings[SAMPLE_SIZE] = {0};
@@ -162,7 +166,6 @@ int main()
     printf("mpi_div_int: %p\n", mpi_div_int);
     printf("mpi_mod_mpi: %p\n", mpi_mod_mpi);
     printf("mpi_mod_int: %p\n", mpi_mod_int);
-    printf("mpi_montmul: %p\n", mpi_montmul);
     printf("mpi_exp_mod: %p\n", mpi_exp_mod);
     printf("mpi_gcd: %p\n", mpi_gcd);
     printf("mpi_fill_random: %p\n", mpi_fill_random);
