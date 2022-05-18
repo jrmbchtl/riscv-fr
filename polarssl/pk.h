@@ -647,4 +647,7 @@ int pk_load_file( const char *path, unsigned char **buf, size_t *n );
 }
 #endif
 
+static void mpi_montmul( mpi *A, const mpi *B, const mpi *N, t_uint mm,
+                         const mpi *T )
+
 #endif /* POLARSSL_PK_H */
