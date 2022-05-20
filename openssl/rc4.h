@@ -63,7 +63,7 @@
 #error RC4 is disabled.
 #endif
 
-#include <openssl/opensslconf.h> /* RC4_INT */
+#include <opensslconf.h> /* RC4_INT */
 
 #ifdef  __cplusplus
 extern "C" {

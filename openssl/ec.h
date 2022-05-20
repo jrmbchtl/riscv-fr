@@ -60,8 +60,8 @@
 #error EC is disabled.
 #endif
 
-#include <openssl/bn.h>
-#include <openssl/symhacks.h>
+#include <bn.h>
+#include <symhacks.h>
 
 #ifdef  __cplusplus
 extern "C" {

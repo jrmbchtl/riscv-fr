@@ -70,11 +70,11 @@
 #endif
 
 #ifndef OPENSSL_NO_BIO
-#include <openssl/bio.h>
+#include <bio.h>
 #endif
-#include <openssl/bn.h>
-#include <openssl/crypto.h>
-#include <openssl/ossl_typ.h>
+#include <bn.h>
+#include <crypto.h>
+#include <ossl_typ.h>
 #ifndef OPENSSL_NO_DH
 # include <openssl/dh.h>
 #endif

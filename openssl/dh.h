@@ -64,11 +64,11 @@
 #endif
 
 #ifndef OPENSSL_NO_BIO
-#include <openssl/bio.h>
+#include <bio.h>
 #endif
-#include <openssl/bn.h>
-#include <openssl/crypto.h>
-#include <openssl/ossl_typ.h>
+#include <bn.h>
+#include <crypto.h>
+#include <ossl_typ.h>
 	
 #define DH_FLAG_CACHE_MONT_P	0x01
 

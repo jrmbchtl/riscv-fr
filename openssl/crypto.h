@@ -65,17 +65,17 @@
 #include <stdio.h>
 #endif
 
-#include <openssl/stack.h>
-#include <openssl/safestack.h>
-#include <openssl/opensslv.h>
+#include <stack.h>
+#include <safestack.h>
+#include <opensslv.h>
 
 #ifdef CHARSET_EBCDIC
-#include <openssl/ebcdic.h>
+#include <ebcdic.h>
 #endif
 
 /* Resolve problems on some operating systems with symbol names that clash
    one way or another */
-#include <openssl/symhacks.h>
+#include <symhacks.h>
 
 #ifdef  __cplusplus
 extern "C" {

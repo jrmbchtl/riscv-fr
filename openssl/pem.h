@@ -60,15 +60,15 @@
 #define HEADER_PEM_H
 
 #ifndef OPENSSL_NO_BIO
-#include <openssl/bio.h>
+#include <bio.h>
 #endif
 #ifndef OPENSSL_NO_STACK
-#include <openssl/stack.h>
+#include <stack.h>
 #endif
-#include <openssl/evp.h>
-#include <openssl/x509.h>
-#include <openssl/pem2.h>
-#include <openssl/e_os2.h>
+#include <evp.h>
+#include <x509.h>
+#include <pem2.h>
+#include <e_os2.h>
 
 #ifdef  __cplusplus
 extern "C" {
@@ -536,7 +536,7 @@ void	PEM_dek_info(char *buf, const char *type, int len, char *str);
 
 #ifndef SSLEAY_MACROS
 
-#include <openssl/symhacks.h>
+#include <symhacks.h>
 
 DECLARE_PEM_rw(X509, X509)
 

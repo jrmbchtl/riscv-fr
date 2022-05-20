@@ -65,10 +65,10 @@
 #endif
 
 #ifndef OPENSSL_NO_BIO
-#include <openssl/bio.h>
+#include <bio.h>
 #endif
 #ifndef OPENSSL_NO_LHASH
-#include <openssl/lhash.h>
+#include <lhash.h>
 #endif
 
 #ifdef	__cplusplus

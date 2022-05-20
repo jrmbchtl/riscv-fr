@@ -103,9 +103,9 @@
 #error <openssl/des_old.h> replaces <kerberos/des.h>.
 #endif
 
-#include <openssl/opensslconf.h> /* DES_LONG */
-#include <openssl/e_os2.h>	/* OPENSSL_EXTERN */
-#include <openssl/symhacks.h>
+#include <opensslconf.h> /* DES_LONG */
+#include <e_os2.h>	/* OPENSSL_EXTERN */
+#include <symhacks.h>
 
 #ifdef OPENSSL_BUILD_SHLIBCRYPTO
 # undef OPENSSL_EXTERN
@@ -436,6 +436,6 @@ void _ossl_096_des_random_seed(des_cblock *key);
 #endif
 
 /* for DES_read_pw_string et al */
-#include <openssl/ui_compat.h>
+#include <ui_compat.h>
 
 #endif

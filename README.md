@@ -23,4 +23,6 @@ mbedtls has to be build with "CFLAGS="-falign-functions=4096" make" to get the c
 openssl needs 
  - "./config no-asm shared" to disable inline assembly (which is x86 specific and breaks on RISC-V) and to enable creation of a shared library
  - replace "-m486"  with "-falign-functions=4096" in CFLAGS in Makefile to remove device specific instructions which break on RISC-V and enable alginment of functions to 4096 bytes to make calls to make functions calls unique values in cache.
- 
+
+ fix header files in openssl with 
+ "sed -i 's/#include <openssl\//#include </g' *"

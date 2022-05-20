@@ -61,16 +61,16 @@
 
 #include <time.h>
 #ifndef OPENSSL_NO_BIO
-#include <openssl/bio.h>
+#include <bio.h>
 #endif
-#include <openssl/e_os2.h>
-#include <openssl/bn.h>
-#include <openssl/stack.h>
-#include <openssl/safestack.h>
+#include <e_os2.h>
+#include <bn.h>
+#include <stack.h>
+#include <safestack.h>
 
-#include <openssl/symhacks.h>
+#include <symhacks.h>
 
-#include <openssl/ossl_typ.h>
+#include <ossl_typ.h>
 
 #ifdef OPENSSL_BUILD_SHLIBCRYPTO
 # undef OPENSSL_EXTERN
