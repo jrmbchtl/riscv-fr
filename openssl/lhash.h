@@ -68,7 +68,7 @@
 #endif
 
 #ifndef OPENSSL_NO_BIO
-#include <bio.h>
+#include "bio.h"
 #endif
 
 #ifdef  __cplusplus

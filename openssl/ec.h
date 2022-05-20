@@ -60,8 +60,8 @@
 #error EC is disabled.
 #endif
 
-#include <bn.h>
-#include <symhacks.h>
+#include "bn.h"
+#include "symhacks.h"
 
 #ifdef  __cplusplus
 extern "C" {

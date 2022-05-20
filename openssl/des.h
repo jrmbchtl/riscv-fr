@@ -63,8 +63,8 @@
 #error DES is disabled.
 #endif
 
-#include <opensslconf.h> /* DES_LONG */
-#include <e_os2.h>	/* OPENSSL_EXTERN */
+#include "opensslconf.h" /* DES_LONG */
+#include "e_os2.h"	/* OPENSSL_EXTERN */
 
 #ifdef OPENSSL_BUILD_SHLIBCRYPTO
 # undef OPENSSL_EXTERN

@@ -59,8 +59,8 @@
 #ifndef HEADER_UI_H
 #define HEADER_UI_H
 
-#include <crypto.h>
-#include <safestack.h>
+#include "crypto.h"
+#include "safestack.h"
 
 #ifdef  __cplusplus
 extern "C" {

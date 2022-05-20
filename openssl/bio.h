@@ -64,8 +64,8 @@
 #endif
 #include <stdarg.h>
 
-#include <crypto.h>
-#include <e_os2.h>
+#include "crypto.h"
+#include "e_os2.h"
 
 #ifdef  __cplusplus
 extern "C" {

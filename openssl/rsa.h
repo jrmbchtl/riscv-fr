@@ -59,14 +59,14 @@
 #ifndef HEADER_RSA_H
 #define HEADER_RSA_H
 
-#include <asn1.h>
+#include "asn1.h"
 
 #ifndef OPENSSL_NO_BIO
-#include <bio.h>
+#include "bio.h"
 #endif
-#include <bn.h>
-#include <crypto.h>
-#include <ossl_typ.h>
+#include "bn.h"
+#include "crypto.h"
+#include "ossl_typ.h"
 
 #ifdef OPENSSL_NO_RSA
 #error RSA is disabled.

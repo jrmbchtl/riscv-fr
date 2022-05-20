@@ -165,20 +165,20 @@
 #ifndef HEADER_SSL_H 
 #define HEADER_SSL_H 
 
-#include <e_os2.h>
+#include "e_os2.h"
 
 #ifndef OPENSSL_NO_COMP
-#include <comp.h>
+#include "comp.h"
 #endif
 #ifndef OPENSSL_NO_BIO
-#include <bio.h>
+#include "bio.h"
 #endif
 #ifndef OPENSSL_NO_X509
-#include <x509.h>
+#include "x509.h"
 #endif
-#include <kssl.h>
-#include <safestack.h>
-#include <symhacks.h>
+#include "kssl.h"
+#include "safestack.h"
+#include "symhacks.h"
 
 #ifdef  __cplusplus
 extern "C" {
@@ -312,10 +312,10 @@ extern "C" {
 }
 #endif
 
-#include <crypto.h>
-#include <lhash.h>
-#include <buffer.h>
-#include <pem.h>
+#include "crypto.h"
+#include "lhash.h"
+#include "buffer.h"
+#include "pem.h"
 
 #ifdef  __cplusplus
 extern "C" {
@@ -934,10 +934,10 @@ struct ssl_st
 }
 #endif
 
-#include <ssl2.h>
-#include <ssl3.h>
-#include <tls1.h> /* This is mostly sslv3 with a few tweaks */
-#include <ssl23.h>
+#include "ssl2.h"
+#include "ssl3.h"
+#include "tls1.h" /* This is mostly sslv3 with a few tweaks */
+#include "ssl23.h"
 
 #ifdef  __cplusplus
 extern "C" {

@@ -66,7 +66,7 @@
 #define IDEA_ENCRYPT	1
 #define IDEA_DECRYPT	0
 
-#include <opensslconf.h> /* IDEA_INT */
+#include "opensslconf.h" /* IDEA_INT */
 #define IDEA_BLOCK	8
 #define IDEA_KEY_LENGTH	16
 

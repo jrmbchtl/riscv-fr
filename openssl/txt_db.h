@@ -60,10 +60,10 @@
 #define HEADER_TXT_DB_H
 
 #ifndef OPENSSL_NO_BIO
-#include <bio.h>
+#include "bio.h"
 #endif
-#include <stack.h>
-#include <lhash.h>
+#include "stack.h"
+#include "lhash.h"
 
 #define DB_ERROR_OK			0
 #define DB_ERROR_MALLOC			1

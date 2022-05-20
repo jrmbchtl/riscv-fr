@@ -67,54 +67,54 @@
 # undef OPENSSL_ALGORITHM_DEFINES
 #endif
 
-#include <ossl_typ.h>
+#include "ossl_typ.h"
 
-#include <symhacks.h>
+#include "symhacks.h"
 
 #ifndef OPENSSL_NO_BIO
-#include <bio.h>
+#include "bio.h"
 #endif
 #ifndef OPENSSL_NO_MD2
-#include <md2.h>
+#include "md2.h"
 #endif
 #ifndef OPENSSL_NO_MD4
-#include <md4.h>
+#include "md4.h"
 #endif
 #ifndef OPENSSL_NO_MD5
-#include <md5.h>
+#include "md5.h"
 #endif
 #ifndef OPENSSL_NO_SHA
-#include <sha.h>
+#include "sha.h"
 #endif
 #ifndef OPENSSL_NO_RIPEMD
-#include <ripemd.h>
+#include "ripemd.h"
 #endif
 #ifndef OPENSSL_NO_DES
-#include <des.h>
+#include "des.h"
 #endif
 #ifndef OPENSSL_NO_RC4
-#include <rc4.h>
+#include "rc4.h"
 #endif
 #ifndef OPENSSL_NO_RC2
-#include <rc2.h>
+#include "rc2.h"
 #endif
 #ifndef OPENSSL_NO_RC5
-#include <rc5.h>
+#include "rc5.h"
 #endif
 #ifndef OPENSSL_NO_BF
-#include <blowfish.h>
+#include "blowfish.h"
 #endif
 #ifndef OPENSSL_NO_CAST
-#include <cast.h>
+#include "cast.h"
 #endif
 #ifndef OPENSSL_NO_IDEA
-#include <idea.h>
+#include "idea.h"
 #endif
 #ifndef OPENSSL_NO_MDC2
-#include <mdc2.h>
+#include "mdc2.h"
 #endif
 #ifndef OPENSSL_NO_AES
-#include <aes.h>
+#include "aes.h"
 #endif
 
 /*
@@ -134,18 +134,18 @@
 #define PKCS5_DEFAULT_ITER		2048
 
 #ifndef OPENSSL_NO_RSA
-#include <rsa.h>
+#include "rsa.h"
 #endif
 
 #ifndef OPENSSL_NO_DSA
-#include <dsa.h>
+#include "dsa.h"
 #endif
 
 #ifndef OPENSSL_NO_DH
-#include <dh.h>
+#include "dh.h"
 #endif
 
-#include <objects.h>
+#include "objects.h"
 
 #define EVP_PK_RSA	0x0001
 #define EVP_PK_DSA	0x0002
