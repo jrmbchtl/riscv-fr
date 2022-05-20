@@ -1,57 +1,54 @@
-// from https://www.dynamsoft.com/codepool/how-to-use-openssl-generate-rsa-keys-cc.html
-
 #include <stdio.h>
 #include <stdbool.h>
-#include "include/openssl/rsa.h"
-#include "include/openssl/pem.h"
+#include <string.h>
+#include "openssl/rsa.h"
 
-bool generate_key()
+// BN_sqr(a, b, ctx); needs a context ctx and calculates a = b^2
+
+int main() 
 {
-	int				ret = 0;
-	RSA				*r = NULL;
-	BIGNUM			*bne = NULL;
-	BIO				*bp_public = NULL, *bp_private = NULL;
+	// generate rsa key
+	printf("Generating RSA key...\n");
+	RSA* rsa = RSA_generate_key(512, 65537, NULL, NULL);
+	printf("RSA key generated!\n");
+	// print primes
 
-	int				bits = 2048;
-	unsigned long	e = RSA_F4;
-
-	// 1. generate rsa key
-	bne = BN_new();
-	ret = BN_set_word(bne,e);
-	if(ret != 1){
-		goto free_all;
+	char* input = "Hello World!";
+	int input_len = strlen(input);
+	int output_len = RSA_size(rsa);
+	unsigned char* output = malloc(output_len);
+	printf("Encrypting...\n");
+	int ret = RSA_public_encrypt(input_len, (unsigned char*)input, output, rsa, RSA_PKCS1_PADDING);
+	if (ret == -1) {
+		printf("encrypt error\n");
+		return -1;
 	}
+	printf("Encryption success!\n");
 
-	r = RSA_new();
-	ret = RSA_generate_key_ex(r, bits, bne, NULL);
-	if(ret != 1){
-		goto free_all;
+	unsigned char* decrypted = malloc(input_len);
+	printf("Decrypting...\n");
+	ret = RSA_private_decrypt(output_len, output, decrypted, rsa, RSA_PKCS1_PADDING);
+	if (ret == -1) {
+		printf("decrypt error\n");
+		return -1;
 	}
+	printf("Decryption success!\n");
+	printf("Decrypted: %s\n", decrypted);
 
-	// 2. save public key
-	bp_public = BIO_new_file("public.pem", "w+");
-	ret = PEM_write_bio_RSAPublicKey(bp_public, r);
-	if(ret != 1){
-		goto free_all;
-	}
+	RSA_free(rsa);
 
-	// 3. save private key
-	bp_private = BIO_new_file("private.pem", "w+");
-	ret = PEM_write_bio_RSAPrivateKey(bp_private, r, NULL, NULL, 0, NULL, NULL);
+	BIGNUM* a = BN_new();
+	BIGNUM* b = BN_new();
+	// set all values to 2
+	BN_set_word(b, 2);
+	// create BN_ctx
+	BN_CTX* ctx = BN_CTX_new();
+	BN_sqr(a, b, ctx);
 
-	// 4. free
-free_all:
-
-	BIO_free_all(bp_public);
-	BIO_free_all(bp_private);
-	RSA_free(r);
-	BN_free(bne);
-
-	return (ret == 1);
-}
-
-int main(int argc, char* argv[]) 
-{
-	generate_key();
-        return 0;
+	// print a
+	printf("a: ");
+	BN_print_fp(stdout, a);
+	printf("\n");
+	
+	return 0;
 }

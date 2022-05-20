@@ -18,5 +18,9 @@ get keys:
  - ./pk_encrypt keyfile.pub Hello
  - ./pk_decrypt keyfile.key
 
-mpi_montmul: 0x55555556b000
-mpi_exp_mod: 0x55555556d360
+mbedtls has to be build with "CFLAGS="-falign-functions=4096" make" to get the correct alignment and make location of mpi_montmul predictable
+
+openssl needs 
+ - "./config no-asm shared" to disable inline assembly (which is x86 specific and breaks on RISC-V) and to enable creation of a shared library
+ - replace "-m486"  with "-falign-functions=4096" in CFLAGS in Makefile to remove device specific instructions which break on RISC-V and enable alginment of functions to 4096 bytes to make calls to make functions calls unique values in cache.
+ 
