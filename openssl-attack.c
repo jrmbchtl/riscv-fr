@@ -114,7 +114,8 @@ int main() {
 		return 1;
 	}
 	printf("Loading key from file...\n");
-	PEM_read_RSAPrivateKey(f, calc.rsa, NULL, NULL);
+	int state = PEM_read_RSAPrivateKey(f, calc.rsa, NULL, NULL);
+    printf("state: %d\n", state);
     fclose(f);
 	printf("Key loaded!\n");
     unsigned char* input = "Ciphertext";
