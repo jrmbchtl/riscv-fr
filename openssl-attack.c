@@ -109,7 +109,7 @@ int main() {
 
     calculate_t calc;
     // load key from file
-	f = fopen("key.pem", "r");
+	FILE* f = fopen("key.pem", "r");
 	if (f == NULL) {
 		printf("Error opening file for reading\n");
 		return 1;
@@ -124,13 +124,13 @@ int main() {
 	// encrypt
 	printf("Encrypting...\n");
 	unsigned char* input = "Ciphertext";
-	unsigned char* output = malloc(RSA_size(rsa));
+	unsigned char* output = malloc(RSA_size(rsa2));
 	int len = RSA_public_encrypt(strlen((char*)input), input, output, rsa2, RSA_PKCS1_PADDING);
 	printf("Encrypted %d bytes\n", len);
 	
 	// decrypt
 	printf("Decrypting...\n");
-	unsigned char* output2 = malloc(RSA_size(rsa));
+	unsigned char* output2 = malloc(RSA_size(rsa2));
 	int len2 = RSA_private_decrypt(len, output, output2, rsa2, RSA_PKCS1_PADDING);
 	printf("Decrypted %d bytes\n", len2);
 	
@@ -141,7 +141,6 @@ int main() {
 	// cleanup
 	free(output);
 	free(output2);
-	RSA_free(rsa);
 	RSA_free(rsa2);
     return 0;
 }
