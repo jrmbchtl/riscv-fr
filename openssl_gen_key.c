@@ -29,31 +29,33 @@ int main()
 		return 1;
 	}
 	printf("Loading key from file...\n");
-	int state = PEM_read_RSAPrivateKey(f, rsa, NULL, NULL);
-	printf("Key loaded with state: %d\n", state);
-
-	char* input = "Hello World!";
-	int input_len = strlen(input);
-	int output_len = RSA_size(rsa);
-	unsigned char* output = malloc(output_len);
+	RSA* rsa2 = RSA_new();
+	// set the size of the key
+	PEM_read_RSAPrivateKey(f, &rsa2, NULL, NULL);
+	fclose(f);
+	printf("Key loaded!\n");
+	
+	// encrypt
 	printf("Encrypting...\n");
-	int ret = RSA_public_encrypt(input_len, (unsigned char*)input, output, rsa, RSA_PKCS1_PADDING);
-	if (ret == -1) {
-		printf("encrypt error\n");
-		return -1;
-	}
-	printf("Encryption success!\n");
-
-	unsigned char* decrypted = malloc(input_len);
+	unsigned char* input = "Ciphertext";
+	unsigned char* output = malloc(RSA_size(rsa));
+	int len = RSA_public_encrypt(strlen((char*)input), input, output, rsa, RSA_PKCS1_PADDING);
+	printf("Encrypted %d bytes\n", len);
+	
+	// decrypt
 	printf("Decrypting...\n");
-	ret = RSA_private_decrypt(output_len, output, decrypted, rsa, RSA_PKCS1_PADDING);
-	if (ret == -1) {
-		printf("decrypt error\n");
-		return -1;
-	}
-	printf("Decryption success!\n");
-	printf("Decrypted: %s\n", decrypted);
-
-	RSA_free(rsa);	
+	unsigned char* output2 = malloc(RSA_size(rsa));
+	int len2 = RSA_private_decrypt(len, output, output2, rsa2, RSA_PKCS1_PADDING);
+	printf("Decrypted %d bytes\n", len2);
+	
+	// print
+	printf("Original: %s\n", input);
+	printf("Decrypted: %s\n", output2);
+	
+	// cleanup
+	free(output);
+	free(output2);
+	RSA_free(rsa);
+	RSA_free(rsa2);
 	return 0;
 }
