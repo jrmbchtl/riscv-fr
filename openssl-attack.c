@@ -129,6 +129,7 @@ int main() {
     for (int i=0; i<cipher_len; i++) {
         printf("%02x", cipher[i]);
     }
+    printf("\n");
 
     unsigned char* plain = malloc(cipher_len);
     ret = RSA_private_decrypt(cipher_len, cipher, plain, rsa, RSA_PKCS1_PADDING);
