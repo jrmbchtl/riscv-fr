@@ -108,7 +108,15 @@ int main() {
 
 
     calculate_t calc;
-    calc.rsa = RSA_generate_key(512, 65537, NULL, NULL);
+    FILE* f = fopen("key.pem", "r");
+	if (f == NULL) {
+		printf("Error opening file for reading\n");
+		return 1;
+	}
+	printf("Loading key from file...\n");
+	PEM_read_RSAPrivateKey(f, calc.rsa, NULL, NULL);
+    fclose(f);
+	printf("Key loaded!\n");
     unsigned char* input = "Ciphertext";
 	int input_len = strlen(input);
 	calc.cipher_len = RSA_size(calc.rsa);

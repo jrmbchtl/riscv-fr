@@ -9,9 +9,28 @@ int main()
 {
 	// generate rsa key
 	printf("Generating RSA key...\n");
-	RSA* rsa = RSA_generate_key(128, 3, NULL, NULL);
+	RSA* rsa = RSA_generate_key(512, 65537, NULL, NULL);
 	printf("RSA key generated!\n");
-	// print primes
+	
+	// dump key to file
+	FILE* f = fopen("key.pem", "w");
+	if (f == NULL) {
+		printf("Error opening file for writing\n");
+		return 1;
+	}
+	PEM_write_RSAPrivateKey(f, rsa, NULL, NULL, 0, NULL, NULL);
+	fclose(f);
+	printf("Key written to file\n");
+
+	// load key from file
+	f = fopen("key.pem", "r");
+	if (f == NULL) {
+		printf("Error opening file for reading\n");
+		return 1;
+	}
+	printf("Loading key from file...\n");
+	PEM_read_RSAPrivateKey(f, rsa, NULL, NULL);
+	printf("Key loaded!\n");
 
 	char* input = "Hello World!";
 	int input_len = strlen(input);
@@ -35,20 +54,6 @@ int main()
 	printf("Decryption success!\n");
 	printf("Decrypted: %s\n", decrypted);
 
-	RSA_free(rsa);
-
-	BIGNUM* a = BN_new();
-	BIGNUM* b = BN_new();
-	// set all values to 2
-	BN_set_word(b, 2);
-	// create BN_ctx
-	BN_CTX* ctx = BN_CTX_new();
-	BN_sqr(a, b, ctx);
-
-	// print a
-	printf("a: ");
-	BN_print_fp(stdout, a);
-	printf("\n");
-	
+	RSA_free(rsa);	
 	return 0;
 }
