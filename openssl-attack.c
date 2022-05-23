@@ -124,6 +124,12 @@ int main() {
     unsigned char* cipher = malloc(cipher_len);
     int ret = RSA_public_encrypt(input_len, input, cipher, rsa, RSA_PKCS1_PADDING);
 
+    // print cipher
+    printf("Ciphertext: ");
+    for (int i=0; i<cipher_len; i++) {
+        printf("%02x", cipher[i]);
+    }
+
     unsigned char* plain = malloc(cipher_len);
     ret = RSA_private_decrypt(cipher_len, cipher, plain, rsa, RSA_PKCS1_PADDING);
     printf("Decrypted: %s\n", plain);
