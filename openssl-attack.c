@@ -135,7 +135,7 @@ int main() {
 	int input_len = strlen(input);
 	int cipher_len = RSA_size(rsa);
     unsigned char* cipher = malloc(cipher_len);
-    int ret = RSA_public_encrypt(input_len, input, cipher, rsa, RSA_PKCS1_PADDING);
+    ret = RSA_public_encrypt(input_len, input, cipher, rsa, RSA_PKCS1_PADDING);
 
     // print cipher
     printf("Ciphertext: ");
