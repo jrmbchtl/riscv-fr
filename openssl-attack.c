@@ -118,6 +118,12 @@ int main() {
 	PEM_read_RSAPrivateKey(f, &rsa, NULL, NULL);
     fclose(f);
 	printf("Key loaded!\n");
+    // print rsa values
+    printf("rsa->n: %s\n", BN_bn2hex(rsa->n));
+    printf("rsa->e: %s\n", BN_bn2hex(rsa->e));
+    printf("rsa->d: %s\n", BN_bn2hex(rsa->d));
+    printf("rsa->p: %s\n", BN_bn2hex(rsa->p));
+    printf("rsa->q: %s\n", BN_bn2hex(rsa->q));
     // check key
     int ret = RSA_check_key(rsa);
     if (ret != 1) {
