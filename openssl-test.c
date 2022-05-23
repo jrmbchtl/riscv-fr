@@ -28,6 +28,7 @@ int main()
 	// decrypt
 	printf("Decrypting...\n");
 	unsigned char* output2 = malloc(RSA_size(rsa));
+    printf("RSA_size(rsa): %d\n", RSA_size(rsa));
 	int len2 = RSA_private_decrypt(len, output, output2, rsa, RSA_PKCS1_PADDING);
 	printf("Decrypted %d bytes\n", len2);
 	
