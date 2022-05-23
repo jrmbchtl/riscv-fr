@@ -39,7 +39,7 @@ int main()
 	printf("Encrypting...\n");
 	unsigned char* input = "Ciphertext";
 	unsigned char* output = malloc(RSA_size(rsa));
-	int len = RSA_public_encrypt(strlen((char*)input), input, output, rsa, RSA_PKCS1_PADDING);
+	int len = RSA_public_encrypt(strlen((char*)input), input, output, rsa2, RSA_PKCS1_PADDING);
 	printf("Encrypted %d bytes\n", len);
 	
 	// decrypt

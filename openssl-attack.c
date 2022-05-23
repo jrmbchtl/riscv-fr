@@ -108,48 +108,40 @@ int main() {
 
 
     calculate_t calc;
-    FILE* f = fopen("key.pem", "r");
+    // load key from file
+	f = fopen("key.pem", "r");
 	if (f == NULL) {
 		printf("Error opening file for reading\n");
 		return 1;
 	}
 	printf("Loading key from file...\n");
-    RSA *rsa;
-	PEM_read_RSAPrivateKey(f, &rsa, NULL, NULL);
-    fclose(f);
+	RSA* rsa2 = RSA_new();
+	// set the size of the key
+	PEM_read_RSAPrivateKey(f, &rsa2, NULL, NULL);
+	fclose(f);
 	printf("Key loaded!\n");
-    // print rsa values
-    printf("rsa->n: %s\n", BN_bn2hex(rsa->n));
-    printf("rsa->e: %s\n", BN_bn2hex(rsa->e));
-    printf("rsa->d: %s\n", BN_bn2hex(rsa->d));
-    printf("rsa->p: %s\n", BN_bn2hex(rsa->p));
-    printf("rsa->q: %s\n", BN_bn2hex(rsa->q));
-    // check key
-    int ret = RSA_check_key(rsa);
-    if (ret != 1) {
-        printf("Key is invalid!\n");
-        return 1;
-    }
-
-    unsigned char* input = "Ciphertext";
-	int input_len = strlen(input);
-	int cipher_len = RSA_size(rsa);
-    unsigned char* cipher = malloc(cipher_len);
-    ret = RSA_public_encrypt(input_len, input, cipher, rsa, RSA_PKCS1_PADDING);
-
-    // print cipher
-    printf("Ciphertext: ");
-    for (int i=0; i<cipher_len; i++) {
-        printf("%02x", cipher[i]);
-    }
-    printf("\n");
-
-    unsigned char* plain = malloc(cipher_len);
-    ret = RSA_private_decrypt(cipher_len, cipher, plain, rsa, RSA_PKCS1_PADDING);
-    printf("Decrypted: %s\n", plain);
-
-    RSA_free(calc.rsa);
-    free(calc.plain);
-    free(calc.cipher);
+	
+	// encrypt
+	printf("Encrypting...\n");
+	unsigned char* input = "Ciphertext";
+	unsigned char* output = malloc(RSA_size(rsa));
+	int len = RSA_public_encrypt(strlen((char*)input), input, output, rsa2, RSA_PKCS1_PADDING);
+	printf("Encrypted %d bytes\n", len);
+	
+	// decrypt
+	printf("Decrypting...\n");
+	unsigned char* output2 = malloc(RSA_size(rsa));
+	int len2 = RSA_private_decrypt(len, output, output2, rsa2, RSA_PKCS1_PADDING);
+	printf("Decrypted %d bytes\n", len2);
+	
+	// print
+	printf("Original: %s\n", input);
+	printf("Decrypted: %s\n", output2);
+	
+	// cleanup
+	free(output);
+	free(output2);
+	RSA_free(rsa);
+	RSA_free(rsa2);
     return 0;
 }
