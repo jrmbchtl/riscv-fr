@@ -29,8 +29,8 @@ int main()
 		return 1;
 	}
 	printf("Loading key from file...\n");
-	PEM_read_RSAPrivateKey(f, rsa, NULL, NULL);
-	printf("Key loaded!\n");
+	int state = PEM_read_RSAPrivateKey(f, rsa, NULL, NULL);
+	printf("Key loaded with state: %d\n", state);
 
 	char* input = "Hello World!";
 	int input_len = strlen(input);
