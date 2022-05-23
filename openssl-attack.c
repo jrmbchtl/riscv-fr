@@ -119,13 +119,8 @@ int main() {
     fclose(f);
 	printf("Key loaded!\n");
     // check key
-    BIGNUM* n = BN_new();
-    BN_zero(n);
-    BN_set_word(n, RSA_3);
-    BN_mod(n, n, rsa->n, ctx);
-    if (BN_is_zero(n)) {
-        printf("Key is valid!\n");
-    } else {
+    int ret = RSA_check_key(rsa);
+    if (ret != 1) {
         printf("Key is invalid!\n");
         return 1;
     }
