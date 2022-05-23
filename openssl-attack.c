@@ -118,6 +118,18 @@ int main() {
 	PEM_read_RSAPrivateKey(f, &rsa, NULL, NULL);
     fclose(f);
 	printf("Key loaded!\n");
+    // check key
+    BIGNUM* n = BN_new();
+    BN_zero(n);
+    BN_set_word(n, RSA_3);
+    BN_mod(n, n, rsa->n, ctx);
+    if (BN_is_zero(n)) {
+        printf("Key is valid!\n");
+    } else {
+        printf("Key is invalid!\n");
+        return 1;
+    }
+
     unsigned char* input = "Ciphertext";
 	int input_len = strlen(input);
 	int cipher_len = RSA_size(rsa);
