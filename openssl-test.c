@@ -22,13 +22,14 @@ int main()
 	printf("Encrypting...\n");
 	unsigned char* input = "Ciphertext";
 	unsigned char* output = malloc(RSA_size(rsa));
-	int len = RSA_public_encrypt(strlen((char*)input), input, output, rsa, RSA_PKCS1_PADDING);
+	int len = RSA_public_encrypt(strlen(input), input, output, rsa, RSA_PKCS1_PADDING);
 	printf("Encrypted %d bytes\n", len);
 	
 	// decrypt
 	printf("Decrypting...\n");
 	unsigned char* output2 = malloc(RSA_size(rsa));
     printf("RSA_size(rsa): %d\n", RSA_size(rsa));
+    printf("%s\n", output);
 	int len2 = RSA_private_decrypt(len, output, output2, rsa, RSA_PKCS1_PADDING);
 	printf("Decrypted %d bytes\n", len2);
 	
