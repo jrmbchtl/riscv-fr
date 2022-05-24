@@ -29,7 +29,12 @@ int main()
 	printf("Decrypting...\n");
 	unsigned char* output2 = malloc(RSA_size(rsa));
     printf("RSA_size(rsa): %d\n", RSA_size(rsa));
-    printf("%s\n", output);
+    // print ciphertext as base64
+    printf("Ciphertext: ");
+    for (int i = 0; i < len; i++) {
+        printf("%02x", output[i]);
+    }
+    
 	int len2 = RSA_private_decrypt(len, output, output2, rsa, RSA_PKCS1_PADDING);
 	printf("Decrypted %d bytes\n", len2);
 	
