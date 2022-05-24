@@ -9,7 +9,7 @@ int main()
 {
 	// generate rsa key
 	printf("Generating RSA key...\n");
-	RSA* rsa = RSA_generate_key(40, 3, NULL, NULL);
+	RSA* rsa = RSA_generate_key(55, 3, NULL, NULL);
 	printf("RSA key generated!\n");
 	
 	// dump key to file
