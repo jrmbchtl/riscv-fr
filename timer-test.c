@@ -32,6 +32,7 @@ int main()
         asm volatile("rdtime %0\n" : "=r"(end)::);
         fprintf(fp, "%lu\n", end - start);
     }
+    fclose(fp);
 
     return 0;
 }
