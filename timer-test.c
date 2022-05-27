@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #define RUNS 1000
 
@@ -15,7 +16,7 @@ int main()
     for (int i = 0; i < RUNS; i++) {
         uint64_t start, end;
         asm volatile("rdcycle %0\n" : "=r"(start)::);
-        sleep(1);
+        usleep(10);
         asm volatile("rdcycle %0\n" : "=r"(end)::);
         fprintf(fp, "%lu\n", end - start);
     }
@@ -30,7 +31,7 @@ int main()
     for (int i = 0; i < RUNS; i++) {
         uint64_t start, end;
         asm volatile("rdtime %0\n" : "=r"(start)::);
-        sleep(1);
+        usleep(10);
         asm volatile("rdtime %0\n" : "=r"(end)::);
         fprintf(fp, "%lu\n", end - start);
     }
