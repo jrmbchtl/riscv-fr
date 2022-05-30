@@ -118,28 +118,23 @@ int main() {
 	calc.rsa = RSA_new();
 	PEM_read_RSAPrivateKey(f, &calc.rsa, NULL, NULL);
 	fclose(f);
-	printf("Key loaded!\n");
 	
 	// encrypt
-	printf("Encrypting...\n");
 	unsigned char* input = "Ciphertext";
-	unsigned char* output = malloc(RSA_size(calc.rsa));
-	int len = RSA_public_encrypt(strlen((char*)input), input, output, calc.rsa, RSA_PKCS1_PADDING);
-	printf("Encrypted %d bytes\n", len);
+	calc.cipher = malloc(RSA_size(calc.rsa));
+	int len = RSA_public_encrypt(strlen((char*)input), input, calc.cipher, calc.rsa, RSA_PKCS1_PADDING);
 	
 	// decrypt
-	printf("Decrypting...\n");
-	unsigned char* output2 = malloc(RSA_size(calc.rsa));
-	int len2 = RSA_private_decrypt(len, output, output2, calc.rsa, RSA_PKCS1_PADDING);
-	printf("Decrypted %d bytes\n", len2);
+	calc.plain = malloc(RSA_size(calc.rsa));
+	int len2 = RSA_private_decrypt(len, calc.cipher, calc.plain, calc.rsa, RSA_PKCS1_PADDING);
 	
 	// print
 	printf("Original: %s\n", input);
-	printf("Decrypted: %s\n", output2);
+	printf("Decrypted: %s\n", calc.plain);
 	
 	// cleanup
-	free(output);
-	free(output2);
+	free(calc.cipher);
+	free(calc.plain);
 	RSA_free(calc.rsa);
     return 0;
 }
