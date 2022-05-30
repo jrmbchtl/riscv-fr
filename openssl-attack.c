@@ -129,8 +129,8 @@ int main() {
 	int len2 = RSA_private_decrypt(len, calc.cipher, calc.plain, calc.rsa, RSA_PKCS1_PADDING);
 	
 	// print
-	printf("Original: %s\n", input);
-	printf("Decrypted: %s\n", calc.plain);
+    // assert input == calc.plain
+    assert(strcmp((char*)input, (char*)calc.plain) == 0);
 	
 	// cleanup
 	free(calc.cipher);
