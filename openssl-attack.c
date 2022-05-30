@@ -59,16 +59,24 @@ static inline sample_t timed_call_n_flush(BIGNUM* a, BIGNUM* b, BN_CTX* ctx)
 void* calculate(void* args) 
 {
     calculate_t* calc = (calculate_t*) args;
+    BIGNUM* a = BN_new();
+    BIGNUM* b = BN_new();
+    BN_CTX* ctx = BN_CTX_new();
+    BN_zero(a);
+    BN_one(b);
     usleep(1000);
-    // decrypt
-	calc->plain = malloc(RSA_size(calc->rsa));
-	int len = RSA_private_decrypt(RSA_size(calc->rsa), calc->cipher, calc->plain, calc->rsa, RSA_PKCS1_PADDING);
-    assert(len > 0);
-    free(calc->plain);
+    for(int i=0; i<10; i++) {
+        BN_sqr(a, b, ctx);
+        usleep(1000);
+    }
+    // // decrypt
+	// calc->plain = malloc(RSA_size(calc->rsa));
+	// int len = RSA_private_decrypt(RSA_size(calc->rsa), calc->cipher, calc->plain, calc->rsa, RSA_PKCS1_PADDING);
+    // assert(len > 0);
+    // free(calc->plain);
 	
-    // check that decrypting ciphertext is same as input
-    // assert(strcmp((char*)input, (char*)calc->plain) == 0);
-    usleep(1000);
+    // // check that decrypting ciphertext is same as input
+    // // assert(strcmp((char*)input, (char*)calc->plain) == 0);
     calc->done = 1;
 }
 
