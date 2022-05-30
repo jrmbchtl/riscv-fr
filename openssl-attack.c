@@ -114,7 +114,6 @@ int main() {
 		printf("Error opening key file \"key.pem\" for reading\n");
 		return 1;
 	}
-	printf("Loading key from file...\n");
 	calc.rsa = RSA_new();
 	PEM_read_RSAPrivateKey(f, &calc.rsa, NULL, NULL);
 	fclose(f);
@@ -126,10 +125,9 @@ int main() {
 	
 	// decrypt
 	calc.plain = malloc(RSA_size(calc.rsa));
-	int len2 = RSA_private_decrypt(len, calc.cipher, calc.plain, calc.rsa, RSA_PKCS1_PADDING);
+	RSA_private_decrypt(RSA_size(calc.rsa), calc.cipher, calc.plain, calc.rsa, RSA_PKCS1_PADDING);
 	
-	// print
-    // assert input == calc.plain
+    // check that decrypting ciphertext is same as input
     assert(strcmp((char*)input, (char*)calc.plain) == 0);
 	
 	// cleanup
