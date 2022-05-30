@@ -60,8 +60,16 @@ void* calculate(void* args)
 {
     calculate_t* calc = (calculate_t*) args;
     usleep(1000);
-    RSA_private_decrypt(calc->cipher_len, calc->cipher, calc->plain, calc->rsa, RSA_PKCS1_PADDING);
+    // decrypt
+	calc->plain = malloc(RSA_size(calc->rsa));
+	int len = RSA_private_decrypt(RSA_size(calc->rsa), calc->cipher, calc->plain, calc->rsa, RSA_PKCS1_PADDING);
+    assert(len > 0);
+    free(calc->plain);
+	
+    // check that decrypting ciphertext is same as input
+    // assert(strcmp((char*)input, (char*)calc->plain) == 0);
     usleep(1000);
+    calc->done = 1;
 }
 
 int compare_uint64_t (const void * a, const void * b) 
@@ -123,16 +131,34 @@ int main() {
 	calc.cipher = malloc(RSA_size(calc.rsa));
 	int len = RSA_public_encrypt(strlen((char*)input), input, calc.cipher, calc.rsa, RSA_PKCS1_PADDING);
 	
-	// decrypt
-	calc.plain = malloc(RSA_size(calc.rsa));
-	RSA_private_decrypt(RSA_size(calc.rsa), calc.cipher, calc.plain, calc.rsa, RSA_PKCS1_PADDING);
-	
-    // check that decrypting ciphertext is same as input
-    assert(strcmp((char*)input, (char*)calc.plain) == 0);
+    // calculate
+    printf("Observing square...\n");
+    FILE* sq = fopen("ssl_square.csv", "w");
+    for(size_t i=0; i<RUNS; i++) {
+        calc.done = 0;
+        pthread_create(&spam, NULL, calculate, &calc);
+        uint64_t start = rdtsc();
+        flush();
+
+        while(calc.done == 0)
+        {   
+
+            sample_t sq_timing = timed_call(a, b, ctx);
+            flush();
+            
+            if (sq_timing.duration < threshold)
+            {
+                fprintf(sq, "%lu\n", sq_timing.start - start);
+            }
+        }
+        pthread_join(spam, NULL);
+    }
+    fclose(sq);
+
+    printf("Done observing square\n");
 	
 	// cleanup
 	free(calc.cipher);
-	free(calc.plain);
 	RSA_free(calc.rsa);
     return 0;
 }
