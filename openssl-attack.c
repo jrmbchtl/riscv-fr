@@ -111,27 +111,26 @@ int main() {
     // load key from file
 	FILE* f = fopen("key.pem", "r");
 	if (f == NULL) {
-		printf("Error opening file for reading\n");
+		printf("Error opening key file \"key.pem\" for reading\n");
 		return 1;
 	}
 	printf("Loading key from file...\n");
-	RSA* rsa2 = RSA_new();
-	// set the size of the key
-	PEM_read_RSAPrivateKey(f, &rsa2, NULL, NULL);
+	calc.rsa = RSA_new();
+	PEM_read_RSAPrivateKey(f, &calc.rsa, NULL, NULL);
 	fclose(f);
 	printf("Key loaded!\n");
 	
 	// encrypt
 	printf("Encrypting...\n");
 	unsigned char* input = "Ciphertext";
-	unsigned char* output = malloc(RSA_size(rsa2));
-	int len = RSA_public_encrypt(strlen((char*)input), input, output, rsa2, RSA_PKCS1_PADDING);
+	unsigned char* output = malloc(RSA_size(calc.rsa));
+	int len = RSA_public_encrypt(strlen((char*)input), input, output, calc.rsa, RSA_PKCS1_PADDING);
 	printf("Encrypted %d bytes\n", len);
 	
 	// decrypt
 	printf("Decrypting...\n");
-	unsigned char* output2 = malloc(RSA_size(rsa2));
-	int len2 = RSA_private_decrypt(len, output, output2, rsa2, RSA_PKCS1_PADDING);
+	unsigned char* output2 = malloc(RSA_size(calc.rsa));
+	int len2 = RSA_private_decrypt(len, output, output2, calc.rsa, RSA_PKCS1_PADDING);
 	printf("Decrypted %d bytes\n", len2);
 	
 	// print
@@ -141,6 +140,6 @@ int main() {
 	// cleanup
 	free(output);
 	free(output2);
-	RSA_free(rsa2);
+	RSA_free(calc.rsa);
     return 0;
 }
