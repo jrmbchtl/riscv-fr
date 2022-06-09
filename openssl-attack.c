@@ -81,6 +81,7 @@ void* calculate(void* args)
     // }
     // decrypt
 	calc->plain = malloc(RSA_size(calc->rsa));
+    printf("Hello\n");
 	int len = RSA_private_decrypt(RSA_size(calc->rsa), calc->cipher, calc->plain, calc->rsa, RSA_PKCS1_PADDING);
     assert(len > 0);
     free(calc->plain);
