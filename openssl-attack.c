@@ -39,23 +39,20 @@ static inline void flush()
 
 static inline sample_t timed_call()
 {
-    unsigned int r, a, n, tmp;
-    r = 0;
-    a = 0;
-    n = 0;
-    tmp = 0;
+    unsigned int r = 0, a = 0;
     uint64_t start, end;
     start = rdtsc();
-    bn_sqr_normal(&r, &a, n, &tmp);
+    bn_sqr_comba8(&r, &a);
     end = rdtsc();
     return (sample_t) {start, end - start};
 }
 
 static inline sample_t timed_call_mul(BIGNUM* a, BIGNUM* b, BIGNUM* c, BN_CTX* ctx)
 {
+    unsigned int r = 0, a = 0, b = 0;
     uint64_t start, end;
     start = rdtsc();
-    BN_mul(a, b, c, ctx);
+    bn_mul_comba8(&r, &a, &b);
     end = rdtsc();
     return (sample_t) {start, end - start};
 }
