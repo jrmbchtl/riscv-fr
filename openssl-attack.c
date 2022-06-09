@@ -55,17 +55,6 @@ static inline sample_t timed_call_mul(BIGNUM* a, BIGNUM* b, BIGNUM* c, BN_CTX* c
     return (sample_t) {start, end - start};
 }
 
-
-static inline sample_t timed_call_n_flush(BIGNUM* a, BIGNUM* b, BN_CTX* ctx)
-{
-    uint64_t start, end;
-    start = rdtsc();
-    BN_sqr(a, b, ctx);
-    end = rdtsc();
-    flush();
-    return (sample_t) {start, end - start};
-}
-
 void* calculate(void* args) 
 {
     calculate_t* calc = (calculate_t*) args;
@@ -109,7 +98,8 @@ int main() {
     uint64_t timing = 0;
     uint64_t chached_timings[SAMPLE_SIZE] = {0};
     uint64_t unchached_timings[SAMPLE_SIZE] = {0};
-    uint64_t threshold = 0;
+    uint64_t threshold_square = 0;
+    uint64_t threshold_multiply = 0;
     pthread_t spam;
 
     BIGNUM* a = BN_new();
@@ -126,13 +116,29 @@ int main() {
     }
     flush();
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
-        unchached_timings[i] = timed_call_n_flush(a, b, ctx).duration;
+        flush();
+        unchached_timings[i] = timed_call(a, b, ctx).duration;
     }
 
-    printf("cached median = %lu\n", median(chached_timings, SAMPLE_SIZE));
-    printf("uncached median = %lu\n", median(unchached_timings, SAMPLE_SIZE));
-    threshold = (median(chached_timings, SAMPLE_SIZE) + median(unchached_timings, SAMPLE_SIZE))/2;
-    printf("threshold: %lu\n", threshold);
+    printf("cached median square = %lu\n", median(chached_timings, SAMPLE_SIZE));
+    printf("uncached median square = %lu\n", median(unchached_timings, SAMPLE_SIZE));
+    threshold_square = (median(chached_timings, SAMPLE_SIZE) + median(unchached_timings, SAMPLE_SIZE))/2;
+    printf("threshold square: %lu\n", threshold_square);
+
+    BN_mul(a, b, c, ctx);
+    for (size_t i=0; i<SAMPLE_SIZE; i++) {
+        chached_timings[i] = timed_call_mul(a, b, c, ctx).duration;
+    }
+    flush();
+    for (size_t i=0; i<SAMPLE_SIZE; i++) {
+        flush();
+        unchached_timings[i] = timed_call_mul(a, b, c, ctx).duration;
+    }
+
+    printf("cached median mul = %lu\n", median(chached_timings, SAMPLE_SIZE));
+    printf("uncached median mul = %lu\n", median(unchached_timings, SAMPLE_SIZE));
+    threshold_multiply = (median(chached_timings, SAMPLE_SIZE) + median(unchached_timings, SAMPLE_SIZE))/2;
+    printf("threshold: %lu\n", threshold_multiply);
 
 
     calculate_t calc;
@@ -166,7 +172,7 @@ int main() {
             sample_t sq_timing = timed_call(a, b, ctx);
             flush();
             
-            if (sq_timing.duration < threshold)
+            if (sq_timing.duration < threshold_square)
             {
                 fprintf(sq, "%lu\n", sq_timing.start - start);
             }
@@ -191,7 +197,7 @@ int main() {
             sample_t mul_timing = timed_call_mul(a, b, c, ctx);
             flush();
             
-            if (mul_timing.duration < threshold)
+            if (mul_timing.duration < threshold_multiply)
             {
                 fprintf(sm, "%lu\n", mul_timing.start - start);
             }
