@@ -37,7 +37,7 @@ static inline void flush()
     asm volatile("fence" ::: "memory");
 }
 
-static inline sample_t timed_call()
+static inline sample_t timed_call(sample_t* tmp)
 {
     unsigned int r = 0, a = 0;
     uint64_t start, end;
@@ -46,7 +46,9 @@ static inline sample_t timed_call()
     bn_sqr_comba8(&r, &a);
     printf("6\n");
     end = rdtsc();
-    return (sample_t) {start, end - start};
+    tmp->start = start;
+    tmp->duration = end - start;
+    return;
 }
 
 static inline sample_t timed_call_mul()
@@ -110,11 +112,12 @@ int main() {
     printf("1\n");
     bn_sqr_comba8(&r, &a);
     printf("2\n");
+    sample_t* tmp;
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
         printf("7\n");
-        sample_t tmp = timed_call();
+        timed_call(tmp);
         printf("8\n");
-        cached_timings[i] = tmp.duration;
+        cached_timings[i] = tmp->duration;
         printf("9\n");
     }
     printf("3\n");
