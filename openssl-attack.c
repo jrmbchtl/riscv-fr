@@ -37,7 +37,7 @@ static inline void flush()
     asm volatile("fence" ::: "memory");
 }
 
-static inline sample_t timed_call(sample_t* tmp)
+static inline void timed_call(sample_t* tmp)
 {
     unsigned int r = 0, a = 0;
     uint64_t start, end;
@@ -51,14 +51,16 @@ static inline sample_t timed_call(sample_t* tmp)
     return;
 }
 
-static inline sample_t timed_call_mul()
+static inline void timed_call_mul(sample_t* tmp)
 {
     unsigned int r = 0, a = 0, b = 0;
     uint64_t start, end;
     start = rdtsc();
     bn_mul_comba8(&r, &a, &b);
     end = rdtsc();
-    return (sample_t) {start, end - start};
+    tmp->start = start;
+    tmp->duration = end - start;
+    return;
 }
 
 void* calculate(void* args) 
@@ -124,7 +126,9 @@ int main() {
     flush();
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
         flush();
-        uncached_timings[i] = timed_call().duration;
+        timed_call(tmp);
+        printf("8\n");
+        uncached_timings[i] = tmp->duration;
     }
     printf("4\n");
 
@@ -136,12 +140,14 @@ int main() {
     
     bn_mul_comba8(&r, &a, &b);
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
-        cached_timings[i] = timed_call_mul().duration;
+        timed_call_mul(tmp);
+        cached_timings[i] = tmp->duration;
     }
     flush();
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
         flush();
-        uncached_timings[i] = timed_call_mul().duration;
+        timed_call_mul(tmp);
+        uncached_timings[i] = tmp->duration;
     }
 
     printf("cached median mul = %lu\n", median(cached_timings, SAMPLE_SIZE));
@@ -177,13 +183,13 @@ int main() {
 
         while(calc.done == 0)
         {   
-
-            sample_t sq_timing = timed_call();
+            sample_t* sq_timing;
+            timed_call(sq_timing);
             flush();
             
-            if (sq_timing.duration < threshold_square)
+            if (sq_timing->duration < threshold_square)
             {
-                fprintf(sq, "%lu\n", sq_timing.start - start);
+                fprintf(sq, "%lu\n", sq_timing->start - start);
             }
         }
         pthread_join(spam, NULL);
@@ -202,13 +208,13 @@ int main() {
 
         while(calc.done == 0)
         {   
-
-            sample_t mul_timing = timed_call_mul();
+            sample_t* mul_timing;
+            timed_call_mul(mul_timing);
             flush();
             
-            if (mul_timing.duration < threshold_multiply)
+            if (mul_timing->duration < threshold_multiply)
             {
-                fprintf(sm, "%lu\n", mul_timing.start - start);
+                fprintf(sm, "%lu\n", mul_timing->start - start);
             }
         }
         pthread_join(spam, NULL);
