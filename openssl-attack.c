@@ -47,7 +47,7 @@ static inline sample_t timed_call()
     return (sample_t) {start, end - start};
 }
 
-static inline sample_t timed_call_mul(BIGNUM* a, BIGNUM* b, BIGNUM* c, BN_CTX* ctx)
+static inline sample_t timed_call_mul()
 {
     unsigned int r = 0, a = 0, b = 0;
     uint64_t start, end;
@@ -103,16 +103,9 @@ int main() {
     uint64_t threshold_square = 0;
     uint64_t threshold_multiply = 0;
     pthread_t spam;
+    unsigned int r = 0, a = 0, b = 0;
 
-    BIGNUM* a = BN_new();
-    BIGNUM* b = BN_new();
-    BIGNUM* c = BN_new();
-    BN_CTX* ctx = BN_CTX_new();
-    BN_zero(a);
-    BN_one(b);
-    BN_one(c);
-
-    BN_sqr(a, b, ctx);
+    bn_sqr_comba8(&r, &a);
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
         chached_timings[i] = timed_call().duration;
     }
@@ -127,14 +120,15 @@ int main() {
     threshold_square = (median(chached_timings, SAMPLE_SIZE) + median(unchached_timings, SAMPLE_SIZE))/2;
     printf("threshold square: %lu\n", threshold_square);
 
-    BN_mul(a, b, c, ctx);
+    
+    bn_mul_comba8(&r, &a, &b);
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
-        chached_timings[i] = timed_call_mul(a, b, c, ctx).duration;
+        chached_timings[i] = timed_call_mul().duration;
     }
     flush();
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
         flush();
-        unchached_timings[i] = timed_call_mul(a, b, c, ctx).duration;
+        unchached_timings[i] = timed_call_mul().duration;
     }
 
     printf("cached median mul = %lu\n", median(chached_timings, SAMPLE_SIZE));
@@ -196,7 +190,7 @@ int main() {
         while(calc.done == 0)
         {   
 
-            sample_t mul_timing = timed_call_mul(a, b, c, ctx);
+            sample_t mul_timing = timed_call_mul();
             flush();
             
             if (mul_timing.duration < threshold_multiply)
