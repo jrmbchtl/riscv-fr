@@ -111,7 +111,9 @@ int main() {
     bn_sqr_comba8(&r, &a);
     printf("2\n");
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
+        printf("7\n");
         chached_timings[i] = timed_call().duration;
+        printf("8\n");
     }
     printf("3\n");
     flush();
