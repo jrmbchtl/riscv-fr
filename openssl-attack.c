@@ -42,7 +42,9 @@ static inline sample_t timed_call()
     unsigned int r = 0, a = 0;
     uint64_t start, end;
     start = rdtsc();
+    printf("5\n");
     bn_sqr_comba8(&r, &a);
+    printf("6\n");
     end = rdtsc();
     return (sample_t) {start, end - start};
 }
