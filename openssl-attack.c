@@ -105,7 +105,9 @@ int main() {
     pthread_t spam;
     unsigned int r = 0, a = 0, b = 0;
 
+    printf("1\n");
     bn_sqr_comba8(&r, &a);
+    printf("2\n");
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
         chached_timings[i] = timed_call().duration;
     }
