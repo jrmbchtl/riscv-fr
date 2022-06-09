@@ -178,7 +178,7 @@ int main() {
     printf("Done observing square\n");
 
     printf("Observing multiply...\n");
-    FILE* sq = fopen("ssl_multiply.csv", "w");
+    FILE* sm = fopen("ssl_multiply.csv", "w");
     for(size_t i=0; i<RUNS; i++) {
         calc.done = 0;
         pthread_create(&spam, NULL, calculate, &calc);
@@ -193,12 +193,12 @@ int main() {
             
             if (mul_timing.duration < threshold)
             {
-                fprintf(sq, "%lu\n", mul_timing.start - start);
+                fprintf(sm, "%lu\n", mul_timing.start - start);
             }
         }
         pthread_join(spam, NULL);
     }
-    fclose(sq);
+    fclose(sm);
 
     printf("Done observing multiply\n");
 	
