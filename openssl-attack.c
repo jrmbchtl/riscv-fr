@@ -37,11 +37,16 @@ static inline void flush()
     asm volatile("fence" ::: "memory");
 }
 
-static inline sample_t timed_call(BIGNUM* a, BIGNUM* b, BN_CTX* ctx)
+static inline sample_t timed_call()
 {
+    unsigned int r, a, n, tmp;
+    r = 0;
+    a = 0;
+    n = 0;
+    tmp = 0;
     uint64_t start, end;
     start = rdtsc();
-    BN_sqr(a, b, ctx);
+    bn_sqr_normal(&r, &a, n, &tmp);
     end = rdtsc();
     return (sample_t) {start, end - start};
 }
@@ -112,12 +117,12 @@ int main() {
 
     BN_sqr(a, b, ctx);
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
-        chached_timings[i] = timed_call(a, b, ctx).duration;
+        chached_timings[i] = timed_call().duration;
     }
     flush();
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
         flush();
-        unchached_timings[i] = timed_call(a, b, ctx).duration;
+        unchached_timings[i] = timed_call().duration;
     }
 
     printf("cached median square = %lu\n", median(chached_timings, SAMPLE_SIZE));
@@ -169,7 +174,7 @@ int main() {
         while(calc.done == 0)
         {   
 
-            sample_t sq_timing = timed_call(a, b, ctx);
+            sample_t sq_timing = timed_call();
             flush();
             
             if (sq_timing.duration < threshold_square)
