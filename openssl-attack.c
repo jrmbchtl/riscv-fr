@@ -46,6 +46,16 @@ static inline sample_t timed_call(BIGNUM* a, BIGNUM* b, BN_CTX* ctx)
     return (sample_t) {start, end - start};
 }
 
+static inline sample_t timed_call_mul(BIGNUM* a, BIGNUM* b, BIGNUM* c, BN_CTX* ctx)
+{
+    uint64_t start, end;
+    start = rdtsc();
+    BN_mul(a, b, c, ctx);
+    end = rdtsc();
+    return (sample_t) {start, end - start};
+}
+
+
 static inline sample_t timed_call_n_flush(BIGNUM* a, BIGNUM* b, BN_CTX* ctx)
 {
     uint64_t start, end;
@@ -104,9 +114,11 @@ int main() {
 
     BIGNUM* a = BN_new();
     BIGNUM* b = BN_new();
+    BIGNUM* c = BN_new();
     BN_CTX* ctx = BN_CTX_new();
     BN_zero(a);
     BN_one(b);
+    BN_one(c);
 
     BN_sqr(a, b, ctx);
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
@@ -164,6 +176,31 @@ int main() {
     fclose(sq);
 
     printf("Done observing square\n");
+
+    printf("Observing multiply...\n");
+    FILE* sq = fopen("ssl_multiply.csv", "w");
+    for(size_t i=0; i<RUNS; i++) {
+        calc.done = 0;
+        pthread_create(&spam, NULL, calculate, &calc);
+        uint64_t start = rdtsc();
+        flush();
+
+        while(calc.done == 0)
+        {   
+
+            sample_t mul_timing = timed_call_mul(a, b, c, ctx);
+            flush();
+            
+            if (mul_timing.duration < threshold)
+            {
+                fprintf(sq, "%lu\n", mul_timing.start - start);
+            }
+        }
+        pthread_join(spam, NULL);
+    }
+    fclose(sq);
+
+    printf("Done observing multiply\n");
 	
 	// cleanup
 	free(calc.cipher);
