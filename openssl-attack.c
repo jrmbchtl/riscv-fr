@@ -37,7 +37,7 @@ static inline void flush()
     asm volatile("fence" ::: "memory");
 }
 
-static inline void timed_call(sample_t* tmp)
+void timed_call(sample_t* tmp)
 {
     unsigned int r = 0, a = 0;
     uint64_t start, end;
