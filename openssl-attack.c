@@ -111,11 +111,13 @@ int main() {
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
         chached_timings[i] = timed_call().duration;
     }
+    printf("3\n");
     flush();
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
         flush();
         unchached_timings[i] = timed_call().duration;
     }
+    printf("4\n");
 
     printf("cached median square = %lu\n", median(chached_timings, SAMPLE_SIZE));
     printf("uncached median square = %lu\n", median(unchached_timings, SAMPLE_SIZE));
