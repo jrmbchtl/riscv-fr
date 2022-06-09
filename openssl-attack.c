@@ -48,6 +48,7 @@ static inline void timed_call(sample_t* tmp)
     end = rdtsc();
     tmp->start = start;
     tmp->duration = end - start;
+    printf("10\n");
     return;
 }
 
