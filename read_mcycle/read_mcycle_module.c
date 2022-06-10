@@ -13,8 +13,6 @@ static int __init read_mcycle_module_init(void) {
     uint64_t val = 0;
     asm volatile("csrrs %0, 0x5E0, x0": "=r"(val)::);
     printk(KERN_INFO "0x%lx\n", val);
-    uid_t euid = geteuid();
-    printk(KERN_INFO "euid: %d\n", euid);
     return 0;
 }
 
