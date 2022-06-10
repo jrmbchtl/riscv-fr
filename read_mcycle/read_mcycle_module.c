@@ -10,7 +10,9 @@ MODULE_DESCRIPTION("A simple example Linux module.");
 MODULE_VERSION("0.01");
 
 static int __init read_mcycle_module_init(void) {
-    printk(KERN_INFO "Hello, World!\n");
+    uint64_t val = 0;
+    asm volatile("csrrs %0, 0x5E0, x0": "=r"(val)::);
+    printk(KERN_INFO "%lx\n", val);
     return 0;
 }
 
