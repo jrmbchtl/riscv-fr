@@ -6,7 +6,7 @@
 #include <unistd.h>
 
 #define SAMPLE_SIZE     10000
-#define RUNS            16000
+#define RUNS            1000
 
 typedef struct {
     uint64_t start;
