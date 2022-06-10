@@ -4,7 +4,7 @@
 int main() {
     uint64_t fallback = 0;
     uint64_t val;
-    asm volatile("csrrs %0, cycle[h], 0": "=r"(val)::);
+    asm volatile("csrrs %0, cycle[h]": "=r"(val)::);
     printf("%llu\n", val);
 
     // register int i asm("a2");
