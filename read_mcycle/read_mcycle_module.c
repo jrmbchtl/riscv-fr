@@ -4,9 +4,9 @@
 #include <linux/module.h>
 #include <linux/kernel.h>
 
-MODULE_LICENSE(“GPL”);
-MODULE_AUTHOR(“Jorim Bechtle”);
-MODULE_DESCRIPTION(“A simple example Linux module.”);
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Jorim Bechtle");
+MODULE_DESCRIPTION("A simple example Linux module.");
 MODULE_VERSION("0.01");
 
 static int __init read_mcycle_module_init(void) {
