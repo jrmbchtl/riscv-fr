@@ -2,9 +2,13 @@
 #include <stdint.h>
 
 int main() {
-    register int i asm("0x7C0");
-    // print i has hexEA
-    printf("%x\n", i);
+    uint64_t val;
+    asm volatile("csrrs %0, cycle[h], x0" : "=r"(val)::);
+    printf("%llu\n", val);
+
+    // register int i asm("a2");
+    // // print i has hexEA
+    // printf("%x\n", i);
 
     return 0;
 }
