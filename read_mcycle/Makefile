@@ -1,4 +1,4 @@
-obj-m += lkm_example.o
+obj-m += read_mcycle_module.o
 all:
 	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
 
@@ -7,6 +7,6 @@ clean:
 
 test:
 	sudo dmesg -C
-	sudo insmod lkm_example.ko
-	sudo rmmod lkm_example.ko
+	sudo insmod read_mcycle_module.ko
+	sudo rmmod read_mcycle_module.ko
 	dmesg
