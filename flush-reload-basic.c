@@ -149,7 +149,7 @@ int main()
 
         while(done == 0)
         {   
-            sample_t sq_timing = timed_call_1(square);
+            sample_t sq_timing = timed_call_2(multiply);
             // flush after call to reduce chance of access between measurement and flush
             flush();
             if (sq_timing.duration < threshold_1)
@@ -174,7 +174,7 @@ int main()
 
         while(done == 0)
         {   
-            sample_t mul_timing = timed_call_2(multiply);
+            sample_t mul_timing = timed_call_1(square);
             // flush after call to reduce chance of access between measurement and flush
             flush();
             if (mul_timing.duration < threshold_2)
