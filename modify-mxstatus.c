@@ -3,7 +3,7 @@
 
 int main() {
     uint64_t val;
-    asm volatile("csrrs %0, cycle, x0": "=r"(val)::);
+    asm volatile("csrrs %0, mxstatus, x0": "=r"(val)::);
     // print as hex
     printf("%lx\n", val);
 
