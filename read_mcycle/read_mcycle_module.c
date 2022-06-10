@@ -7,7 +7,7 @@
 MODULE_LICENSE(“GPL”);
 MODULE_AUTHOR(“Jorim Bechtle”);
 MODULE_DESCRIPTION(“A simple example Linux module.”);
-MODULE_VERSION(“0.01”);
+MODULE_VERSION("0.01");
 
 static int __init read_mcycle_module_init(void) {
     printk(KERN_INFO "Hello, World!\n");
