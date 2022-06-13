@@ -30,37 +30,22 @@ static inline void flush()
 }
 
 // measure the time it takes to execute function p(0) and return start and duration
-static inline sample_t timed_call_1(int (*p)(BIGNUM*, const BIGNUM*, BN_CTX*))
+static inline sample_t timed_call_1(int (*p)(BIGNUM*, const BIGNUM*, BN_CTX*), BIGNUM* r, const BIGNUM* a, BN_CTX* ctx)
 {
-    BIGNUM r, a;
-    BN_CTX* ctx = BN_CTX_new();
-    BN_one(&r);
-    BN_one(&a);
     uint64_t start, end;
     start = rdtsc();
-    p(&r, &a, ctx);
+    p(r, a, ctx);
     end = rdtsc();
     return (sample_t) {start, end - start};
 }
 
 // measure the time it takes to execute function p(0,0) and return start and duration
-static inline sample_t timed_call_2(int (*p)(BIGNUM*, const BIGNUM*, const BIGNUM*, BN_CTX*))
+static inline sample_t timed_call_2(int (*p)(BIGNUM*, const BIGNUM*, const BIGNUM*, BN_CTX*), BIGNUM* r, const BIGNUM* a, const BIGNUM* b, BN_CTX* ctx)
 {
-    printf("10\n");
-    BIGNUM r, a, b;
-    printf("11\n");
-    BN_CTX* ctx = BN_CTX_new();
-    printf("12\n");
-    BN_one(&r);
-    printf("13\n");
-    BN_one(&a);
-    printf("14\n");
-    BN_one(&b);
-    printf("15\n");
     uint64_t start, end;
     start = rdtsc();
     printf("16\n");
-    p(&r, &a, &b, ctx);
+    p(r, a, b, ctx);
     printf("17\n");
     end = rdtsc();
     return (sample_t) {start, end - start};
@@ -124,11 +109,11 @@ int main()
     BN_sqr(&r, &a, ctx);
 
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
-        chached_timings_1[i] = timed_call_1(BN_sqr).duration;
+        chached_timings_1[i] = timed_call_1(BN_sqr, &r, &a, ctx).duration;
     }
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
         flush();
-        unchached_timings_1[i] = timed_call_1(BN_sqr).duration;
+        unchached_timings_1[i] = timed_call_1(BN_sqr, &r, &a, ctx).duration;
     }
     uint64_t cached_median_1 = median(chached_timings_1, SAMPLE_SIZE);
     uint64_t uncached_median_1 = median(unchached_timings_1, SAMPLE_SIZE);
@@ -141,13 +126,13 @@ int main()
     printf("2\n");
     for (int i = 0; i < SAMPLE_SIZE; i++)
     {
-        chached_timings_2[i] = timed_call_2(BN_mul).duration;
+        chached_timings_2[i] = timed_call_2(BN_mul, &r, &a, &b, ctx).duration;
     }
     printf("3\n");
     for (int i = 0; i < SAMPLE_SIZE; i++)
     {
         flush();
-        unchached_timings_2[i] = timed_call_2(BN_mul).duration;
+        unchached_timings_2[i] = timed_call_2(BN_mul, &r, &a, &b, ctx).duration;
     }
     printf("4\n");
     uint64_t cached_median_2 = median(chached_timings_2, SAMPLE_SIZE);
