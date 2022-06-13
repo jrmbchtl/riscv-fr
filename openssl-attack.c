@@ -95,11 +95,16 @@ int compare_uint64_t (const void * a, const void * b)
 
 uint64_t median(uint64_t* list, uint64_t size)
 {
+    printf("17\n");
     uint64_t* sorted = malloc(size * sizeof(uint64_t));
     memcpy(sorted, list, size * sizeof(uint64_t));
+    printf("18\n");
     qsort(sorted, size, sizeof(uint64_t), compare_uint64_t);
+    printf("19\n");
     uint64_t median = sorted[size / 2];
+    printf("20\n");
     free(sorted);
+    printf("21\n");
     return median;
 }
 
