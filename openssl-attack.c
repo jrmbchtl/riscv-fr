@@ -1,13 +1,11 @@
-#include <assert.h>
 #include <pthread.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include "openssl/rsa.h"
 
-#define SAMPLE_SIZE     1000
+#define SAMPLE_SIZE     10000
 #define RUNS            1000
 
 typedef struct {
@@ -15,15 +13,7 @@ typedef struct {
     uint64_t duration;
 } sample_t;
 
-typedef struct {
-    RSA* rsa;
-    unsigned char* cipher;
-    int cipher_len;
-    unsigned char* plain;
-    size_t done;
-} calculate_t;
-
-
+// funtcion equivalent to rdtsc on x86, but implemented on RISC-V
 static inline uint64_t rdtsc()
 {
     uint64_t val;
@@ -31,217 +21,163 @@ static inline uint64_t rdtsc()
     return val;
 }
 
+// function to flush the I-cache
 static inline void flush()
 {
     asm volatile("fence.i" ::: "memory");
     asm volatile("fence" ::: "memory");
 }
 
-void timed_call(sample_t* tmp)
+// measure the time it takes to execute function p(0) and return start and duration
+static inline sample_t timed_call_1(void (*p)(unsigned long*, unsigned long*))
 {
-    unsigned long r = 0, a = 0;
+    unsigned long r = 1, a = 1;
     uint64_t start, end;
     start = rdtsc();
-    // printf("5\n");
-    // bn_sqr_comba8(&r, &a);
-    // printf("6\n");
+    p(r, a);
     end = rdtsc();
-    tmp->start = start;
-    tmp->duration = end - start;
-    printf("10\n");
-    return;
+    return (sample_t) {start, end - start};
 }
 
-static inline void timed_call_mul(sample_t* tmp)
+// measure the time it takes to execute function p(0,0) and return start and duration
+static inline sample_t timed_call_2(void (*p)(unsigned long*, unsigned long*, unsigned long*))
 {
-    unsigned long r = 0, a = 0, b = 0;
+    unsigned long r = 1, a = 1, b = 1;
     uint64_t start, end;
     start = rdtsc();
-    // bn_mul_comba8(&r, &a, &b);
+    p(r, a, b);
     end = rdtsc();
-    tmp->start = start;
-    tmp->duration = end - start;
-    return;
+    return (sample_t) {start, end - start};
 }
 
-void* calculate(void* args) 
+// victim function that calls square and multiply 10 times with usleeps inbetween
+void* calculate(void* d)
 {
-    calculate_t* calc = (calculate_t*) args;
-    // BIGNUM* a = BN_new();
-    // BIGNUM* b = BN_new();
-    // BN_CTX* ctx = BN_CTX_new();
-    // BN_zero(a);
-    // BN_one(b);
-    // usleep(1000);
-    // for(int i=0; i<10; i++) {
-    //     BN_sqr(a, b, ctx);
-    //     usleep(1000);
-    // }
-    // decrypt
-	calc->plain = malloc(RSA_size(calc->rsa));
-	int len = RSA_private_decrypt(RSA_size(calc->rsa), calc->cipher, calc->plain, calc->rsa, RSA_PKCS1_PADDING);
-    assert(len > 0);
-    free(calc->plain);
-	
-    // check that decrypting ciphertext is same as input
-    // assert(strcmp((char*)input, (char*)calc->plain) == 0);
-    calc->done = 1;
+    unsigned long r = 1, a = 1, b = 1;
+    size_t* done = (size_t*)d;
+
+    for (size_t i=0; i<10; i++) {
+        usleep(1000);
+        bn_sqr_comba8(&r, &a);
+        usleep(1000);
+        bn_mul_comba8(&r, &a, &b);
+    }
+    usleep(1000);
+    *done = 1;
 }
 
+// compare function for qsort
 int compare_uint64_t (const void * a, const void * b) 
 {
    return ( *(int*)a - *(int*)b );
 }
 
+// returns the median of a list given a list and its length
+// works by sorting the list and returning the middle element
 uint64_t median(uint64_t* list, uint64_t size)
 {
-    printf("17\n");
-    printf("23\n");
-    printf("size of uint64_t is %d\n", sizeof(uint64_t));
-    printf("size is %d\n", size);
-    printf("allocating %d bytes\n", size * sizeof(uint64_t));
     uint64_t* sorted = malloc(size * sizeof(uint64_t));
-    printf("22\n");
     memcpy(sorted, list, size * sizeof(uint64_t));
-    printf("18\n");
     qsort(sorted, size, sizeof(uint64_t), compare_uint64_t);
-    printf("19\n");
     uint64_t median = sorted[size / 2];
-    printf("20\n");
     free(sorted);
-    printf("21\n");
     return median;
 }
 
-int main() {
-    uint64_t timing = 0;
-    uint64_t cached_timings[SAMPLE_SIZE] = {0};
-    uint64_t uncached_timings[SAMPLE_SIZE] = {0};
-    uint64_t threshold_square = 0;
-    uint64_t threshold_multiply = 0;
-    pthread_t spam;
-    unsigned long r = 0, a = 0, b = 0;
+int main()
+{
+    // cached timing arrays for square and multiply
+    uint64_t chached_timings_1[SAMPLE_SIZE] = {0};
+    uint64_t chached_timings_2[SAMPLE_SIZE] = {0};
+    // uncached timing arrays for square and multiply
+    uint64_t unchached_timings_1[SAMPLE_SIZE] = {0};
+    uint64_t unchached_timings_2[SAMPLE_SIZE] = {0};
+    // thresholds for square and multiply
+    uint64_t threshold_1 = 0;
+    uint64_t threshold_2 = 0;
+    // victim thread
+    pthread_t calculate_thread;
+    unsigned long r = 1, a = 1, b = 1;
 
-    printf("1\n");
+    // get threshold for cached and uncached square access
     bn_sqr_comba8(&r, &a);
-    printf("2\n");
-    sample_t* tmp;
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
-        printf("7\n");
-        timed_call(tmp);
-        printf("8\n");
-        cached_timings[i] = tmp->duration;
-        printf("9\n");
+        chached_timings_1[i] = timed_call_1(bn_sqr_comba8).duration;
     }
-    printf("3\n");
-    flush();
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
         flush();
-        timed_call(tmp);
-        printf("8\n");
-        uncached_timings[i] = tmp->duration;
+        unchached_timings_1[i] = timed_call_1(bn_sqr_comba8).duration;
     }
-    printf("4\n");
+    uint64_t cached_median_1 = median(chached_timings_1, SAMPLE_SIZE);
+    uint64_t uncached_median_1 = median(unchached_timings_1, SAMPLE_SIZE);
+    threshold_1 = (uncached_median_1 + cached_median_1)/2;
+    printf("threshold 1: %lu\n", threshold_1);
 
-    printf("cached median square = %lu\n", median(cached_timings, SAMPLE_SIZE));
-    printf("14\n");
-    printf("uncached median square = %lu\n", median(uncached_timings, SAMPLE_SIZE));
-    printf("15\n");
-    threshold_square = (median(cached_timings, SAMPLE_SIZE) + median(uncached_timings, SAMPLE_SIZE))/2;
-    printf("16\n");
-    printf("threshold square: %lu\n", threshold_square);
-
-    printf("11\n");
+    // get threshold for cached and uncached multiply access
     bn_mul_comba8(&r, &a, &b);
-    printf("12\n");
-    for (size_t i=0; i<SAMPLE_SIZE; i++) {
-        timed_call_mul(tmp);
-        printf("13\n");
-        cached_timings[i] = tmp->duration;
+    for (int i = 0; i < SAMPLE_SIZE; i++)
+    {
+        chached_timings_2[i] = timed_call_2(bn_mul_comba8).duration;
     }
-    flush();
-    for (size_t i=0; i<SAMPLE_SIZE; i++) {
+    for (int i = 0; i < SAMPLE_SIZE; i++)
+    {
         flush();
-        timed_call_mul(tmp);
-        uncached_timings[i] = tmp->duration;
+        unchached_timings_2[i] = timed_call_2(bn_mul_comba8).duration;
     }
-    printf("14\n");
+    uint64_t cached_median_2 = median(chached_timings_2, SAMPLE_SIZE);
+    uint64_t uncached_median_2 = median(unchached_timings_2, SAMPLE_SIZE);
+    threshold_2 = (uncached_median_2 + cached_median_2)/2;
+    printf("threshold 2: %lu\n", threshold_2);
 
-    printf("cached median mul = %lu\n", median(cached_timings, SAMPLE_SIZE));
-    printf("uncached median mul = %lu\n", median(uncached_timings, SAMPLE_SIZE));
-    threshold_multiply = (median(cached_timings, SAMPLE_SIZE) + median(uncached_timings, SAMPLE_SIZE))/2;
-    printf("threshold: %lu\n", threshold_multiply);
+    // run victim thread RUNS times and observe the accesses to square
+    // results are written to square.csv
+    // printf("Observing square...\n");
+    // FILE* sq = fopen("square.csv", "w");
+    // for(size_t i=0; i<RUNS; i++) {
+    //     size_t done = 0;
+    //     pthread_create(&calculate_thread, NULL, calculate, &done);
+    //     uint64_t start = rdtsc();
+    //     flush();
 
+    //     while(done == 0)
+    //     {   
+    //         sample_t sq_timing = timed_call_1(square);
+    //         // flush after call to reduce chance of access between measurement and flush
+    //         flush();
+    //         if (sq_timing.duration < threshold_1)
+    //         {
+    //             fprintf(sq, "%lu\n", sq_timing.start - start);
+    //         }
+    //     }
+    //     pthread_join(calculate_thread, NULL);
+    // }
+    // fclose(sq);
+    // printf("Done observing square\n");
 
-    calculate_t calc;
-    // load key from file
-	FILE* f = fopen("key.pem", "r");
-	if (f == NULL) {
-		printf("Error opening key file \"key.pem\" for reading\n");
-		return 1;
-	}
-	calc.rsa = RSA_new();
-	PEM_read_RSAPrivateKey(f, &calc.rsa, NULL, NULL);
-	fclose(f);
-	
-	// encrypt
-	unsigned char* input = "Ciphertext";
-	calc.cipher = malloc(RSA_size(calc.rsa));
-	int len = RSA_public_encrypt(strlen((char*)input), input, calc.cipher, calc.rsa, RSA_PKCS1_PADDING);
-	
-    // calculate
-    printf("Observing square...\n");
-    FILE* sq = fopen("ssl_square.csv", "w");
-    for(size_t i=0; i<RUNS; i++) {
-        calc.done = 0;
-        pthread_create(&spam, NULL, calculate, &calc);
-        uint64_t start = rdtsc();
-        flush();
+    // // run victim thread RUNS times and observe the accesses to multiply
+    // // results are written to multiply.csv
+    // printf("Observing multiply...\n");
+    // FILE* mul = fopen("multiply.csv", "w");
+    // for(size_t i=0; i<RUNS; i++) {
+    //     size_t done = 0;
+    //     pthread_create(&calculate_thread, NULL, calculate, &done);
+    //     uint64_t start = rdtsc();
+    //     flush();
 
-        while(calc.done == 0)
-        {   
-            sample_t* sq_timing;
-            timed_call(sq_timing);
-            flush();
-            
-            if (sq_timing->duration < threshold_square)
-            {
-                fprintf(sq, "%lu\n", sq_timing->start - start);
-            }
-        }
-        pthread_join(spam, NULL);
-    }
-    fclose(sq);
+    //     while(done == 0)
+    //     {   
+    //         sample_t mul_timing = timed_call_2(multiply);
+    //         // flush after call to reduce chance of access between measurement and flush
+    //         flush();
+    //         if (mul_timing.duration < threshold_2)
+    //         {
+    //             fprintf(mul, "%lu\n", mul_timing.start - start);
+    //         }
+    //     }
+    //     pthread_join(calculate_thread, NULL);
+    // }
+    // fclose(mul);
+    // printf("Done observing multiply\n");
 
-    printf("Done observing square\n");
-
-    printf("Observing multiply...\n");
-    FILE* sm = fopen("ssl_multiply.csv", "w");
-    for(size_t i=0; i<RUNS; i++) {
-        calc.done = 0;
-        pthread_create(&spam, NULL, calculate, &calc);
-        uint64_t start = rdtsc();
-        flush();
-
-        while(calc.done == 0)
-        {   
-            sample_t* mul_timing;
-            timed_call_mul(mul_timing);
-            flush();
-            
-            if (mul_timing->duration < threshold_multiply)
-            {
-                fprintf(sm, "%lu\n", mul_timing->start - start);
-            }
-        }
-        pthread_join(spam, NULL);
-    }
-    fclose(sm);
-
-    printf("Done observing multiply\n");
-	
-	// cleanup
-	free(calc.cipher);
-	RSA_free(calc.rsa);
     return 0;
 }
