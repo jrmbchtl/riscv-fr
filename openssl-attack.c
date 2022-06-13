@@ -118,25 +118,38 @@ int main()
     threshold_1 = (uncached_median_1 + cached_median_1)/2;
     printf("threshold 1: %lu\n", threshold_1);
 
+    // check that no false cache hits occur
+    int counter = 0;
+    for (size_t i=0; i<SAMPLE_SIZE; i++) {
+        if (chached_timings_1[i] > threshold_1) {
+            counter++;
+        }
+    }
+    printf("false cache hits: %d\n", counter);
+
     // get threshold for cached and uncached multiply access
-    printf("1\n");
     BN_mul(&r, &a, &b, ctx);
-    printf("2\n");
     for (int i = 0; i < SAMPLE_SIZE; i++)
     {
         chached_timings_2[i] = timed_call_2(BN_mul, &r, &a, &b, ctx).duration;
     }
-    printf("3\n");
     for (int i = 0; i < SAMPLE_SIZE; i++)
     {
         flush();
         unchached_timings_2[i] = timed_call_2(BN_mul, &r, &a, &b, ctx).duration;
     }
-    printf("4\n");
     uint64_t cached_median_2 = median(chached_timings_2, SAMPLE_SIZE);
     uint64_t uncached_median_2 = median(unchached_timings_2, SAMPLE_SIZE);
     threshold_2 = (uncached_median_2 + cached_median_2)/2;
     printf("threshold 2: %lu\n", threshold_2);
+
+    counter = 0;
+    for (size_t i=0; i<SAMPLE_SIZE; i++) {
+        if (chached_timings_1[i] > threshold_1) {
+            counter++;
+        }
+    }
+    printf("false cache hits: %d\n", counter);
 
     // run victim thread RUNS times and observe the accesses to square
     // results are written to square.csv
