@@ -128,16 +128,20 @@ int main()
     printf("threshold 1: %lu\n", threshold_1);
 
     // get threshold for cached and uncached multiply access
+    printf("1\n");
     BN_mul(&r, &a, &b, ctx);
+    printf("2\n");
     for (int i = 0; i < SAMPLE_SIZE; i++)
     {
         chached_timings_2[i] = timed_call_2(BN_mul).duration;
     }
+    printf("3\n");
     for (int i = 0; i < SAMPLE_SIZE; i++)
     {
         flush();
         unchached_timings_2[i] = timed_call_2(BN_mul).duration;
     }
+    printf("4\n");
     uint64_t cached_median_2 = median(chached_timings_2, SAMPLE_SIZE);
     uint64_t uncached_median_2 = median(unchached_timings_2, SAMPLE_SIZE);
     threshold_2 = (uncached_median_2 + cached_median_2)/2;
