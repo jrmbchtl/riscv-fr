@@ -61,7 +61,7 @@ void* calculate(void* d)
     printf("calc 4\n");
     BN_one(&a);
     printf("calc 5\n");
-    BN_one(&b);
+    BN_zero(&b);
     printf("calc 6\n");
     size_t* done = (size_t*)d;
     printf("calc 7\n");
