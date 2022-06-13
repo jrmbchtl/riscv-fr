@@ -138,10 +138,12 @@ int main() {
     threshold_square = (median(cached_timings, SAMPLE_SIZE) + median(uncached_timings, SAMPLE_SIZE))/2;
     printf("threshold square: %lu\n", threshold_square);
 
-    
+    printf("11\n");
     bn_mul_comba8(&r, &a, &b);
+    printf("12\n");
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
         timed_call_mul(tmp);
+        printf("13\n");
         cached_timings[i] = tmp->duration;
     }
     flush();
@@ -150,6 +152,7 @@ int main() {
         timed_call_mul(tmp);
         uncached_timings[i] = tmp->duration;
     }
+    printf("14\n");
 
     printf("cached median mul = %lu\n", median(cached_timings, SAMPLE_SIZE));
     printf("uncached median mul = %lu\n", median(uncached_timings, SAMPLE_SIZE));
