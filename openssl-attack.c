@@ -32,11 +32,17 @@ static inline void flush()
 // measure the time it takes to execute function p(0) and return start and duration
 static inline sample_t timed_call_1(void (*p)(unsigned long*, const unsigned long*))
 {
+    printf("9\n");
     unsigned long r = 1, a = 1;
+    printf("10\n");
     uint64_t start, end;
+    printf("11\n");
     start = rdtsc();
+    printf("12\n");
     p(&r, &a);
+    printf("13\n");
     end = rdtsc();
+    printf("14\n");
     return (sample_t) {start, end - start};
 }
 
