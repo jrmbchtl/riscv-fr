@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <openssl/bn_lcl.h>
+#include "openssl/bn_lcl.h"
 
 #define SAMPLE_SIZE     10000
 #define RUNS            1000
