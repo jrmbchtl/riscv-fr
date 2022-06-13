@@ -43,7 +43,7 @@ void timed_call(sample_t* tmp)
     uint64_t start, end;
     start = rdtsc();
     printf("5\n");
-    bn_sqr_comba8(&r, &a);
+    // bn_sqrD_comba8(&r, &a);
     printf("6\n");
     end = rdtsc();
     tmp->start = start;
