@@ -73,15 +73,6 @@ void* calculate(void* d)
     // free the BN_CTX
     BN_CTX_free(ctx);
     printf("calc 7\n");
-    // free r, a, b
-    BN_free(&r);
-    printf("calc 8\n");
-    BN_free(&a);
-    printf("calc 9\n");
-    BN_free(&b);
-    printf("calc 10\n");
-    usleep(1000);
-    printf("calc 11\n");
     *done = 1;
 }
 
