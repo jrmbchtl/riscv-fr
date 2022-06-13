@@ -159,15 +159,19 @@ int main()
     // results are written to square.csv
     printf("Observing square...\n");
     FILE* sq = fopen("square.csv", "w");
+    printf("atta 1\n");
     for(size_t i=0; i<RUNS; i++) {
         size_t done = 0;
+        printf("atta 2\n");
         pthread_create(&calculate_thread, NULL, calculate, &done);
         uint64_t start = rdtsc();
         flush();
 
         while(done == 0)
         {   
+            printf("atta 3\n");
             sample_t sq_timing = timed_call_1(BN_sqr, &r, &a, ctx);
+            printf("atta 4\n");
             // flush after call to reduce chance of access between measurement and flush
             flush();
             if (sq_timing.duration < threshold_1)
