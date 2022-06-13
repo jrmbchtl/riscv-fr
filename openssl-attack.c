@@ -145,7 +145,7 @@ int main()
 
     counter = 0;
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
-        if (chached_timings_1[i] > threshold_1) {
+        if (chached_timings_2[i] > threshold_2) {
             counter++;
         }
     }
