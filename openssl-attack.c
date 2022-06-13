@@ -46,14 +46,18 @@ static inline sample_t timed_call_1(int (*p)(BIGNUM*, const BIGNUM*, BN_CTX*))
 // measure the time it takes to execute function p(0,0) and return start and duration
 static inline sample_t timed_call_2(int (*p)(BIGNUM*, const BIGNUM*, const BIGNUM*, BN_CTX*))
 {
+    printf("10\n");
     BIGNUM r, a, b;
     BN_CTX* ctx = BN_CTX_new();
     BN_one(&r);
     BN_one(&a);
     BN_one(&b);
+    printf("11\n");
     uint64_t start, end;
     start = rdtsc();
+    printf("12\n");
     p(&r, &a, &b, ctx);
+    printf("13\n");
     end = rdtsc();
     return (sample_t) {start, end - start};
 }
