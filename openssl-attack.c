@@ -134,8 +134,11 @@ int main() {
     printf("4\n");
 
     printf("cached median square = %lu\n", median(cached_timings, SAMPLE_SIZE));
+    printf("14\n");
     printf("uncached median square = %lu\n", median(uncached_timings, SAMPLE_SIZE));
+    printf("15\n");
     threshold_square = (median(cached_timings, SAMPLE_SIZE) + median(uncached_timings, SAMPLE_SIZE))/2;
+    printf("16\n");
     printf("threshold square: %lu\n", threshold_square);
 
     printf("11\n");
