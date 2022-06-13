@@ -67,17 +67,21 @@ void* calculate(void* d)
         BN_sqr(&r, &a, ctx);
         printf("calc 5\n");
         usleep(1000);
-        BN_mul(&r, &r, &b, ctx);
+        BN_mul(&r, &a, &b, ctx);
         printf("calc 6\n");
     }
     // free the BN_CTX
     BN_CTX_free(ctx);
+    printf("calc 7\n");
     // free r, a, b
     BN_free(&r);
+    printf("calc 8\n");
     BN_free(&a);
+    printf("calc 9\n");
     BN_free(&b);
+    printf("calc 10\n");
     usleep(1000);
-    printf("calc 7\n");
+    printf("calc 11\n");
     *done = 1;
 }
 
