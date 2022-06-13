@@ -54,6 +54,9 @@ void* calculate(void* d)
 {
     printf("calc 1\n");
     BIGNUM r, a, b;
+    BN_init(&r);
+    BN_init(&a);
+    BN_init(&b);
     printf("calc 2\n");
     BN_CTX* ctx = BN_CTX_new();
     printf("calc 3\n");
