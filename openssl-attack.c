@@ -163,7 +163,8 @@ int main()
     for(size_t i=0; i<RUNS; i++) {
         size_t done = 0;
         printf("atta 2\n");
-        // pthread_create(&calculate_thread, NULL, calculate, &done);
+        pthread_create(&calculate_thread, NULL, calculate, &done);
+        pthread_join(calculate_thread, NULL);
         uint64_t start = rdtsc();
         flush();
 
