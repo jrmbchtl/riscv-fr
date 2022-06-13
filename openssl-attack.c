@@ -39,7 +39,7 @@ static inline void flush()
 
 void timed_call(sample_t* tmp)
 {
-    unsigned int r = 0, a = 0;
+    unsigned long r = 0, a = 0;
     uint64_t start, end;
     start = rdtsc();
     // printf("5\n");
@@ -54,7 +54,7 @@ void timed_call(sample_t* tmp)
 
 static inline void timed_call_mul(sample_t* tmp)
 {
-    unsigned int r = 0, a = 0, b = 0;
+    unsigned long r = 0, a = 0, b = 0;
     uint64_t start, end;
     start = rdtsc();
     // bn_mul_comba8(&r, &a, &b);
@@ -120,7 +120,7 @@ int main() {
     uint64_t threshold_square = 0;
     uint64_t threshold_multiply = 0;
     pthread_t spam;
-    unsigned int r = 0, a = 0, b = 0;
+    unsigned long r = 0, a = 0, b = 0;
 
     printf("1\n");
     bn_sqr_comba8(&r, &a);
