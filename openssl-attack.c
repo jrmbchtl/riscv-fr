@@ -83,7 +83,7 @@ uint64_t median(uint64_t* list, uint64_t size)
     return median;
 }
 
-uint64_t min(uint64_t list, uint64_t size)
+uint64_t min(uint64_t* list, uint64_t size)
 {
     uint64_t* sorted = malloc(size * sizeof(uint64_t));
     memcpy(sorted, list, size * sizeof(uint64_t));
@@ -124,27 +124,9 @@ int main()
         unchached_timings_1[i] = timed_call_1(BN_sqr, &r, &a, ctx).duration;
     }
     uint64_t cached_median_1 = median(chached_timings_1, SAMPLE_SIZE);
-    uint64_t uncached_min_1 = median(unchached_timings_1, SAMPLE_SIZE);
+    uint64_t uncached_min_1 = min(unchached_timings_1, SAMPLE_SIZE);
     threshold_1 = (uncached_min_1 + cached_median_1)/2;
-    
-
-    // check that no false cache hits occur
-    int counter = 0;
     printf("threshold 1: %lu\n", threshold_1);
-    while (1) {
-        for (size_t i=0; i<SAMPLE_SIZE; i++) {
-            if (unchached_timings_1[i] < threshold_1) {
-                counter++;
-            }
-        }
-        if (counter > 0) {
-            threshold_1--;
-            counter = 0;
-        }
-    }
-    printf("threshold 1: %lu\n", threshold_1);
-    
-    printf("false cache hits: %d\n", counter);
 
     // get threshold for cached and uncached multiply access
     BN_mul(&r, &a, &b, ctx);
@@ -161,14 +143,6 @@ int main()
     uint64_t uncached_min_2 = median(unchached_timings_2, SAMPLE_SIZE);
     threshold_2 = (uncached_min_2 + cached_median_2)/2;
     printf("threshold 2: %lu\n", threshold_2);
-
-    counter = 0;
-    for (size_t i=0; i<SAMPLE_SIZE; i++) {
-        if (chached_timings_2[i] > threshold_2) {
-            counter++;
-        }
-    }
-    printf("false cache hits: %d\n", counter);
 
     // run victim thread RUNS times and observe the accesses to square
     // results are written to square.csv
