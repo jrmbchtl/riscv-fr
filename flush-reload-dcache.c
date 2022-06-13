@@ -16,7 +16,12 @@ static inline uint64_t rdtsc()
     return val;
 }
 
-static inline void maccess(void *p){
+static inline void flush(void *p) {
+    asm volatile (".byte 0x0b, 0x00, 0x70, 0x03\n":::);
+    printf("%p\n", p);
+}
+
+static inline void maccess(void *p) {
     uint64_t val;
     asm volatile("ld %0, %1\n" :"=r" (val) : "m"(p):);
 }
@@ -38,5 +43,6 @@ int main() {
         // print i and timing[i]
         if(timings[i] > 28) printf("%d %lu\n", i, timings[i]);
     }
+    flush(&lookuptable[0]);
     return 1;
 }
