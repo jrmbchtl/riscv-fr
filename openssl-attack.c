@@ -7,7 +7,7 @@
 #include <unistd.h>
 #include "openssl/rsa.h"
 
-#define SAMPLE_SIZE     10000
+#define SAMPLE_SIZE     1000
 #define RUNS            1000
 
 typedef struct {
