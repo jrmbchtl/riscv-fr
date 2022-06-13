@@ -56,23 +56,26 @@ void* calculate(void* d)
     BIGNUM r, a, b;
     printf("calc 2\n");
     BN_CTX* ctx = BN_CTX_new();
+    printf("calc 3\n");
     BN_one(&r);
+    printf("calc 4\n");
     BN_one(&a);
+    printf("calc 5\n");
     BN_one(&b);
     size_t* done = (size_t*)d;
-    printf("calc 3\n");
+    printf("calc 6\n");
     for (size_t i=0; i<10; i++) {
         usleep(1000);
-        printf("calc 4\n");
+        printf("calc 7\n");
         BN_sqr(&r, &a, ctx);
-        printf("calc 5\n");
+        printf("calc 8\n");
         usleep(1000);
         BN_mul(&r, &a, &b, ctx);
-        printf("calc 6\n");
+        printf("calc 9\n");
     }
     // free the BN_CTX
     BN_CTX_free(ctx);
-    printf("calc 7\n");
+    printf("calc 10\n");
     *done = 1;
 }
 
