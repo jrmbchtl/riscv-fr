@@ -114,11 +114,9 @@ int main()
 
     // get threshold for cached and uncached square access
     printf("1\n");
-    // print pointer to BN_sqr
     printf("BN_sqr: %p\n", BN_sqr);
-    // print pointer to BN_sqr_hook
-    printf("BN_sqr_hook: %p\n", bn_sqr_hook);
-    bn_sqr_hook();
+    printf("BN_sqr_hook: %p\n", BN_sqr_hook);
+    BN_sqr_hook();
     printf("2\n");
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
         printf("3\n");
