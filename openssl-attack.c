@@ -48,16 +48,20 @@ static inline sample_t timed_call_2(int (*p)(BIGNUM*, const BIGNUM*, const BIGNU
 {
     printf("10\n");
     BIGNUM r, a, b;
-    BN_CTX* ctx = BN_CTX_new();
-    BN_one(&r);
-    BN_one(&a);
-    BN_one(&b);
     printf("11\n");
+    BN_CTX* ctx = BN_CTX_new();
+    printf("12\n");
+    BN_one(&r);
+    printf("13\n");
+    BN_one(&a);
+    printf("14\n");
+    BN_one(&b);
+    printf("15\n");
     uint64_t start, end;
     start = rdtsc();
-    printf("12\n");
+    printf("16\n");
     p(&r, &a, &b, ctx);
-    printf("13\n");
+    printf("17\n");
     end = rdtsc();
     return (sample_t) {start, end - start};
 }
