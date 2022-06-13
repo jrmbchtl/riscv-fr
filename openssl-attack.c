@@ -101,13 +101,21 @@ int main()
     unsigned long r = 1, a = 1, b = 1;
 
     // get threshold for cached and uncached square access
+    printf("1\n");
     bn_sqr_comba8(&r, &a);
+    printf("2\n");
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
+        printf("3\n");
         chached_timings_1[i] = timed_call_1(bn_sqr_comba8).duration;
+        printf("4\n");
     }
+    printf("5\n");
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
+        printf("6\n");
         flush();
+        printf("7\n");
         unchached_timings_1[i] = timed_call_1(bn_sqr_comba8).duration;
+        printf("8\n");
     }
     uint64_t cached_median_1 = median(chached_timings_1, SAMPLE_SIZE);
     uint64_t uncached_median_1 = median(unchached_timings_1, SAMPLE_SIZE);
