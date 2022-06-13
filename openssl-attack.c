@@ -112,26 +112,26 @@ int main() {
     pthread_t spam;
     unsigned int r = 0, a = 0, b = 0;
 
-    // printf("1\n");
+    printf("1\n");
     bn_sqr_comba8(&r, &a);
-    // printf("2\n");
+    printf("2\n");
     sample_t* tmp;
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
-        // printf("7\n");
+        printf("7\n");
         timed_call(tmp);
-        // printf("8\n");
+        printf("8\n");
         cached_timings[i] = tmp->duration;
-        // printf("9\n");
+        printf("9\n");
     }
-    // printf("3\n");
+    printf("3\n");
     flush();
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
         flush();
         timed_call(tmp);
-        // printf("8\n");
+        printf("8\n");
         uncached_timings[i] = tmp->duration;
     }
-    // printf("4\n");
+    printf("4\n");
 
     printf("cached median square = %lu\n", median(cached_timings, SAMPLE_SIZE));
     printf("uncached median square = %lu\n", median(uncached_timings, SAMPLE_SIZE));
