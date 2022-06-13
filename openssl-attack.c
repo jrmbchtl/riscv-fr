@@ -150,53 +150,53 @@ int main()
 
     // run victim thread RUNS times and observe the accesses to square
     // results are written to square.csv
-    // printf("Observing square...\n");
-    // FILE* sq = fopen("square.csv", "w");
-    // for(size_t i=0; i<RUNS; i++) {
-    //     size_t done = 0;
-    //     pthread_create(&calculate_thread, NULL, calculate, &done);
-    //     uint64_t start = rdtsc();
-    //     flush();
+    printf("Observing square...\n");
+    FILE* sq = fopen("square.csv", "w");
+    for(size_t i=0; i<RUNS; i++) {
+        size_t done = 0;
+        pthread_create(&calculate_thread, NULL, calculate, &done);
+        uint64_t start = rdtsc();
+        flush();
 
-    //     while(done == 0)
-    //     {   
-    //         sample_t sq_timing = timed_call_1(square);
-    //         // flush after call to reduce chance of access between measurement and flush
-    //         flush();
-    //         if (sq_timing.duration < threshold_1)
-    //         {
-    //             fprintf(sq, "%lu\n", sq_timing.start - start);
-    //         }
-    //     }
-    //     pthread_join(calculate_thread, NULL);
-    // }
-    // fclose(sq);
-    // printf("Done observing square\n");
+        while(done == 0)
+        {   
+            sample_t sq_timing = timed_call_1(BN_sqr, &r, &a, ctx);
+            // flush after call to reduce chance of access between measurement and flush
+            flush();
+            if (sq_timing.duration < threshold_1)
+            {
+                fprintf(sq, "%lu\n", sq_timing.start - start);
+            }
+        }
+        pthread_join(calculate_thread, NULL);
+    }
+    fclose(sq);
+    printf("Done observing square\n");
 
-    // // run victim thread RUNS times and observe the accesses to multiply
-    // // results are written to multiply.csv
-    // printf("Observing multiply...\n");
-    // FILE* mul = fopen("multiply.csv", "w");
-    // for(size_t i=0; i<RUNS; i++) {
-    //     size_t done = 0;
-    //     pthread_create(&calculate_thread, NULL, calculate, &done);
-    //     uint64_t start = rdtsc();
-    //     flush();
+    // run victim thread RUNS times and observe the accesses to multiply
+    // results are written to multiply.csv
+    printf("Observing multiply...\n");
+    FILE* mul = fopen("multiply.csv", "w");
+    for(size_t i=0; i<RUNS; i++) {
+        size_t done = 0;
+        pthread_create(&calculate_thread, NULL, calculate, &done);
+        uint64_t start = rdtsc();
+        flush();
 
-    //     while(done == 0)
-    //     {   
-    //         sample_t mul_timing = timed_call_2(multiply);
-    //         // flush after call to reduce chance of access between measurement and flush
-    //         flush();
-    //         if (mul_timing.duration < threshold_2)
-    //         {
-    //             fprintf(mul, "%lu\n", mul_timing.start - start);
-    //         }
-    //     }
-    //     pthread_join(calculate_thread, NULL);
-    // }
-    // fclose(mul);
-    // printf("Done observing multiply\n");
+        while(done == 0)
+        {   
+            sample_t mul_timing = timed_call_2(BN_mul, &r, &a, &b, ctx);
+            // flush after call to reduce chance of access between measurement and flush
+            flush();
+            if (mul_timing.duration < threshold_2)
+            {
+                fprintf(mul, "%lu\n", mul_timing.start - start);
+            }
+        }
+        pthread_join(calculate_thread, NULL);
+    }
+    fclose(mul);
+    printf("Done observing multiply\n");
 
     return 0;
 }
