@@ -30,7 +30,7 @@ static inline void flush()
 }
 
 // measure the time it takes to execute function p(0) and return start and duration
-static inline sample_t timed_call_1(void (*p)(unsigned long*, unsigned long*))
+static inline sample_t timed_call_1(void (*p)(unsigned long*, const unsigned long*))
 {
     unsigned long r = 1, a = 1;
     uint64_t start, end;
