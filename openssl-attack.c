@@ -6,7 +6,7 @@
 #include <unistd.h>
 #include "openssl/bn.h"
 
-#define SAMPLE_SIZE     10000
+#define SAMPLE_SIZE     20000
 #define RUNS            1000
 
 typedef struct {
