@@ -139,6 +139,7 @@ int main()
         }
         if (counter > 0) {
             threshold_1--;
+            counter = 0;
         }
     }
     printf("threshold 1: %lu\n", threshold_1);
