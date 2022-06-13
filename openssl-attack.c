@@ -158,10 +158,8 @@ int main()
     // results are written to square.csv
     printf("Observing square...\n");
     FILE* sq = fopen("square.csv", "w");
-    printf("atta 1\n");
     for(size_t i=0; i<RUNS; i++) {
         size_t done = 0;
-        printf("atta 2\n");
         pthread_create(&calculate_thread, NULL, calculate, &done);
         pthread_join(calculate_thread, NULL);
         uint64_t start = rdtsc();
