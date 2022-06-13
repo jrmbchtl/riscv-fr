@@ -96,6 +96,7 @@ int compare_uint64_t (const void * a, const void * b)
 uint64_t median(uint64_t* list, uint64_t size)
 {
     printf("17\n");
+    printf("allocating %d bytes\n", size * sizeof(uint64_t));
     uint64_t* sorted = malloc(size * sizeof(uint64_t));
     printf("22\n");
     memcpy(sorted, list, size * sizeof(uint64_t));
