@@ -116,7 +116,7 @@ int main()
     printf("1\n");
     printf("BN_sqr: %p\n", BN_sqr);
     printf("BN_sqr_hook: %p\n", BN_sqr_hook);
-    BN_sqr_hook();
+    // BN_sqr_hook();
     printf("2\n");
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
         printf("3\n");
