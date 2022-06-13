@@ -70,6 +70,12 @@ void* calculate(void* d)
         BN_mul(&r, &r, &b, ctx);
         printf("calc 6\n");
     }
+    // free the BN_CTX
+    BN_CTX_free(ctx);
+    // free r, a, b
+    BN_free(&r);
+    BN_free(&a);
+    BN_free(&b);
     usleep(1000);
     printf("calc 7\n");
     *done = 1;
