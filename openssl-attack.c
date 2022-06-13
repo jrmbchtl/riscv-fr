@@ -62,16 +62,17 @@ void* calculate(void* d)
     BN_one(&a);
     printf("calc 5\n");
     BN_one(&b);
-    size_t* done = (size_t*)d;
     printf("calc 6\n");
+    size_t* done = (size_t*)d;
+    printf("calc 7\n");
     for (size_t i=0; i<10; i++) {
         usleep(1000);
-        printf("calc 7\n");
-        BN_sqr(&r, &a, ctx);
         printf("calc 8\n");
+        BN_sqr(&r, &a, ctx);
+        printf("calc 9\n");
         usleep(1000);
         BN_mul(&r, &a, &b, ctx);
-        printf("calc 9\n");
+        printf("calc 9.5\n");
     }
     // free the BN_CTX
     BN_CTX_free(ctx);
