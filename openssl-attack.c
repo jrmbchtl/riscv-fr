@@ -65,7 +65,7 @@ void* calculate(void* d)
 
     for (size_t i=0; i<10; i++) {
         usleep(1000);
-        BN_sqr_hook();
+        // BN_sqr_hook();
         usleep(1000);
         BN_mul_hook();
     }
