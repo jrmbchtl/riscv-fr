@@ -57,7 +57,7 @@ static inline void timed_call_mul(sample_t* tmp)
     unsigned int r = 0, a = 0, b = 0;
     uint64_t start, end;
     start = rdtsc();
-    bn_mul_comba8(&r, &a, &b);
+    // bn_mul_comba8(&r, &a, &b);
     end = rdtsc();
     tmp->start = start;
     tmp->duration = end - start;
