@@ -44,9 +44,7 @@ static inline sample_t timed_call_2(int (*p)(BIGNUM*, const BIGNUM*, const BIGNU
 {
     uint64_t start, end;
     start = rdtsc();
-    printf("16\n");
     p(r, a, b, ctx);
-    printf("17\n");
     end = rdtsc();
     return (sample_t) {start, end - start};
 }
