@@ -36,7 +36,7 @@ int main() {
     }
     for (int i = 0; i < SIZE; i++) {
         // print i and timing[i]
-        printf("%d %lu\n", i, timings[i]);
+        if(timings[i] > 28) printf("%d %lu\n", i, timings[i]);
     }
     return 1;
 }
