@@ -52,34 +52,23 @@ static inline sample_t timed_call_2(int (*p)(BIGNUM*, const BIGNUM*, const BIGNU
 // victim function that calls square and multiply 10 times with usleeps inbetween
 void* calculate(void* d)
 {
-    printf("calc 1\n");
     BIGNUM r, a, b;
     BN_init(&r);
     BN_init(&a);
     BN_init(&b);
-    printf("calc 2\n");
     BN_CTX* ctx = BN_CTX_new();
-    printf("calc 3\n");
     BN_one(&r);
-    printf("calc 4\n");
     BN_one(&a);
-    printf("calc 5\n");
-    BN_zero(&b);
-    printf("calc 6\n");
+    BN_one(&b);
     size_t* done = (size_t*)d;
-    printf("calc 7\n");
     for (size_t i=0; i<10; i++) {
         usleep(1000);
-        printf("calc 8\n");
         BN_sqr(&r, &a, ctx);
-        printf("calc 9\n");
         usleep(1000);
         BN_mul(&r, &a, &b, ctx);
-        printf("calc 9.5\n");
     }
     // free the BN_CTX
     BN_CTX_free(ctx);
-    printf("calc 10\n");
     *done = 1;
 }
 
@@ -128,6 +117,9 @@ int main()
     // get threshold for cached and uncached square access
     BIGNUM r, a, b;
     BN_CTX* ctx = BN_CTX_new();
+    BN_init(&r);
+    BN_init(&a);
+    BN_init(&b);
     BN_one(&r);
     BN_one(&a);
     BN_one(&b);
