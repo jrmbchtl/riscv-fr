@@ -30,7 +30,7 @@ static inline void flush()
 }
 
 // measure the time it takes to execute function p(0) and return start and duration
-static inline sample_t timed_call_1(void (*p)(BIGNUM*, const BIGNUM*, BN_CTX*))
+static inline sample_t timed_call_1(int (*p)(BIGNUM*, const BIGNUM*, BN_CTX*))
 {
     BIGNUM r, a;
     BN_CTX* ctx = BN_CTX_new();
@@ -44,7 +44,7 @@ static inline sample_t timed_call_1(void (*p)(BIGNUM*, const BIGNUM*, BN_CTX*))
 }
 
 // measure the time it takes to execute function p(0,0) and return start and duration
-static inline sample_t timed_call_2(void (*p)(BIGNUM*, const BIGNUM*, const BIGNUM*, BN_CTX*))
+static inline sample_t timed_call_2(int (*p)(BIGNUM*, const BIGNUM*, const BIGNUM*, BN_CTX*))
 {
     BIGNUM r, a, b;
     BN_CTX* ctx = BN_CTX_new();
