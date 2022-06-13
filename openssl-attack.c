@@ -97,6 +97,7 @@ uint64_t median(uint64_t* list, uint64_t size)
 {
     printf("17\n");
     uint64_t* sorted = malloc(size * sizeof(uint64_t));
+    printf("22\n");
     memcpy(sorted, list, size * sizeof(uint64_t));
     printf("18\n");
     qsort(sorted, size, sizeof(uint64_t), compare_uint64_t);
