@@ -35,7 +35,7 @@ static inline sample_t timed_call_1(void (*p)(unsigned long*, unsigned long*))
     unsigned long r = 1, a = 1;
     uint64_t start, end;
     start = rdtsc();
-    p(r, a);
+    p(&r, &a);
     end = rdtsc();
     return (sample_t) {start, end - start};
 }
@@ -46,7 +46,7 @@ static inline sample_t timed_call_2(void (*p)(unsigned long*, unsigned long*, un
     unsigned long r = 1, a = 1, b = 1;
     uint64_t start, end;
     start = rdtsc();
-    p(r, a, b);
+    p(&r, &a, &b);
     end = rdtsc();
     return (sample_t) {start, end - start};
 }
