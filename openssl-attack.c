@@ -52,14 +52,18 @@ static inline sample_t timed_call_2(int (*p)(BIGNUM*, const BIGNUM*, const BIGNU
 // victim function that calls square and multiply 10 times with usleeps inbetween
 void* calculate(void* d)
 {
-    unsigned long r = 1, a = 1, b = 1;
+    BIGNUM r, a, b;
+    BN_CTX* ctx = BN_CTX_new();
+    BN_one(&r);
+    BN_one(&a);
+    BN_one(&b);
     size_t* done = (size_t*)d;
 
     for (size_t i=0; i<10; i++) {
         usleep(1000);
-        // BN_sqr_hook();
+        BN_sqr(&r, &a, ctx);
         usleep(1000);
-        BN_mul_hook();
+        BN_mul(&r, &r, &b, ctx);
     }
     usleep(1000);
     *done = 1;
