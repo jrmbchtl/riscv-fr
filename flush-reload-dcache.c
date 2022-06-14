@@ -5,7 +5,7 @@
 #include <unistd.h>
 
 #define SIZE     16384
-#define CALIBRATE  8192
+#define CALIBRATE  16384
 
 unsigned char lookuptable[SIZE] = {0};
 
@@ -50,13 +50,14 @@ uint64_t calibrate_offset()
     for (int i = 0; i < CALIBRATE; i++)
     {
         flush(&p[i]);
-        timings[i] = timed_load(p);
+        timings[i] = timed_load(&p[i]);
     }
 
     for (int i = 0; i < CALIBRATE; i++)
     {
         if (timings[i] > 100) {
-            printf("%d: %lu\n", i, timings[i]);
+            printf("%d: %lu: %p\n", i, timings[i], &p[i]);
+            
         }
     }
 }
