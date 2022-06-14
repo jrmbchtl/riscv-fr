@@ -21,7 +21,6 @@ static inline void flush(void *p) {
     printf("%p\n", p);
     uint64_t val;
     asm volatile("ld %0, %1\n" :"=r" (val) : "m"(p):);
-    printf("1\n");
     asm volatile (".word 0x0277800b\n":::);
     printf("%p\n", p);
 }
