@@ -23,6 +23,16 @@ static inline void flush(void *p) {
     asm volatile("mv a5, %0; .word 0x0277800b\n" : : "r"(p) :"a5","memory");
 }
 
+static inline void flush_offset(void *p, uint64_t offset) {
+    uint64_t val;
+    uint64_t p1 = (uint64_t)p % 0x800;
+    uint64_t p2 = (uint64_t)p - p1 + offset;
+    printf("p: %lx, p2: %lx\n", p, p2);
+    // load p into a5 and flush the dcache line with this address
+    // asm volatile("ld a5, %0\n;.word 0x0277800b\n" :: "m"(p):);
+    asm volatile("mv a5, %0; .word 0x0277800b\n" : : "r"(p) :"a5","memory");
+}
+
 static inline void flush_all(void** list, size_t size) {
     for (int i = 0; i < size; i++) {
         flush(list[i]);
@@ -118,6 +128,12 @@ int main() {
 
     uint64_t offset = vote(relevant_addresses, size);
     printf("offset: %lx\n", offset);
+
+    for (int i = 0; i < SIZE; i++)
+    {
+        flush_offset(addresses[i], offset);
+        timings[i] = timed_load(addresses[i]);
+    }
 
     return 0;
 }
