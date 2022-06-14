@@ -4,7 +4,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#define SIZE     4096
+#define SIZE     16384
 
 unsigned long lookuptable[SIZE] = {0};
 
