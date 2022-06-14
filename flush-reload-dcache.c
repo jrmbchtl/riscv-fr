@@ -60,7 +60,7 @@ uint64_t calibrate_offset()
 
     for (int i = 0; i < SIZE; i++)
     {
-        if (timings[i] > 100) {
+        if (timings[i] > 30) {
             relevant_addresses[size++] = addresses[i];
         }
     }
