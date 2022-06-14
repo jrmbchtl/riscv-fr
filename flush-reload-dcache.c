@@ -72,7 +72,7 @@ int main() {
     }
 
     for (int i = 0; i < SIZE; i++) {
-        flush(addresses[i]);
+        flush_all(addresses, SIZE);
         timings[i] = timed_load(addresses[i]);
     }
     // open cache_misses.csv
