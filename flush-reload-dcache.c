@@ -54,7 +54,7 @@ uint64_t calibrate_offset()
 
     for (int i = 0; i < SIZE; i++)
     {
-        flush(&data[i]);
+        flush(addresses[i]);
         timings[i] = timed_load(addresses[i]);
     }
 
