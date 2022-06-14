@@ -77,7 +77,12 @@ int main() {
     for (int i = 0; i < SIZE; i++) {
         timings[i] = timed_load(addresses[i]);
     }
-
+    // open cache_hits.csv
+    FILE *fp = fopen("cache_hits.csv", "w");
+    for (int i = 0; i < SIZE; i++) {
+        fprintf(fp, "%lu\n", timings[i]);
+    }
+    fclose(fp);
     for (int i = 0; i < SIZE; i++) {
         flush(addresses[i]);
         // flush_all(addresses, SIZE);
