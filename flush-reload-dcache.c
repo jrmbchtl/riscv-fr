@@ -47,6 +47,10 @@ int main() {
     }
 
     for (int i = 0; i < SIZE; i++) {
+        flush(addresses[i]);
+    }
+
+    for (int i = 0; i < SIZE; i++) {
         timings[i] = timed_load(addresses[i]);
     }
     for (int i = 0; i < SIZE; i++) {
