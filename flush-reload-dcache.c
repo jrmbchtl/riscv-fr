@@ -67,7 +67,7 @@ int main() {
     void* addresses[SIZE] = {0};
 
     for (int i = 0; i < SIZE; i++) {
-        addresses[i] = &lookuptable[i];
+        addresses[i] = &p[i];
     }
 
     for (int i = 0; i < SIZE; i++) {
