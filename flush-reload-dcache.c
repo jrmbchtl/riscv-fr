@@ -18,7 +18,7 @@ static inline uint64_t rdtsc()
 
 static inline void flush(void *p) {
     uint64_t val;
-    asm volatile("csrrs %0, 0xB00, x0": "=r"(val)::);
+    asm volatile("csrrs %0, 0xC00, x0": "=r"(val)::);
     // print as hex
     printf("%lx\n", val);
     // asm volatile("ld %0, x0\n" : "=r"(p)::);
