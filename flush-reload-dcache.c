@@ -82,35 +82,6 @@ uint64_t vote(uint64_t* list, size_t size) {
 
 uint64_t calibrate_offset()
 {
-    uint64_t timings[SIZE];
-    void* addresses[SIZE] = {0};
-    void* relevant_addresses[20] = {0};
-    size_t size = 0;
-
-    for (int i = 0; i < SIZE; i++) {
-        addresses[i] = &data[i];
-    }
-
-    for (int i = 0; i < SIZE; i++)
-    {
-        flush(addresses[i]);
-        timings[i] = timed_load(addresses[i]);
-    }
-
-    for (int i = 0; i < SIZE; i++)
-    {
-        if (timings[i] > 30) {
-            relevant_addresses[size++] = addresses[i];
-        }
-    }
-
-    for (int i = 0; i < size; i++)
-    {
-        printf("%p\n", relevant_addresses[i]);
-    }
-}
-
-int main() {
     uint64_t timings[SIZE] = {0};
     void* addresses[SIZE] = {0};
 
@@ -135,12 +106,17 @@ int main() {
         }
     }
 
-    for (int i = 0; i < size; i++)
-    {
-        printf("%p\n", relevant_addresses[i]);
-    }
+    // for (int i = 0; i < size; i++)
+    // {
+    //     printf("%p\n", relevant_addresses[i]);
+    // }
 
     uint64_t offset = vote(relevant_addresses, size);
+    return offset;
+}
+
+int main() {
+    uint64_t offset = calibrate_offset();
     printf("offset: %lx\n", offset);
 
     return 0;
