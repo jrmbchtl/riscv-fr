@@ -47,10 +47,11 @@ static inline uint64_t timed_load(void *p){
 
 int main() {
     uint64_t timings[SIZE] = {0};
+    unsigned char *p = malloc(SIZE);
     void* addresses[SIZE] = {0};
 
     for (int i = 0; i < SIZE; i++) {
-        addresses[i] = &lookuptable[i];
+        addresses[i] = &p[i];
     }
 
     for (int i = 0; i < SIZE; i++) {
@@ -72,8 +73,6 @@ int main() {
         // flush(addresses[i]);
         flush_all(addresses, SIZE);
         timings[i] = timed_load(addresses[i]);
-        // printf("2: %p\n", addresses[i]);
-        // printf("3: %p\n", &lookuptable[i]);
     }
     // open cache_misses.csv
     fp = fopen("cache_misses.csv", "w");
