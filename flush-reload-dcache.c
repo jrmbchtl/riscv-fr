@@ -69,20 +69,16 @@ int main() {
         addresses[i] = &p[i];
     }
 
-    for (int i = 0; i < SIZE; i++) {
-        flush(addresses[i]);
+    int initial = 0;
+    for (int i = 0; i < 64; i++) {
+        if (((uint64_t) addresses[i]) % 64 == 0) {
+            initial = i;
+            break;
+        }
     }
+    printf("initial: %d\n", initial);
 
-    for (int i = 0; i < SIZE; i++) {
-        timings[i] = timed_load(addresses[i]);
-    }
-    // open cache_hits.csv
-    FILE *fp = fopen("cache_hits.csv", "w");
-    for (int i = 0; i < SIZE; i++) {
-        fprintf(fp, "%lu\n", timings[i]);
-    }
-    fclose(fp);
-    for (int i = 0; i < SIZE; i++) {
+    for (int i = 0; i < SIZE; i+=64) {
         flush(addresses[i]);
         timings[i] = timed_load(addresses[i]);
     }
