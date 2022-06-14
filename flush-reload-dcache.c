@@ -100,7 +100,7 @@ int main() {
         }
     }
     fclose(fp);
-    free(p);
+    // free(p);
 
     // calibrate_offset();
     // printf("Done\n");
