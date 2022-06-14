@@ -18,8 +18,8 @@ static inline uint64_t rdtsc()
 
 static inline void flush(void *p) {
     uint64_t val;
-    // load value of pointer into into val
-    // as a sideeffect, this will put the value of p into register a5
+    // load value of p into into val
+    // as a side-effect, this will put the value of p into register a5
     asm volatile("ld %0, %1\n" :"=r" (val) : "m"(p):);
     // dcache.civa with a5 as input
     asm volatile (".word 0x0277800b\n":::);
@@ -71,6 +71,8 @@ int main() {
         fprintf(fp, "%lu\n", timings[i]);
     }
     fclose(fp);
+    printf("Done\n");
+    flush(1);
     
     return 1;
 }
