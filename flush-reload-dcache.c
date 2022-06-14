@@ -48,6 +48,7 @@ int main() {
         if(timings[i] > 28) printf("%d %lu\n", i, timings[i]);
     }
     // now with flushing
+    printf("Now with flushing\n");
     for (int i = 0; i < SIZE; i++) {
         flush(&lookuptable[i]);
         timings[i] = timed_load(&lookuptable[i]);
