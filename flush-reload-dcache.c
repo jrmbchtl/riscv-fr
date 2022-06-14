@@ -63,8 +63,6 @@ int main() {
     printf("Now with flushing\n");
     for (int i = 0; i < SIZE; i++) {
         flush(addresses[i]);
-        // print addresses[i]
-        printf("%p\n", addresses[i]);
         timings[i] = timed_load(addresses[i]);
     }
     // open cache_misses.csv
