@@ -5,6 +5,7 @@
 #include <unistd.h>
 
 #define SIZE     16384
+#define MAX_SIZE 20
 char __attribute__((aligned(4096))) data[4096 * 4];
 
 // funtcion equivalent to rdtsc on x86, but implemented on RISC-V
@@ -41,6 +42,39 @@ static inline uint64_t timed_load(void *p){
     return end-start;
 } 
 
+uint64_t vote(uint64_t* list, size_t size) {
+    int numbers[size];
+    uint64_t options[size];
+    int option_count = 0;
+
+    for (int i = 0; i < size; i++) {
+        int found = 0;
+        for (int j = 0; j < option_count; j++) {
+            if (options[j] == list[i]) {
+                numbers[j]++;
+                found = 1;
+                break;
+            }
+        }
+        if (found) {
+            continue;
+        }
+        options[option_count] = list[i];
+        numbers[option_count] = 1;
+        option_count++;
+    }
+
+    int max = 0;
+    int max_index = 0;
+    for (int i = 0; i < option_count; i++) {
+        if (numbers[i] > max) {
+            max = numbers[i];
+            max_index = i;
+        }
+    }
+    return options[max_index];
+}
+
 uint64_t calibrate_offset()
 {
     uint64_t timings[SIZE];
@@ -75,7 +109,7 @@ int main() {
     uint64_t timings[SIZE] = {0};
     void* addresses[SIZE] = {0};
 
-    void* relevant_addresses[20] = {0};
+    uint64_t relevant_addresses[MAX_SIZE] = {0};
     size_t size = 0;
 
     memset(data, 0, 4096 * 4);
@@ -88,16 +122,11 @@ int main() {
         flush(addresses[i]);
         timings[i] = timed_load(addresses[i]);
     }
-    // for (int i = 0; i < SIZE; i++) {
-    //     if (timings[i] > 30) {
-    //         printf("%d: %lu: %p\n", i, timings[i], addresses[i]);
-    //     }
-    // }
 
     for (int i = 0; i < SIZE; i++)
     {
         if (timings[i] > 30) {
-            relevant_addresses[size++] = addresses[i];
+            relevant_addresses[size++] = (uint64_t) addresses[i];
         }
     }
 
@@ -105,6 +134,9 @@ int main() {
     {
         printf("%p\n", relevant_addresses[i]);
     }
+
+    uint64_t offset = vote(relevant_addresses, size);
+    printf("offset: %lx\n", offset);
 
     return 0;
 }
