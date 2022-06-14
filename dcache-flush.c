@@ -5,6 +5,8 @@
 #include <unistd.h>
 
 #define SIZE     16384
+unsigned char lookuptable[SIZE] = {0};
+unsigned char lookuptable2[SIZE] = {0};
 
 // funtcion equivalent to rdtsc on x86, but implemented on RISC-V
 static inline uint64_t rdtsc()
