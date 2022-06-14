@@ -71,19 +71,9 @@ int main() {
         addresses[i] = &data[i];
     }
 
-    int initial = 0;
-    for (int i = 0; i < 64; i++) {
-        if (((uint64_t) addresses[i]) % 64 == 0) {
-            initial = i;
-            break;
-        }
-    }
-    printf("initial: %d\n", initial);
-    printf("%p\n", addresses[initial]);
-
     for (int i = 0; i < SIZE; i++) {
-        flush(&data[i]);
-        timings[i] = timed_load(&data[i]);
+        flush(addresses[i]);
+        timings[i] = timed_load(addresses[i]);
     }
     for (int i = 0; i < SIZE; i++) {
         if (timings[i] > 30) {
