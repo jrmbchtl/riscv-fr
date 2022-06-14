@@ -82,6 +82,11 @@ uint64_t vote(uint64_t* list, size_t size) {
 
 uint64_t calibrate_offset()
 {
+    
+    // return offset;
+}
+
+int main() {
     uint64_t timings[SIZE] = {0};
     void* addresses[SIZE] = {0};
 
@@ -112,11 +117,6 @@ uint64_t calibrate_offset()
     }
 
     uint64_t offset = vote(relevant_addresses, size);
-    return offset;
-}
-
-int main() {
-    uint64_t offset = calibrate_offset();
     printf("offset: %lx\n", offset);
 
     return 0;
