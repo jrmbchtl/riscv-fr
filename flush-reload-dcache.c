@@ -6,7 +6,7 @@
 
 #define SIZE     16384
 
-unsigned long lookuptable[SIZE] = {0};
+unsigned char lookuptable[SIZE] = {0};
 
 // funtcion equivalent to rdtsc on x86, but implemented on RISC-V
 static inline uint64_t rdtsc()
@@ -52,7 +52,7 @@ int main() {
     void* addresses[SIZE] = {0};
 
     for (int i = 0; i < SIZE; i++) {
-        addresses[i] = &p[i];
+        addresses[i] = &lookuptable[i];
     }
 
     for (int i = 0; i < SIZE; i++) {
