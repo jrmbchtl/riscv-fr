@@ -5,7 +5,6 @@
 #include <unistd.h>
 
 #define SIZE     16384
-#define CALIBRATE  16384
 char __attribute__((aligned(4096))) data[4096 * 4];
 
 // funtcion equivalent to rdtsc on x86, but implemented on RISC-V
@@ -44,20 +43,31 @@ static inline uint64_t timed_load(void *p){
 
 uint64_t calibrate_offset()
 {
-    uint64_t timings[CALIBRATE];
+    uint64_t timings[SIZE];
+    void* addresses[SIZE] = {0};
+    void* relevant_addresses[20] = {0};
+    size_t size = 0;
 
-    for (int i = 0; i < CALIBRATE; i++)
-    {
-        flush(&data[i]);
-        timings[i] = timed_load(&data[i]);
+    for (int i = 0; i < SIZE; i++) {
+        addresses[i] = &data[i];
     }
 
-    for (int i = 0; i < CALIBRATE; i++)
+    for (int i = 0; i < SIZE; i++)
+    {
+        flush(&data[i]);
+        timings[i] = timed_load(addresses[i]);
+    }
+
+    for (int i = 0; i < SIZE; i++)
     {
         if (timings[i] > 100) {
-            printf("%d: %lu: %p\n", i, timings[i], &data[i]);
-            
+            relevant_addresses[size++] = addresses[i];
         }
+    }
+
+    for (int i = 0; i < size; i++)
+    {
+        printf("%p\n", relevant_addresses[i]);
     }
 }
 
