@@ -19,7 +19,7 @@ static inline uint64_t rdtsc()
 static inline void flush(void *p) {
     // asm volatile("ld %0, x0\n" : "=r"(p)::);
     // asm volatile("fence" ::: "memory");
-    asm volatile (".byte 0x0b, 0x80, 0x77, 0x02\n":::);
+    asm volatile (".word 0x0277800b\n":::);
     printf("%p\n", p);
 }
 
