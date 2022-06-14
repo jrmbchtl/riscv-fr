@@ -63,11 +63,10 @@ uint64_t calibrate_offset()
 
 int main() {
     uint64_t timings[SIZE] = {0};
-    unsigned char *p = malloc(SIZE);
     void* addresses[SIZE] = {0};
 
     for (int i = 0; i < SIZE; i++) {
-        addresses[i] = &p[i];
+        addresses[i] = &lookuptable[i];
     }
 
     int initial = 0;
@@ -81,14 +80,13 @@ int main() {
     printf("%p\n", addresses[initial]);
 
     for (int i = 0; i < SIZE; i++) {
-        flush(&p[i]);
-        timings[i] = timed_load(&p[i]);
+        flush(&lookuptable[i]);
+        timings[i] = timed_load(&lookuptable[i]);
     }
     for (int i = 0; i < SIZE; i++) {
         if (timings[i] > 30) {
             printf("%d: %lu: %p\n", i, timings[i], addresses[i]);
         }
     }
-    free(p);
     return 0;
 }
