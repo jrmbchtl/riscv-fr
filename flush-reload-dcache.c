@@ -25,6 +25,12 @@ static inline void flush(void *p) {
     // asm volatile (".word 0x0277800b\n":::);
 }
 
+static inline void flush_all(void** list, size_t size) {
+    for (int i = 0; i < size; i++) {
+        flush(list[i]);
+    }
+}
+
 static inline void maccess(void *p) {
     uint64_t val;
     asm volatile("ld %0, %1\n" :"=r" (val) : "m"(p):);
@@ -62,10 +68,11 @@ int main() {
     // now with flushing
     printf("Now with flushing\n");
     for (int i = 0; i < SIZE; i++) {
-        flush(addresses[i]);
+        // flush(addresses[i]);
+        flush_all(addresses, SIZE);
         timings[i] = timed_load(addresses[i]);
-        printf("2: %p\n", addresses[i]);
-        printf("3: %p\n", &lookuptable[i]);
+        // printf("2: %p\n", addresses[i]);
+        // printf("3: %p\n", &lookuptable[i]);
     }
     // open cache_misses.csv
     fp = fopen("cache_misses.csv", "w");
