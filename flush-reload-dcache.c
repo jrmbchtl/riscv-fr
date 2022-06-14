@@ -5,8 +5,9 @@
 #include <unistd.h>
 
 #define SIZE     16384
+#define CALIBRATE  8192
 
-unsigned long lookuptable[SIZE] = {0};
+unsigned char lookuptable[SIZE] = {0};
 
 // funtcion equivalent to rdtsc on x86, but implemented on RISC-V
 static inline uint64_t rdtsc()
@@ -18,13 +19,8 @@ static inline uint64_t rdtsc()
 
 static inline void flush(void *p) {
     uint64_t val;
-    // load value of p into register a5
-    // asm volatile("ld a5, %0\n;.word 0x0277800b\n" :: "m"(p):);
-    asm volatile("ld a5, %0\n;.word 0x0303800b\n" :: "m"(p):);
-    // asm volatile("mv a5, %0; .word 0x0277800b\n" : : "r"(p) :"a5","memory");
-    // printf("1: %p\n", p);
-    // dcache.civa with a5 as input
-    // asm volatile (".word 0x0277800b\n":::);
+    // load p into a5 and flush the dcache line with this address
+    asm volatile("mv a5, %0; .word 0x0277800b\n" : : "r"(p) :"a5","memory");
 }
 
 static inline void flush_all(void** list, size_t size) {
@@ -45,6 +41,25 @@ static inline uint64_t timed_load(void *p){
     end = rdtsc();
     return end-start;
 } 
+
+uint64_t calibrate_offset()
+{
+    unsigned char p[CALIBRATE];
+    uint64_t timings[CALIBRATE];
+
+    for (int i = 0; i < CALIBRATE; i++)
+    {
+        flush(&p[i]);
+        timings[i] = timed_load(p);
+    }
+
+    for (int i = 0; i < CALIBRATE; i++)
+    {
+        if (timings[i] > 100) {
+            printf("%d: %lu\n", i, timings[i]);
+        }
+    }
+}
 
 int main() {
     uint64_t timings[SIZE] = {0};
@@ -86,6 +101,8 @@ int main() {
     }
     fclose(fp);
     free(p);
+
+    calibrate_offset();
     // printf("Done\n");
     // flush(1);
     
