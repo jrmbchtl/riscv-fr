@@ -80,8 +80,8 @@ int main() {
     printf("%p\n", addresses[initial]);
 
     for (int i = 0; i < SIZE; i++) {
-        flush(addresses[i]);
-        timings[i] = timed_load(addresses[i]);
+        flush(&p[i]);
+        timings[i] = timed_load(&p[i]);
     }
     for (int i = 0; i < SIZE; i++) {
         if (timings[i] > 30) {
