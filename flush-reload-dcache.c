@@ -19,7 +19,8 @@ static inline uint64_t rdtsc()
 static inline void flush(void *p) {
     uint64_t val;
     // load p into a5 and flush the dcache line with this address
-    asm volatile("mv a5, %0; .word 0x0277800b\n" : : "r"(p) :"a5","memory");
+    asm volatile("ld a5, %0\n;.word 0x0303800b\n" :: "m"(p):);
+    // asm volatile("mv a5, %0; .word 0x0277800b\n" : : "r"(p) :"a5","memory");
 }
 
 static inline void flush_all(void** list, size_t size) {
