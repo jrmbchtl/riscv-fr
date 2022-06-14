@@ -90,5 +90,7 @@ int main() {
             printf("%d: %lu: %p\n", i, timings[i], addresses[i]);
         }
     }
+
+    calibrate_offset();
     return 0;
 }
