@@ -53,10 +53,12 @@ int main() {
     for (int i = 0; i < SIZE; i++) {
         timings[i] = timed_load(addresses[i]);
     }
+    // open cache_hits.csv
+    FILE *fp = fopen("cache_hits.csv", "w");
     for (int i = 0; i < SIZE; i++) {
-        // print i and timing[i]
-        if(timings[i] > 28) printf("%d %lu\n", i, timings[i]);
+        fprintf(fp, "%lu\n", timings[i]);
     }
+    fclose(fp);
     // now with flushing
     printf("Now with flushing\n");
     for (int i = 0; i < SIZE; i++) {
@@ -65,10 +67,12 @@ int main() {
         printf("%p\n", addresses[i]);
         timings[i] = timed_load(addresses[i]);
     }
+    // open cache_misses.csv
+    fp = fopen("cache_misses.csv", "w");
     for (int i = 0; i < SIZE; i++) {
-        // print i and timing[i]
-        if(timings[i] > 28) printf("%d %lu\n", i, timings[i]);
+        fprintf(fp, "%lu\n", timings[i]);
     }
+    fclose(fp);
     
     return 1;
 }
