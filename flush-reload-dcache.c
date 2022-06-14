@@ -20,6 +20,7 @@ static inline void flush(void *p) {
     uint64_t val;
     // load value of p into register a5
     asm volatile("ld a5, %0\n;.word 0x0277800b\n" :: "m"(p):);
+    printf("1: %p\n", p);
     // dcache.civa with a5 as input
     // asm volatile (".word 0x0277800b\n":::);
 }
@@ -63,6 +64,8 @@ int main() {
     for (int i = 0; i < SIZE; i++) {
         flush(addresses[i]);
         timings[i] = timed_load(addresses[i]);
+        printf("2: %p", addresses[i]);
+        printf("3: %p", &lookuptable[i]);
     }
     // open cache_misses.csv
     fp = fopen("cache_misses.csv", "w");
