@@ -70,8 +70,8 @@ int main() {
     // now with flushing
     printf("Now with flushing\n");
     for (int i = 0; i < SIZE; i++) {
-        // flush(addresses[i]);
-        flush_all(addresses, SIZE);
+        flush(addresses[i]);
+        // flush_all(addresses, SIZE);
         timings[i] = timed_load(addresses[i]);
     }
     // open cache_misses.csv
