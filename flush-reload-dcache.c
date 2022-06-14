@@ -77,6 +77,7 @@ int main() {
         }
     }
     printf("initial: %d\n", initial);
+    printf("%p\n", addresses[initial]);
 
     for (int i = 0; i < SIZE; i+=64) {
         flush(addresses[i]);
