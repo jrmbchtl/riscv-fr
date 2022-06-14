@@ -6,7 +6,6 @@
 
 #define SIZE     16384
 #define CALIBRATE  16384
-
 unsigned char lookuptable[SIZE] = {0};
 
 // funtcion equivalent to rdtsc on x86, but implemented on RISC-V
