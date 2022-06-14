@@ -17,10 +17,14 @@ static inline uint64_t rdtsc()
 }
 
 static inline void flush(void *p) {
-    asm volatile("ld %0, x0\n" : "=r"(p)::);
-    asm volatile("fence" ::: "memory");
-    asm volatile (".byte 0x0b, 0x00, 0x73, 0x02\n":::);
-    printf("%p\n", p);
+    uint64_t val;
+    asm volatile("csrrs %0, 0x5E0, x0": "=r"(val)::);
+    // print as hex
+    printf("%lx\n", val);
+    // asm volatile("ld %0, x0\n" : "=r"(p)::);
+    // asm volatile("fence" ::: "memory");
+    // asm volatile (".byte 0x0b, 0x00, 0x73, 0x02\n":::);
+    // printf("%p\n", p);
 }
 
 static inline void maccess(void *p) {
