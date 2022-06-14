@@ -75,6 +75,9 @@ int main() {
     uint64_t timings[SIZE] = {0};
     void* addresses[SIZE] = {0};
 
+    void* relevant_addresses[20] = {0};
+    size_t size = 0;
+
     memset(data, 0, 4096 * 4);
 
     for (int i = 0; i < SIZE; i++) {
@@ -85,12 +88,23 @@ int main() {
         flush(addresses[i]);
         timings[i] = timed_load(addresses[i]);
     }
-    for (int i = 0; i < SIZE; i++) {
+    // for (int i = 0; i < SIZE; i++) {
+    //     if (timings[i] > 30) {
+    //         printf("%d: %lu: %p\n", i, timings[i], addresses[i]);
+    //     }
+    // }
+
+    for (int i = 0; i < SIZE; i++)
+    {
         if (timings[i] > 30) {
-            printf("%d: %lu: %p\n", i, timings[i], addresses[i]);
+            relevant_addresses[size++] = addresses[i];
         }
     }
 
-    calibrate_offset();
+    for (int i = 0; i < size; i++)
+    {
+        printf("%p\n", relevant_addresses[i]);
+    }
+
     return 0;
 }
