@@ -64,16 +64,15 @@ uint64_t calibrate_offset()
 int main() {
     uint64_t timings[SIZE] = {0};
     unsigned char *p = malloc(SIZE);
-    void* addresses[SIZE] = {0};
 
     for (int i = 0; i < SIZE; i++) {
-        flush(addresses[i]);
-        timings[i] = timed_load(addresses[i]);
+        flush(&p[i]);
+        timings[i] = timed_load(&p[i]);
     }
     // open cache_misses.csv
     for (int i = 0; i < SIZE; i++) {
         if (timings[i] > 30) {
-            printf("%d: %lu: %p\n", i, timings[i], addresses[i]);
+            printf("%d: %lu: %p\n", i, timings[i], &p[i]);
         }
     }
     free(p);    
