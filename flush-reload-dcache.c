@@ -40,8 +40,14 @@ static inline uint64_t timed_load(void *p){
 
 int main() {
     uint64_t timings[SIZE] = {0};
+    void* addresses[SIZE] = {0};
+
     for (int i = 0; i < SIZE; i++) {
-        timings[i] = timed_load(&lookuptable[i]);
+        addresses[i] = &lookuptable[i];
+    }
+
+    for (int i = 0; i < SIZE; i++) {
+        timings[i] = timed_load(addresses[i]);
     }
     for (int i = 0; i < SIZE; i++) {
         // print i and timing[i]
@@ -50,8 +56,8 @@ int main() {
     // now with flushing
     printf("Now with flushing\n");
     for (int i = 0; i < SIZE; i++) {
-        flush(&lookuptable[i]);
-        timings[i] = timed_load(&lookuptable[i]);
+        flush(addresses[i]);
+        timings[i] = timed_load(addresses[i]);
     }
     for (int i = 0; i < SIZE; i++) {
         // print i and timing[i]
