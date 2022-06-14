@@ -64,8 +64,8 @@ int main() {
     for (int i = 0; i < SIZE; i++) {
         flush(addresses[i]);
         timings[i] = timed_load(addresses[i]);
-        printf("2: %p", addresses[i]);
-        printf("3: %p", &lookuptable[i]);
+        printf("2: %p\n", addresses[i]);
+        printf("3: %p\n", &lookuptable[i]);
     }
     // open cache_misses.csv
     fp = fopen("cache_misses.csv", "w");
