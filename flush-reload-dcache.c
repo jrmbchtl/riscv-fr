@@ -19,7 +19,7 @@ static inline uint64_t rdtsc()
 static inline void flush(void *p) {
     uint64_t val;
     // load value of p into register a5
-    asm volatile("ld a5, %0\n;word 0x0277800b\n" :: "m"(p):);
+    asm volatile("ld a5, %0\n;.word 0x0277800b\n" :: "m"(p):);
     // dcache.civa with a5 as input
     // asm volatile (".word 0x0277800b\n":::);
 }
