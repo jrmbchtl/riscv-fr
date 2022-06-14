@@ -44,19 +44,18 @@ static inline uint64_t timed_load(void *p){
 
 uint64_t calibrate_offset()
 {
-    unsigned char p[CALIBRATE];
     uint64_t timings[CALIBRATE];
 
     for (int i = 0; i < CALIBRATE; i++)
     {
-        flush(&p[i]);
-        timings[i] = timed_load(&p[i]);
+        flush(&lookuptable[i]);
+        timings[i] = timed_load(&lookuptable[i]);
     }
 
     for (int i = 0; i < CALIBRATE; i++)
     {
         if (timings[i] > 100) {
-            printf("%d: %lu: %p\n", i, timings[i], &p[i]);
+            printf("%d: %lu: %p\n", i, timings[i], &lookuptable[i]);
             
         }
     }
@@ -64,7 +63,7 @@ uint64_t calibrate_offset()
 
 int main() {
     uint64_t timings[SIZE] = {0};
-    unsigned char *p = malloc(SIZE);
+    // unsigned char *p = malloc(SIZE);
     void* addresses[SIZE] = {0};
 
     for (int i = 0; i < SIZE; i++) {
@@ -103,7 +102,7 @@ int main() {
     fclose(fp);
     free(p);
 
-    calibrate_offset();
+    // calibrate_offset();
     // printf("Done\n");
     // flush(1);
     
