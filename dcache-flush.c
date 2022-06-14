@@ -5,8 +5,8 @@
 #include <unistd.h>
 
 #define SIZE     16384
+#define CALIBRATE  16384
 unsigned char lookuptable[SIZE] = {0};
-unsigned char lookuptable2[SIZE] = {0};
 
 // funtcion equivalent to rdtsc on x86, but implemented on RISC-V
 static inline uint64_t rdtsc()
@@ -22,6 +22,12 @@ static inline void flush(void *p) {
     asm volatile("mv a5, %0; .word 0x0277800b\n" : : "r"(p) :"a5","memory");
 }
 
+static inline void flush_all(void** list, size_t size) {
+    for (int i = 0; i < size; i++) {
+        flush(list[i]);
+    }
+}
+
 static inline void maccess(void *p) {
     uint64_t val;
     asm volatile("ld %0, %1\n" :"=r" (val) : "m"(p):);
@@ -34,6 +40,25 @@ static inline uint64_t timed_load(void *p){
     end = rdtsc();
     return end-start;
 } 
+
+uint64_t calibrate_offset()
+{
+    uint64_t timings[CALIBRATE];
+
+    for (int i = 0; i < CALIBRATE; i++)
+    {
+        flush(&lookuptable[i]);
+        timings[i] = timed_load(&lookuptable[i]);
+    }
+
+    for (int i = 0; i < CALIBRATE; i++)
+    {
+        if (timings[i] > 100) {
+            printf("%d: %lu: %p\n", i, timings[i], &lookuptable[i]);
+            
+        }
+    }
+}
 
 int main() {
     uint64_t timings[SIZE] = {0};
