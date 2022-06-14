@@ -72,8 +72,8 @@ int main() {
         fprintf(fp, "%lu\n", timings[i]);
     }
     fclose(fp);
-    printf("Done\n");
-    flush(1);
+    // printf("Done\n");
+    // flush(1);
     
     return 1;
 }
