@@ -17,12 +17,12 @@ static inline uint64_t rdtsc()
 }
 
 static inline void flush(void *p) {
-    printf("1\n");
-    printf("%p\n", p);
     uint64_t val;
+    // load value of pointer into into val
+    // as a sideeffect, this will put the value of p into register a5
     asm volatile("ld %0, %1\n" :"=r" (val) : "m"(p):);
+    // dcache.civa with a5 as input
     asm volatile (".word 0x0277800b\n":::);
-    printf("%p\n", p);
 }
 
 static inline void maccess(void *p) {
@@ -47,6 +47,15 @@ int main() {
         // print i and timing[i]
         if(timings[i] > 28) printf("%d %lu\n", i, timings[i]);
     }
-    flush(&lookuptable[0]);
+    // now with flushing
+    for (int i = 0; i < SIZE; i++) {
+        flush(&lookuptable[i]);
+        timings[i] = timed_load(&lookuptable[i]);
+    }
+    for (int i = 0; i < SIZE; i++) {
+        // print i and timing[i]
+        if(timings[i] > 28) printf("%d %lu\n", i, timings[i]);
+    }
+    
     return 1;
 }
