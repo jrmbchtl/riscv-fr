@@ -140,7 +140,8 @@ int main() {
         printf("%p\n", relevant_addresses[i]);
     }
 
-
+    uint64_t offset = vote(relevant_addresses, size);
+    printf("offset: %lx\n", offset);
 
     return 0;
 }
