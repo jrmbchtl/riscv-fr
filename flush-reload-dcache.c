@@ -85,15 +85,13 @@ int main() {
     fclose(fp);
     for (int i = 0; i < SIZE; i++) {
         flush(addresses[i]);
-        // flush_all(addresses, SIZE);
         timings[i] = timed_load(addresses[i]);
     }
-    // open cache_misses.csv
     for (int i = 0; i < SIZE; i++) {
         if (timings[i] > 30) {
             printf("%d: %lu: %p\n", i, timings[i], addresses[i]);
         }
     }
     free(p);
-    return 1;
+    return 0;
 }
