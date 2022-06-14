@@ -83,22 +83,17 @@ int main() {
         fprintf(fp, "%lu\n", timings[i]);
     }
     fclose(fp);
-    // now with flushing
-    printf("Now with flushing\n");
     for (int i = 0; i < SIZE; i++) {
         flush(addresses[i]);
         // flush_all(addresses, SIZE);
         timings[i] = timed_load(addresses[i]);
     }
     // open cache_misses.csv
-    fp = fopen("cache_misses.csv", "w");
     for (int i = 0; i < SIZE; i++) {
-        fprintf(fp, "%lu\n", timings[i]);
         if (timings[i] > 30) {
             printf("%d: %lu: %p\n", i, timings[i], addresses[i]);
         }
     }
-    fclose(fp);
     free(p);
 
     // calibrate_offset();
