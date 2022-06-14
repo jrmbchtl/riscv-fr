@@ -65,5 +65,5 @@ int main() {
         }
     }
     free(p);
-    return 1;
+    return 0;
 }
