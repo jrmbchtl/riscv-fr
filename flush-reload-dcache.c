@@ -79,7 +79,7 @@ int main() {
     printf("initial: %d\n", initial);
     printf("%p\n", addresses[initial]);
 
-    for (int i = 0; i < SIZE; i+=64) {
+    for (int i = 0; i < SIZE; i++) {
         flush(addresses[i]);
         timings[i] = timed_load(addresses[i]);
     }
