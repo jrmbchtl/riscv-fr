@@ -45,12 +45,17 @@ static inline uint64_t timed_load(void *p){
 uint64_t vote(uint64_t* list, size_t size) {
     int numbers[size];
     uint64_t options[size];
+    uint64_t list_tmp[size];
     int option_count = 0;
+
+    for (int i = 0; i < size; i++) {
+        list_tmp[i] = list[i] % 2048;
+    }
 
     for (int i = 0; i < size; i++) {
         int found = 0;
         for (int j = 0; j < option_count; j++) {
-            if (options[j] == list[i]) {
+            if (options[j] == list_tmp[i]) {
                 numbers[j]++;
                 found = 1;
                 break;
@@ -59,7 +64,7 @@ uint64_t vote(uint64_t* list, size_t size) {
         if (found) {
             continue;
         }
-        options[option_count] = list[i];
+        options[option_count] = list_tmp[i];
         numbers[option_count] = 1;
         option_count++;
     }
@@ -135,8 +140,7 @@ int main() {
         printf("%p\n", relevant_addresses[i]);
     }
 
-    uint64_t offset = vote(relevant_addresses, size);
-    printf("offset: %lx\n", offset);
+
 
     return 0;
 }
