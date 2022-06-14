@@ -78,8 +78,12 @@ int main() {
     fp = fopen("cache_misses.csv", "w");
     for (int i = 0; i < SIZE; i++) {
         fprintf(fp, "%lu\n", timings[i]);
+        if (timings[i] > 30) {
+            printf("%d: %lu\n", i, timings[i]);
+        }
     }
     fclose(fp);
+    free(p);
     // printf("Done\n");
     // flush(1);
     
