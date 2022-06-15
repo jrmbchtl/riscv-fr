@@ -101,7 +101,7 @@ int main()
     timing = end1 - start1;
     printf(("This should be low: %lu\n"), timing);
 
-    // asm volatile("fence");
+    asm volatile("fence");
     asm volatile("mv a5, %0; .word 0x0277800b\n" : : "r"(address) :"a5","memory");
     // asm volatile("fence");
     asm volatile("rdcycle %0\n" : "=r"(start3)::);
