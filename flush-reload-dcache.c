@@ -65,7 +65,7 @@ int main()
     }
     void *address = &data[0];
     uint64_t timings[3] = {0};
-    
+
     timed_load(address);
     uint64_t timing = timed_load(address);
     printf("This should be low: %lu\n", timing);
@@ -73,8 +73,8 @@ int main()
     printf("This should be low: %lu\n", timing);
     for (int i = 0; i < 3; i++) {
         flush(address);
-        timing = timed_load(address);
-        printf("This should be high: %lu\n", timing);
+        timings[i] = timed_load(address);
+        printf("This should be high: %lu\n", timing[i]);
     }
     timing = timed_load(address);
     printf("This should be low: %lu\n", timing);
