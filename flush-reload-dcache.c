@@ -89,7 +89,7 @@ int main() {
     int j = 0;
     while(j < SIZE) {
         // printf("%d\n", j);
-        flush_range(addresses[j]);
+        flush(addresses[j]);
         timings[j] = timed_load(addresses[j]);
         j++;
     }
