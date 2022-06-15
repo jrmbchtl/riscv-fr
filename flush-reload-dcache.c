@@ -75,7 +75,7 @@ int main() {
         addresses[i] = &data[i];
     }
 
-    int j;
+    int j = 0;
     while(j < SIZE) {
         printf("%d\n", j);
         flush(addresses[j]);
