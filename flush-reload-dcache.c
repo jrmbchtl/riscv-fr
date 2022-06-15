@@ -90,7 +90,6 @@ int main() {
     for (int i = 0; i < SIZE; i++) {
         flush(addresses[access_pattern[i]]);
         timings[access_pattern[i]] = timed_load(addresses[access_pattern[i]]);
-        j++;
     }
 
     for (int i = 0; i < SIZE; i++)
