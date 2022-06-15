@@ -52,9 +52,9 @@ int main() {
     srand(0);
     uint64_t timings[SIZE] = {0};
     void* addresses[SIZE] = {0};
-
+    printf("1\n");
     shuffle_list(access_pattern, 8);
-
+    printf("2\n");
     memset(data, 0, 4096 * 4);
 
     for (int i = 0; i < SIZE; i++) {
