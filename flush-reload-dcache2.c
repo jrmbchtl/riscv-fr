@@ -5,7 +5,7 @@
 #include <unistd.h>
 
 #define SIZE     16384
-#define OFFSET   2
+#define OFFSET   4
 char __attribute__((aligned(4096))) data[4096 * 4];
 
 // funtcion equivalent to rdtsc on x86, but implemented on RISC-V
