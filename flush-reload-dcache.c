@@ -75,7 +75,7 @@ int main()
     void *address = &data[0];
     uint64_t timing, start, end, tmp;
 
-    maccess(address);
+    // maccess(address);
 
     asm volatile("fence");
     asm volatile("rdcycle %0\n" : "=r"(start)::);
@@ -113,7 +113,6 @@ int main()
     asm volatile("rdcycle %0\n" : "=r"(start)::);
     asm volatile("fence");
     asm volatile("ld %0, %1\n" :"=r" (tmp) : "m"(address):);
-    asm volatile("fence");
     asm volatile("fence");
     asm volatile("rdcycle %0\n" : "=r"(end)::);
     asm volatile("fence");
