@@ -61,8 +61,12 @@ int main() {
         }
     }
 
-
     uint64_t offset = 0;
+    for (int i = 0; i < SIZE; i++)
+    {
+        flush(addresses[i]);
+        timings[i] = timed_load(addresses[i]);
+    }
 
     for (int i = 0; i < SIZE; i++)
     {
