@@ -76,7 +76,7 @@ int main()
     uint64_t timing, start1, end1, start2, end2, start3, end3, start4, end4;
     uint64_t tmp1, tmp2, tmp3, tmp4;
 
-    // maccess(address);
+    maccess(address);
 
     // asm volatile("fence");
     asm volatile("rdcycle %0\n" : "=r"(start1)::);
@@ -116,7 +116,7 @@ int main()
     asm volatile("ld %0, %1\n" :"=r" (tmp4) : "m"(address):);
     // asm volatile("fence");
     asm volatile("rdcycle %0\n" : "=r"(end4)::);
-    // asm volatile("fence");
+    // asm volatile("fence"); 
     timing = end4 - start4;
     printf(("This should be low: %lu\n"), timing);
 
