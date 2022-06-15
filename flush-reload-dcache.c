@@ -30,7 +30,7 @@ static inline void flush(void *p) {
     // if(p_new > max_addr) {
     //     p_new = p;
     // }
-    printf("flush %p\n", p_new);
+    // printf("flush %p\n", p_new);
     // load p into a5 and flush the dcache line with this address
     // asm volatile("ld a5, %0\n;.word 0x0277800b\n" :: "m"(p):);
     asm volatile("mv a5, %0; .word 0x0277800b\n" : : "r"(p_new) :"a5","memory");
@@ -77,7 +77,7 @@ int main() {
 
     int j = 0;
     while(j < SIZE) {
-        printf("%d\n", j);
+        // printf("%d\n", j);
         flush(addresses[j]);
         timings[j] = timed_load(addresses[j]);
         j++;
