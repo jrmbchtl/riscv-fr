@@ -60,8 +60,7 @@ int main() {
         addresses[i] = &data[i];
     }
 
-    for (int i = 0; i < SIZE; i+=1) {
-        printf("1\n");
+    for (int i = 0; i < 8; i+=1) {
         if (((uint64_t) addresses[access_pattern[i]]) % OFFSET != 0) {
             continue;
         }
@@ -69,7 +68,7 @@ int main() {
         timings[access_pattern[i]] = timed_load(addresses[access_pattern[i]]);
     }
 
-    for (int i = 0; i < SIZE; i++)
+    for (int i = 0; i < 8; i++)
     {
         if (timings[i] > 30) {
             printf("%d, %lu, %p\n", i, timings[i], addresses[i]);
