@@ -37,15 +37,20 @@ static inline uint64_t timed_load(void *p){
 int main() {
     uint64_t timings[SIZE] = {0};
     memset(lookuptable, 0, sizeof(lookuptable));
+    void* addresses[SIZE];
 
     for (int i = 0; i < SIZE; i++) {
-        flush(&lookuptable[i]);
-        timings[i] = timed_load(&lookuptable[i]);
+        addresses[i] = &lookuptable[i];
+    }
+
+    for (int i = 0; i < SIZE; i++) {
+        flush(addresses[i]);
+        timings[i] = timed_load(addresses[i]);
     }
 
     for (int i = 0; i < SIZE; i++) {
         if (timings[i] > 30) {
-            printf("%d: %lu: %p\n", i, timings[i], &lookuptable[i]);
+            printf("%d: %lu: %p\n", i, timings[i], addresses[i]);
         }
     }
 
