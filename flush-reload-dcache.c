@@ -43,6 +43,7 @@ int main() {
 
     // get data[0] into cache
     for (int i = 0; i < 64; i++) {
+        printf("%d\n", i);
         void* address = &data[i];
         char tmp = data[i];
         uint64_t timing = timed_load(address);
