@@ -7,6 +7,7 @@
 #define SIZE     16384
 #define OFFSET   16
 char __attribute__((aligned(4096))) data[4096 * 4];
+void* max_addr = &data[SIZE-1];
 
 // funtcion equivalent to rdtsc on x86, but implemented on RISC-V
 static inline uint64_t rdtsc()
@@ -24,7 +25,7 @@ static inline void flush(void *p) {
     } else {
         p_new = p - ((uint64_t)p % OFFSET) + OFFSET;
     }
-    if(p_new > data[SIZE-1]) {
+    if(p_new > max_addr) {
         p_new = p;
     }
 
