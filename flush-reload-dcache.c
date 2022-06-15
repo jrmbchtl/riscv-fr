@@ -43,7 +43,7 @@ static inline void flush_range(void* p) {
         if (target < min_addr || target > max_addr) {
             continue;
         }
-        print("flush %p cause of %p\n", target, p);
+        printf("flush %p cause of %p\n", target, p);
         flush(target);
     }
 }
