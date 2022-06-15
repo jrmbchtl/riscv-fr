@@ -65,7 +65,7 @@ int main() {
         addresses[i] = &data[i];
     }
 
-    for (int i = 0; i < SIZE; i+=OFFSET) {
+    for (int i = 0; i < SIZE; i+=1) {
         flush(addresses[access_pattern[i]]);
         timings[access_pattern[i]] = timed_load(addresses[access_pattern[i]]);
     }
