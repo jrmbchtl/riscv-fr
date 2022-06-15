@@ -22,7 +22,7 @@ static inline uint64_t rdtsc()
 
 static inline void flush(void *p) {
     uint64_t val;
-    asm volatile("mv a5, %0; .word 0x0277800b\n" : : "r"(p) :"a5","memory");
+    asm volatile("mv a5, %0; .word 0x0277800b;fence\n" : : "r"(p) :"a5","memory");
 }
 
 static inline void maccess(void *p) {
@@ -36,16 +36,6 @@ static inline uint64_t timed_load(void *p){
     maccess(p);
     end = rdtsc();
     return end-start;
-}
-
-void shuffle_list(uint64_t* list, size_t size) {
-    // randomize the list
-    for (int i = 0; i < size; i++) {
-        int j = rand() % size;
-        uint64_t tmp = list[i];
-        list[i] = list[j];
-        list[j] = tmp;
-    }
 }
 
 int main() {
