@@ -57,8 +57,13 @@ int main() {
     for (int i = 0; i < SIZE; i++)
     {
         if (timings[i] > 30) {
-            printf("%d, %lu, %p\n", i, timings[i], addresses[i]);
+            relevant_addresses[size++] = (uint64_t) addresses[i];
         }
+    }
+
+    for (int i = 0; i < size; i++)
+    {
+        printf("%p\n", relevant_addresses[i]);
     }
 
     return 0;
