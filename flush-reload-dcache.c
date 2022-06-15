@@ -81,7 +81,7 @@ int main() {
         flush(addresses[j]);
         timings[j] = timed_load(addresses[j]);
         j++;
-        usleep(1);
+        usleep(1000);
     }
 
     for (int i = 0; i < SIZE; i++)
