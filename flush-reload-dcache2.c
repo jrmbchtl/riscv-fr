@@ -71,7 +71,7 @@ int main() {
 
     for (int i = 0; i < SIZE; i++)
     {
-        flush_offset(addresses[i], offset);
+        flush(addresses[i]);
         timings[i] = timed_load(addresses[i]);
     }
 
