@@ -62,7 +62,7 @@ void* calculate(void* d)
 int main()
 {
     void *address = &data[0];
-    uint64_t timings[1] = {0};
+    uint64_t timings[100] = {0};
     char tmp = data[0];
     uint64_t timing = timed_load(address);
     printf("This should be low: %lu\n", timing);
