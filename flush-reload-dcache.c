@@ -72,11 +72,11 @@ int main()
     printf("This should be low: %lu\n", timing);
     timing = timed_load(address);
     printf("This should be low: %lu\n", timing);
-    for (int i = 0; i < 3; i++) {
-        flush(address);
-        timings[i] = timed_load(address);
-        printf("This should be high: %lu\n", timings[i]);
-    }
+    
+    flush(address);
+    timings[0] = timed_load(address);
+    printf("This should be high: %lu\n", timings[0]);
+
     timing = timed_load(address);
     printf("This should be low: %lu\n", timing);
 
