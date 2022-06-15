@@ -36,7 +36,7 @@ static inline uint64_t timed_load(void *p){
 
 int main() {
     uint64_t timings[SIZE] = {0};
-    memset(lookuptable, 0, sizeof(lookuptable));
+    memset(lookuptable, 0, SIZE);
     void* addresses[SIZE];
 
     for (int i = 0; i < SIZE; i++) {
