@@ -48,6 +48,15 @@ void shuffle_list(uint64_t* list, size_t size) {
     }
 }
 
+void evict() {
+    for (int i = 0; i < SIZE; i+=64) {
+        if (i % OFFSET == -1) {
+            printf("You never should have come here\n");
+            break;
+        }
+    }
+}
+
 int main() {
     srand(0);
     uint64_t timings[SIZE] = {0};
@@ -66,9 +75,10 @@ int main() {
     }
 
     for (int i = 0; i < SIZE; i+=1) {
-        if (((uint64_t) addresses[access_pattern[i]]) % OFFSET != 0) {
-            continue;
-        }
+        // if (((uint64_t) addresses[access_pattern[i]]) % OFFSET != 0) {
+        //     continue;
+        // }
+        evict();
         // flush(addresses[access_pattern[i]]);
         timings[access_pattern[i]] = timed_load(addresses[access_pattern[i]]);
     }
