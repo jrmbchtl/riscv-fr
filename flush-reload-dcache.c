@@ -5,7 +5,6 @@
 #include <unistd.h>
 
 #define SIZE 32768
-#define OFFSET 64
 char __attribute__((aligned(4096))) data[4096 * 4];
 void *max_addr = &data[SIZE - 1];
 void *min_addr = &data[0];
@@ -61,7 +60,9 @@ void* calculate(void* d)
 
 int main()
 {
-    // memset(data, 0, sizeof(data));
+    for (size_t i=0; i<SIZE; i++) {
+        data[i] = i;
+    }
     void *address = &data[0];
     // uint64_t timings[15] = {0};
     char tmp = data[0];
