@@ -47,6 +47,22 @@ static inline uint64_t timed_load(void *p)
     return end - start;
 }
 
+// compare function for qsort
+int compare_uint64_t (const void * a, const void * b) 
+{
+   return ( *(int*)a - *(int*)b );
+}
+
+uint64_t median(uint64_t* list, uint64_t size)
+{
+    uint64_t* sorted = malloc(size * sizeof(uint64_t));
+    memcpy(sorted, list, size * sizeof(uint64_t));
+    qsort(sorted, size, sizeof(uint64_t), compare_uint64_t);
+    uint64_t median = sorted[size / 2];
+    free(sorted);
+    return median;
+}
+
 void* calculate(void* d)
 {
     size_t* done = (size_t*)d;
@@ -67,17 +83,14 @@ int main()
     uint64_t timings[3] = {0};
 
     timed_load(address);
-    uint64_t timing = timed_load(address);
-    printf("This should be low: %lu\n", timing);
-    timing = timed_load(address);
-    printf("This should be low: %lu\n", timing);
+    for (int i = 0; i < 3; i++) {
+        timings[i] = timed_load(address);
+        printf("This should be low: %lu\n", timings[i]);
+    }
     for (int i = 0; i < 3; i++) {
         flush(address);
         timings[i] = timed_load(address);
         printf("This should be high: %lu\n", timings[i]);
     }
-    timing = timed_load(address);
-    printf("This should be low: %lu\n", timing);
-
     return 0;
 }
