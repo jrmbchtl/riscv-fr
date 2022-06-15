@@ -81,7 +81,7 @@ int main()
     void *address = &data[0];
     uint64_t timings[SAMPLE_SIZE] = {0};
     
-    char tmp = data[0];
+    
     // for (int i = 0; i < SAMPLE_SIZE; i++) {
     //     timings[i] = timed_load(address);
     // }
@@ -96,17 +96,20 @@ int main()
     // uint64_t median_uncached = median(timings, SAMPLE_SIZE);
     // printf("median_uncached: %lu\n", median_uncached);
 
-    uint64_t timing = timed_load(address);
-    printf("This should be low: %lu\n", timing);
-    timing = timed_load(address);
-    printf("This should be low: %lu\n", timing);
-    for (int i = 0; i < 3; i++) {
-        flush(address);
+    for (int j = 0; j < 10; j++) {
+        char tmp = data[j];
+        uint64_t timing = timed_load(address);
+        printf("This should be low: %lu\n", timing);
         timing = timed_load(address);
-        printf("This should be high: %lu\n", timing);
+        printf("This should be low: %lu\n", timing);
+        for (int i = 0; i < 3; i++) {
+            flush(address);
+            timing = timed_load(address);
+            printf("This should be high: %lu\n", timing);
+        }
+        timing = timed_load(address);
+        printf("This should be low: %lu\n", timing);
     }
-    timing = timed_load(address);
-    printf("This should be low: %lu\n", timing);
 
     return 0;
 }
