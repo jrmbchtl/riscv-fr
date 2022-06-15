@@ -74,11 +74,16 @@ int main() {
         addresses[i] = &data[i];
     }
 
-    for (int i = 0; i < SIZE; i+=64) {
+    for (int i = 0; i < SIZE; i+=OFFSET) {
         // if (((uint64_t) addresses[access_pattern[i]]) % OFFSET != 0) {
         //     continue;
         // }
-        evict();
+        for (int j = 0; j < SIZE; j+=OFFSET) {
+            if (access_pattern[j] % OFFSET == OFFSET) {
+                printf("You never should have come here\n");
+                break;
+            }
+        }
         // flush(addresses[access_pattern[i]]);
         timings[access_pattern[i]] = timed_load(addresses[access_pattern[i]]);
     }
