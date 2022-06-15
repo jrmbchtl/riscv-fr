@@ -87,8 +87,6 @@ int main() {
         addresses[i] = &data[i];
     }
 
-    // open log.csv
-    
     for (int i = 0; i < SIZE; i++) {
         if (((uint64_t) addresses[access_pattern[i]]) % OFFSET != 0) {
             continue;
@@ -97,8 +95,15 @@ int main() {
         timings[access_pattern[i]] = timed_load(addresses[access_pattern[i]]);
     }
 
+    // write access_pattern to log.csv
+    FILE* fp = fopen("log.csv", "w");
+    for (int i = 0; i < SIZE; i++) {
+        if (((uint64_t) addresses[access_pattern[i]]) % OFFSET != 0) {
+            continue;
+        }
+        fprintf(fp, "%lu\n", access_pattern[i]);
+    }
 
-    
     for (int i = 0; i < SIZE; i++)
     {
         if (timings[i] > 20) {
