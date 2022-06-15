@@ -42,7 +42,8 @@ int main() {
     
 
     // get data[0] into cache
-    for (int i = 0; i < 64; i++) {
+    // for (int i = 0; i < 64; i++) {
+        int i = 0;
         // printf("%d\n", i);
         void* address = &data[i];
         char tmp = data[i];
@@ -58,7 +59,7 @@ int main() {
         printf("This should be high: %lu\n", timing);
         timing = timed_load(address);
         printf("This should be low: %lu\n", timing);
-    }
+    // }
 
     return 0;
 }
