@@ -98,7 +98,7 @@ int main() {
 
     for (int i = 0; i < SIZE; i++)
     {
-        if (timings[i] > 30) {
+        if (timings[i] > 20) {
             printf("%d, %lu, %p\n", i, timings[i], addresses[i]);
         }
     }
