@@ -5,7 +5,7 @@
 #include <unistd.h>
 
 #define SIZE     16384
-#define OFFSET   64
+#define OFFSET   2048
 char __attribute__((aligned(4096))) data[4096 * 4];
 void* max_addr = &data[SIZE-1];
 void* min_addr = &data[0];
@@ -43,7 +43,7 @@ static inline void flush_range(void* p) {
         if (target < min_addr || target > max_addr) {
             continue;
         }
-        printf("flush %p cause of %p\n", target, p);
+        // printf("flush %p cause of %p\n", target, p);
         flush(target);
     }
 }
