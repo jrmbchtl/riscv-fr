@@ -91,13 +91,13 @@ int main()
 
     maccess(address);
     // asm volatile("fence");
-    asm volatile("rdcycle %0\n" : "=r"(start1)::);
+    asm volatile("rdcycle %0\n" : "=r"(start2)::);
     // asm volatile("fence");
-    asm volatile("ld %0, %1\n" :"=r" (tmp1) : "m"(address):);
+    asm volatile("ld %0, %1\n" :"=r" (tmp2) : "m"(address):);
     // asm volatile("fence");
-    asm volatile("rdcycle %0\n" : "=r"(end1)::);
+    asm volatile("rdcycle %0\n" : "=r"(end2)::);
     // asm volatile("fence");
-    timing = end1 - start1;
+    timing = end2 - start2;
     printf(("This should be low: %lu\n"), timing);
 
     // asm volatile("fence");
