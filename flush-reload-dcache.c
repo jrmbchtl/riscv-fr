@@ -138,5 +138,12 @@ int main() {
         timings[i] = timed_load(addresses[i]);
     }
 
+    // open cache_miss.csv
+    FILE* f = fopen("cache_miss.csv", "w");
+    for (int i = 0; i < SIZE; i++)
+    {
+        fprintf(f, "%d, %lx\n", i, timings[i]);
+    }
+
     return 0;
 }
