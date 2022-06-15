@@ -88,9 +88,6 @@ int main()
     timing = end1 - start1;
     printf(("This should be low: %lu\n"), timing);
 
-
-    maccess(address);
-
     asm volatile("fence");
     asm volatile("rdcycle %0\n" : "=r"(start1)::);
     asm volatile("fence");
