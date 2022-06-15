@@ -19,7 +19,11 @@ static inline uint64_t rdtsc()
 static inline void flush(void *p) {
     uint64_t val;
     void* p_new;
-    p_new = p - ((uint64_t)p % OFFSET) + OFFSET;
+    if (OFFSET - ((uint64_t)p % OFFSET) == OFFSET) {
+        p_new = p;
+    } else {
+        p_new = p - ((uint64_t)p % OFFSET) + OFFSET;
+    }
 
     // load p into a5 and flush the dcache line with this address
     // asm volatile("ld a5, %0\n;.word 0x0277800b\n" :: "m"(p):);
