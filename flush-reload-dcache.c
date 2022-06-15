@@ -64,7 +64,8 @@ int main()
         data[i] = i;
     }
     void *address = &data[0];
-    // uint64_t timings[15] = {0};
+    uint64_t timings[3] = {0};
+    
     timed_load(address);
     uint64_t timing = timed_load(address);
     printf("This should be low: %lu\n", timing);
