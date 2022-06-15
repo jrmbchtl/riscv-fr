@@ -51,38 +51,21 @@ void shuffle_list(uint64_t* list, size_t size) {
 int main() {
     srand(0);
     uint64_t timings[SIZE] = {0};
-    void* addresses[SIZE] = {0};
+    void* address = &data[0];
 
-    memset(data, 0, 4096 * 4);
-    memset(tmp, 0, 4096 * 4);
-
-    for (int i = 0; i < SIZE; i++) {
-        addresses[i] = &data[i];
-    }
-
-    for (int i = 0; i < SIZE; i+=OFFSET) {
-        // if (((uint64_t) addresses[access_pattern[i]]) % OFFSET != 0) {
-        //     continue;
-        // }
-        for (int j = 0; j < SIZE * 2; j+=OFFSET) {
-            if (tmp[j] % OFFSET == OFFSET) {
-                printf("You never should have come here\n");
-                break;
-            }
-        }
-        // flush(addresses[access_pattern[i]]);
-        timings[i] = timed_load(addresses[i]);
-    }
-
-    int counter = 0;
-    for (int i = 0; i < SIZE; i++)
-    {
-        if (timings[i] > 30) {
-            counter++;
-            printf("%d, %lu, %p\n", i, timings[i], addresses[i]);
-        }
-    }
-    printf("Cache misses: %d\n", counter);
+    char tmp = data[0];
+    uint64_t timing = timed_load(address);
+    printf("This should be low: %lu\n", timing);
+    timing = timed_load(address);
+    printf("This should be low: %lu\n", timing);
+    flush(address);
+    timing = timed_load(address);
+    printf("This should be high: %lu\n", timing);
+    flush(address);
+    timing = timed_load(address);
+    printf("This should be high: %lu\n", timing);
+    timing = timed_load(address);
+    printf("This should be low: %lu\n", timing);
 
     return 0;
 }
