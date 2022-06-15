@@ -76,7 +76,17 @@ int main()
     uint64_t timing, start, end;
     uint64_t tmp1, tmp2, tmp3, tmp4;
 
-    maccess(address);
+    asm volatile("fence");
+    asm volatile("mv a5, %0; .word 0x0277800b\n" : : "r"(address) :"a5","memory");
+    asm volatile("fence");
+    asm volatile("rdcycle %0\n" : "=r"(start)::);
+    asm volatile("fence");
+    asm volatile("ld %0, %1\n" :"=r" (tmp3) : "m"(address):);
+    asm volatile("fence");
+    asm volatile("rdcycle %0\n" : "=r"(end)::);
+    asm volatile("fence");
+    timing = end - start;
+    printf(("This should be high: %lu\n"), timing);
 
     asm volatile("fence");
     asm volatile("rdcycle %0\n" : "=r"(start)::);
