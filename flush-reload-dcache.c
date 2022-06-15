@@ -88,17 +88,17 @@ int main() {
     }
 
     // open log.csv
-    FILE* fp = fopen("log.csv", "w");
+    
     for (int i = 0; i < SIZE; i++) {
         if (((uint64_t) addresses[access_pattern[i]]) % OFFSET != 0) {
             continue;
         }
-        fprintf(fp, "%d\n", i);
         flush(addresses[access_pattern[i]]);
         timings[access_pattern[i]] = timed_load(addresses[access_pattern[i]]);
     }
-    fclose(fp);
 
+
+    
     for (int i = 0; i < SIZE; i++)
     {
         if (timings[i] > 20) {
