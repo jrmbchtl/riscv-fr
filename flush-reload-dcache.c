@@ -69,7 +69,7 @@ int main() {
         if (((uint64_t) addresses[access_pattern[i]]) % OFFSET != 0) {
             continue;
         }
-        flush(addresses[access_pattern[i]]);
+        // flush(addresses[access_pattern[i]]);
         timings[access_pattern[i]] = timed_load(addresses[access_pattern[i]]);
     }
 
