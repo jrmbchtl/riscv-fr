@@ -4,8 +4,8 @@
 #include <string.h>
 #include <unistd.h>
 
-#define SIZE     16384
-#define OFFSET   2048
+#define SIZE     32768
+#define OFFSET   64
 char __attribute__((aligned(4096))) data[4096 * 4];
 void* max_addr = &data[SIZE-1];
 void* min_addr = &data[0];
@@ -49,8 +49,8 @@ void shuffle_list(uint64_t* list, size_t size) {
 }
 
 void evict() {
-    for (int i = 0; i < SIZE; i+=1) {
-        if (access_pattern[i] % OFFSET == -1) {
+    for (int i = 0; i < SIZE; i+=64) {
+        if (access_pattern[i] % OFFSET == OFFSET) {
             printf("You never should have come here\n");
             break;
         }
@@ -74,7 +74,7 @@ int main() {
         addresses[i] = &data[i];
     }
 
-    for (int i = 0; i < SIZE; i+=1) {
+    for (int i = 0; i < SIZE; i+=64) {
         // if (((uint64_t) addresses[access_pattern[i]]) % OFFSET != 0) {
         //     continue;
         // }
