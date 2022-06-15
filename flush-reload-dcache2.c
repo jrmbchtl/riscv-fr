@@ -71,7 +71,7 @@ int main() {
     for (int i = 0; i < SIZE; i++)
     {
         if (timings[i] > 30) {
-            printf("%d, %lu, %p\n", i, timings[i], addresses[i]);
+            // printf("%d, %lu, %p\n", i, timings[i], addresses[i]);
         }
     }
 
