@@ -75,9 +75,11 @@ int main() {
         addresses[i] = &data[i];
     }
 
-    for (int i = 0; i < SIZE; i++) {
-        flush(addresses[i]);
-        timings[i] = timed_load(addresses[i]);
+    int j;
+    while(j < SIZE) {
+        flush(addresses[j]);
+        timings[j] = timed_load(addresses[j]);
+        j++;
     }
 
     for (int i = 0; i < SIZE; i++)
