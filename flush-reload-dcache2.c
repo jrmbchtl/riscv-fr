@@ -49,13 +49,25 @@ static inline uint64_t timed_load(void *p){
     return end-start;
 }
 
+void shuffle_list(uint64_t* list, size_t size) {
+    // randomize the list
+    for (int i = 0; i < size; i++) {
+        int j = rand() % size;
+        uint64_t tmp = list[i];
+        list[i] = list[j];
+        list[j] = tmp;
+    }
+}
+
 int main() {
     uint64_t timings[SIZE] = {0};
     void* addresses[SIZE] = {0};
 
-    for (int i = 0; i < SIZE; i++) {
+    for (uint64_t i = 0; i < SIZE; i++) {
         access_pattern[i] = i;
     }
+
+    shuffle_list(access_pattern, SIZE);
 
     memset(data, 0, 4096 * 4);
 
