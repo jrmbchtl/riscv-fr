@@ -22,7 +22,7 @@ static inline uint64_t rdtsc()
 
 static inline void flush(void *p) {
     uint64_t val;
-    asm volatile("mv a5, %0; .word 0x0277800b;fence.i;fence\n" : : "r"(p) :"a5","memory");
+    asm volatile("mv a5, %0; .word 0x0277800b;fence\n" : : "r"(p) :"a5","memory");
 }
 
 static inline void maccess(void *p) {
@@ -49,8 +49,10 @@ int main() {
     timing = timed_load(address);
     printf("This should be low: %lu\n", timing);
     flush(address);
+    flush(address);
     timing = timed_load(address);
     printf("This should be high: %lu\n", timing);
+    flush(address);
     flush(address);
     timing = timed_load(address);
     printf("This should be high: %lu\n", timing);
