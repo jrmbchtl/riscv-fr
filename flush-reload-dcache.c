@@ -5,7 +5,7 @@
 #include <unistd.h>
 
 #define SIZE     16384
-#define OFFSET   512
+#define OFFSET   1024
 char __attribute__((aligned(4096))) data[4096 * 4];
 void* max_addr = &data[SIZE-1];
 void* min_addr = &data[0];
