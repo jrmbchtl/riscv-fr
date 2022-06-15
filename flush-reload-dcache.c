@@ -10,7 +10,7 @@ char __attribute__((aligned(4096))) data[4096 * 4];
 void* max_addr = &data[SIZE-1];
 void* min_addr = &data[0];
 
-uint64_t access_pattern[SIZE] = {0};
+char __attribute__((aligned(4096))) tmp[4096 * 4];
 
 // funtcion equivalent to rdtsc on x86, but implemented on RISC-V
 static inline uint64_t rdtsc()
@@ -48,27 +48,13 @@ void shuffle_list(uint64_t* list, size_t size) {
     }
 }
 
-void evict() {
-    for (int i = 0; i < SIZE; i+=64) {
-        if (access_pattern[i] % OFFSET == OFFSET) {
-            printf("You never should have come here\n");
-            break;
-        }
-    }
-}
-
 int main() {
     srand(0);
     uint64_t timings[SIZE] = {0};
     void* addresses[SIZE] = {0};
 
-    for (uint64_t i = 0; i < SIZE; i++) {
-        access_pattern[i] = i;
-    }
-
-    shuffle_list(access_pattern, SIZE);
-
     memset(data, 0, 4096 * 4);
+    memset(tmp, 0, 4096 * 4);
 
     for (int i = 0; i < SIZE; i++) {
         addresses[i] = &data[i];
@@ -78,14 +64,14 @@ int main() {
         // if (((uint64_t) addresses[access_pattern[i]]) % OFFSET != 0) {
         //     continue;
         // }
-        for (int j = 0; j < SIZE; j+=OFFSET) {
-            if (access_pattern[j] % OFFSET == OFFSET) {
+        for (int j = 0; j < SIZE * 2; j+=OFFSET) {
+            if (tmp[j] % OFFSET == OFFSET) {
                 printf("You never should have come here\n");
                 break;
             }
         }
         // flush(addresses[access_pattern[i]]);
-        timings[access_pattern[i]] = timed_load(addresses[access_pattern[i]]);
+        timings[i] = timed_load(addresses[i]);
     }
 
     int counter = 0;
