@@ -22,7 +22,7 @@ static inline uint64_t rdtsc()
 
 static inline void flush(void *p) {
     uint64_t val;
-    asm volatile("mv a5, %0; .word 0x0277800b;fence\n" : : "r"(p) :"a5","memory");
+    asm volatile("mv a5, %0; .word 0x0277800b;fence.i;fence\n" : : "r"(p) :"a5","memory");
 }
 
 static inline void maccess(void *p) {
