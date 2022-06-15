@@ -40,7 +40,7 @@ int main() {
 
     for (int i = 0; i < SIZE; i++) {
         flush(&lookuptable[i]);
-        timings[i] = timed_load(lookuptable[i]);
+        timings[i] = timed_load(&lookuptable[i]);
     }
 
     for (int i = 0; i < SIZE; i++) {
