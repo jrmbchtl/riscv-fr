@@ -39,7 +39,7 @@ int main() {
     uint64_t timings[SIZE] = {0};
     void* addresses[SIZE] = {0};
 
-    uint64_t relevant_addresses[MAX_SIZE] = {0};
+    // uint64_t relevant_addresses[MAX_SIZE] = {0};
     size_t size = 0;
 
     memset(data, 0, 4096 * 4);
