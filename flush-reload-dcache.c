@@ -30,6 +30,7 @@ static inline void flush_offset(void *p, uint64_t offset) {
     if(p2 > (uint64_t)p) {
         p2 -= 0x800;
     }
+    printf("p: %lx, p2: %lx\n", p, p2);
     // load p into a5 and flush the dcache line with this address
     // asm volatile("ld a5, %0\n;.word 0x0277800b\n" :: "m"(p):);
     asm volatile("mv a5, %0; .word 0x0277800b\n" : : "r"(p) :"a5","memory");
@@ -119,21 +120,14 @@ int main() {
     for (int i = 0; i < SIZE; i++)
     {
         if (timings[i] > 30) {
-            printf("%d, %lu, %p\n", i, timings[i], addresses[i]);
-        }
-    }
-
-    for (int i = 0; i < SIZE; i++)
-    {
-        if (timings[i] > 30) {
             relevant_addresses[size++] = (uint64_t) addresses[i];
         }
     }
 
-    // for (int i = 0; i < size; i++)
-    // {
-    //     printf("%p\n", relevant_addresses[i]);
-    // }
+    for (int i = 0; i < size; i++)
+    {
+        printf("%p\n", relevant_addresses[i]);
+    }
 
     uint64_t offset = vote(relevant_addresses, size);
     printf("offset: %lx\n", offset);
@@ -149,6 +143,7 @@ int main() {
         if (timings[i] > 30) {
             printf("%d, %lu, %p\n", i, timings[i], addresses[i]);
         }
-    }
+    }   
+
     return 0;
 }
