@@ -5,7 +5,6 @@
 #include <unistd.h>
 
 #define SIZE     16384
-#define MAX_SIZE 20
 char __attribute__((aligned(4096))) data[4096 * 4];
 
 // funtcion equivalent to rdtsc on x86, but implemented on RISC-V
