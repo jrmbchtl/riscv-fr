@@ -68,15 +68,11 @@ int main() {
     }
 
     shuffle_list(access_pattern, SIZE);
-    // print access pattern
-    for (uint64_t i = 0; i < SIZE; i++) {
-        printf("%lu\n", access_pattern[i]);
-    }
 
     memset(data, 0, 4096 * 4);
 
     for (int i = 0; i < SIZE; i++) {
-        addresses[i] = &data[i];
+        addresses[access_pattern[i]] = &data[i];
     }
 
     for (int i = 0; i < SIZE; i++) {
