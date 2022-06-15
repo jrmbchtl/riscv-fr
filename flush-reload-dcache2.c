@@ -68,11 +68,6 @@ int main() {
         }
     }
 
-    for (int i = 0; i < size; i++)
-    {
-        printf("%p\n", relevant_addresses[i]);
-    }
-
     uint64_t offset = 0;
     printf("offset: %lx\n", offset);
 
