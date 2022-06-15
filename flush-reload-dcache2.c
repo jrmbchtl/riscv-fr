@@ -68,7 +68,6 @@ int main() {
         }
     }
 
-    uint64_t offset = 0;
 
     for (int i = 0; i < SIZE; i++)
     {
