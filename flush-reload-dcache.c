@@ -45,8 +45,8 @@ int main() {
     // for (int i = 0; i < 64; i++) {
         int i = 0;
         // printf("%d\n", i);
-        void* address = &data[i];
-        char tmp = data[i];
+        void* address = &data[0];
+        char tmp = data[0];
         uint64_t timing = timed_load(address);
         printf("This should be low: %lu\n", timing);
         timing = timed_load(address);
