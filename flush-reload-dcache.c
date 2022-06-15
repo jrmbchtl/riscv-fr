@@ -143,8 +143,6 @@ int main() {
         if (timings[i] > 30) {
             printf("%d, %lu, %p\n", i, timings[i], addresses[i]);
         }
-    }   
-        }
     }
     return 0;
 }
