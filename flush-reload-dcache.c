@@ -83,14 +83,17 @@ int main()
     uint64_t timings[3] = {0};
 
     timed_load(address);
-    for (int i = 0; i < 3; i++) {
-        timings[i] = timed_load(address);
-        printf("This should be low: %lu\n", timings[i]);
-    }
+    uint64_t timing = timed_load(address);
+    printf("This should be low: %lu\n", timing);
+    timing = timed_load(address);
+    printf("This should be low: %lu\n", timing);
     for (int i = 0; i < 3; i++) {
         flush(address);
         timings[i] = timed_load(address);
         printf("This should be high: %lu\n", timings[i]);
     }
+    timing = timed_load(address);
+    printf("This should be low: %lu\n", timing);
+
     return 0;
 }
