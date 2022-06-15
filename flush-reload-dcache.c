@@ -73,7 +73,7 @@ int main()
     }
     // memset(data, 0, SIZE);
     void *address = &data[0];
-    uint64_t timing, start1, end1, start2, end2, start3, end3, start4, end14 tmp;
+    uint64_t timing, start1, end1, start2, end2, start3, end3, start4, end4 tmp;
 
     // maccess(address);
 
