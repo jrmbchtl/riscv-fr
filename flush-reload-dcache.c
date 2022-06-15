@@ -5,7 +5,7 @@
 #include <unistd.h>
 
 #define SIZE     16384
-#define OFFSET   2048
+#define OFFSET   64
 char __attribute__((aligned(4096))) data[4096 * 4];
 void* max_addr = &data[SIZE-1];
 void* min_addr = &data[0];
@@ -86,6 +86,7 @@ int main() {
     for (int i = 0; i < SIZE; i++) {
         addresses[i] = &data[i];
     }
+
 
     for (int i = 0; i < SIZE; i++) {
         if (((uint64_t) addresses[access_pattern[i]]) % OFFSET != 0) {
