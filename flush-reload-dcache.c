@@ -73,51 +73,51 @@ int main()
     }
     // memset(data, 0, SIZE);
     void *address = &data[0];
-    uint64_t timing, start1, end1, start2, end2, start3, end3, start4, end4;
+    uint64_t timing, start, end;
     uint64_t tmp1, tmp2, tmp3, tmp4;
 
     maccess(address);
 
     asm volatile("fence");
-    asm volatile("rdcycle %0\n" : "=r"(start1)::);
+    asm volatile("rdcycle %0\n" : "=r"(start)::);
     asm volatile("fence");
     asm volatile("ld %0, %1\n" :"=r" (tmp1) : "m"(address):);
     asm volatile("fence");
-    asm volatile("rdcycle %0\n" : "=r"(end1)::);
+    asm volatile("rdcycle %0\n" : "=r"(end)::);
     asm volatile("fence");
-    timing = end1 - start1;
+    timing = end - start;
     printf(("This should be low: %lu\n"), timing);
 
     asm volatile("fence");
-    asm volatile("rdcycle %0\n" : "=r"(start1)::);
+    asm volatile("rdcycle %0\n" : "=r"(start)::);
     asm volatile("fence");
     asm volatile("ld %0, %1\n" :"=r" (tmp1) : "m"(address):);
     asm volatile("fence");
-    asm volatile("rdcycle %0\n" : "=r"(end1)::);
+    asm volatile("rdcycle %0\n" : "=r"(end)::);
     asm volatile("fence");
-    timing = end1 - start1;
+    timing = end - start;
     printf(("This should be low: %lu\n"), timing);
 
     asm volatile("fence");
     asm volatile("mv a5, %0; .word 0x0277800b\n" : : "r"(address) :"a5","memory");
     asm volatile("fence");
-    asm volatile("rdcycle %0\n" : "=r"(start3)::);
+    asm volatile("rdcycle %0\n" : "=r"(start)::);
     asm volatile("fence");
     asm volatile("ld %0, %1\n" :"=r" (tmp3) : "m"(address):);
     asm volatile("fence");
-    asm volatile("rdcycle %0\n" : "=r"(end3)::);
+    asm volatile("rdcycle %0\n" : "=r"(end)::);
     asm volatile("fence");
-    timing = end3 - start3;
+    timing = end - start;
     printf(("This should be high: %lu\n"), timing);
 
     asm volatile("fence");
-    asm volatile("rdcycle %0\n" : "=r"(start4)::);
+    asm volatile("rdcycle %0\n" : "=r"(start)::);
     asm volatile("fence");
     asm volatile("ld %0, %1\n" :"=r" (tmp4) : "m"(address):);
     asm volatile("fence");
-    asm volatile("rdcycle %0\n" : "=r"(end4)::);
+    asm volatile("rdcycle %0\n" : "=r"(end)::);
     asm volatile("fence"); 
-    timing = end4 - start4;
+    timing = end - start;
     printf(("This should be low: %lu\n"), timing);
 
     return 0;
