@@ -67,15 +67,15 @@ int main()
     void *address = &data[0];
     uint64_t timings[3] = {0};
 
-    timed_load(address);
+    maccess(address);
     uint64_t timing = timed_load(address);
     printf("This should be low: %lu\n", timing);
     timing = timed_load(address);
     printf("This should be low: %lu\n", timing);
     
     flush(address);
-    timings[0] = timed_load(address);
-    printf("This should be high: %lu\n", timings[0]);
+    timing = timed_load(address);
+    printf("This should be high: %lu\n", timing);
 
     timing = timed_load(address);
     printf("This should be low: %lu\n", timing);
