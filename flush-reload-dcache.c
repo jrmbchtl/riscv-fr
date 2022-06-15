@@ -93,6 +93,7 @@ int main()
         flush(address);
         printf("also %d\n", i);
         timings[i] = timed_load(address);
+        printf("another %d\n", i);
     }
     uint64_t median_uncached = median(timings, SIZE);
     printf("median_uncached: %lu\n", median_uncached);
