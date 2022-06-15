@@ -23,10 +23,12 @@ static inline uint64_t rdtsc()
 static inline void flush(void *p)
 {
     uint64_t val;
-    asm volatile("fence;mv a5, %0; .word 0x0277800b;fence\n"
+    asm volatile("fence");
+    asm volatile("mv a5, %0; .word 0x0277800b\n"
                  :
                  : "r"(p)
                  : "a5", "memory");
+    asm volatile("fence");
 }
 
 static inline void maccess(void *p)
@@ -41,9 +43,13 @@ static inline void maccess(void *p)
 static inline uint64_t timed_load(void *p)
 {
     uint64_t start, end;
+    asm volatile("fence");
     start = rdtsc();
+    asm volatile("fence");
     maccess(p);
+    asm volatile("fence");
     end = rdtsc();
+    asm volatile("fence");
     return end - start;
 }
 
