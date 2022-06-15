@@ -9,6 +9,8 @@
 char __attribute__((aligned(4096))) data[4096 * 4];
 void* max_addr = &data[SIZE-1];
 
+uint64_t* access_pattern[SIZE] = {0};
+
 // funtcion equivalent to rdtsc on x86, but implemented on RISC-V
 static inline uint64_t rdtsc()
 {
@@ -50,6 +52,10 @@ static inline uint64_t timed_load(void *p){
 int main() {
     uint64_t timings[SIZE] = {0};
     void* addresses[SIZE] = {0};
+
+    for (int i = 0; i < SIZE; i++) {
+        access_pattern[i] = i;
+    }
 
     memset(data, 0, 4096 * 4);
 
