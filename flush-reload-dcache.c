@@ -49,7 +49,7 @@ void shuffle_list(uint64_t* list, size_t size) {
 }
 
 void evict() {
-    for (int i = 0; i < SIZE; i+=1) {
+    for (int i = 0; i < SIZE; i+=64) {
         if (i % OFFSET == -1) {
             printf("You never should have come here\n");
             break;
@@ -83,12 +83,15 @@ int main() {
         timings[access_pattern[i]] = timed_load(addresses[access_pattern[i]]);
     }
 
+    int counter = 0;
     for (int i = 0; i < SIZE; i++)
     {
         if (timings[i] > 30) {
+            counter++;
             printf("%d, %lu, %p\n", i, timings[i], addresses[i]);
         }
     }
+    printf("Cache misses: %d\n", counter);
 
     return 0;
 }
