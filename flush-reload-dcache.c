@@ -76,9 +76,10 @@ void* calculate(void* d)
 
 int main()
 {
-    for (size_t i=0; i<SIZE; i++) {
-        data[i] = i;
-    }
+    // for (size_t i=0; i<SIZE; i++) {
+    //     data[i] = i;
+    // }
+    memset(data, 0, SIZE);
     void *address = &data[0];
     uint64_t timings[3] = {0};
 
