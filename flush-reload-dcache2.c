@@ -69,7 +69,6 @@ int main() {
     }
 
     uint64_t offset = 0;
-    printf("offset: %lx\n", offset);
 
     for (int i = 0; i < SIZE; i++)
     {
