@@ -9,7 +9,7 @@
 char __attribute__((aligned(4096))) data[4096 * 4];
 void* max_addr = &data[SIZE-1];
 
-uint64_t* access_pattern[SIZE] = {0};
+uint64_t access_pattern[SIZE] = {0};
 
 // funtcion equivalent to rdtsc on x86, but implemented on RISC-V
 static inline uint64_t rdtsc()
