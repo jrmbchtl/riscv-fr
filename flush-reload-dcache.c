@@ -6,7 +6,7 @@
 
 #define SIZE 32768
 #define OFFSET 64
-#define SAMPLE_SIZE     10000
+#define SAMPLE_SIZE     3
 char __attribute__((aligned(4096))) data[4096 * 4];
 void *max_addr = &data[SIZE - 1];
 void *min_addr = &data[0];
