@@ -39,25 +39,25 @@ static inline uint64_t timed_load(void *p){
 }
 
 int main() {
-    srand(0);
-    uint64_t timings[SIZE] = {0};
-    void* address = &data[0];
+    
 
-    char tmp = data[0];
-    uint64_t timing = timed_load(address);
-    printf("This should be low: %lu\n", timing);
-    timing = timed_load(address);
-    printf("This should be low: %lu\n", timing);
-    flush(address);
-    flush(address);
-    timing = timed_load(address);
-    printf("This should be high: %lu\n", timing);
-    flush(address);
-    flush(address);
-    timing = timed_load(address);
-    printf("This should be high: %lu\n", timing);
-    timing = timed_load(address);
-    printf("This should be low: %lu\n", timing);
+    // get data[0] into cache
+    for (int i = 0; i < 64; i++) {
+        void* address = &data[i];
+        char tmp = data[i];
+        uint64_t timing = timed_load(address);
+        printf("This should be low: %lu\n", timing);
+        timing = timed_load(address);
+        printf("This should be low: %lu\n", timing);
+        flush(address);
+        timing = timed_load(address);
+        printf("This should be high: %lu\n", timing);
+        flush(address);
+        timing = timed_load(address);
+        printf("This should be high: %lu\n", timing);
+        timing = timed_load(address);
+        printf("This should be low: %lu\n", timing);
+    }
 
     return 0;
 }
