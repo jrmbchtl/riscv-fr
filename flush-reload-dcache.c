@@ -43,7 +43,7 @@ int main() {
 
     // get data[0] into cache
     // for (int i = 0; i < 64; i++) {
-        int i = 0;
+        // int i = 0;
         // printf("%d\n", i);
         void* address = &data[0];
         char tmp = data[0];
