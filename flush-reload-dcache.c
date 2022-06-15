@@ -73,14 +73,15 @@ int main()
     }
     // memset(data, 0, SIZE);
     void *address = &data[0];
-    uint64_t timing, start1, end1, start2, end2, start3, end3, start4, end4, tmp;
+    uint64_t timing, start1, end1, start2, end2, start3, end3, start4, end4;
+    uint64_t tmp1, tmp2, tmp3, tmp4;
 
     // maccess(address);
 
     asm volatile("fence");
     asm volatile("rdcycle %0\n" : "=r"(start1)::);
     asm volatile("fence");
-    asm volatile("ld %0, %1\n" :"=r" (tmp) : "m"(address):);
+    asm volatile("ld %0, %1\n" :"=r" (tmp1) : "m"(address):);
     asm volatile("fence");
     asm volatile("rdcycle %0\n" : "=r"(end1)::);
     asm volatile("fence");
@@ -90,7 +91,7 @@ int main()
     asm volatile("fence");
     asm volatile("rdcycle %0\n" : "=r"(start2)::);
     asm volatile("fence");
-    asm volatile("ld %0, %1\n" :"=r" (tmp) : "m"(address):);
+    asm volatile("ld %0, %1\n" :"=r" (tmp2) : "m"(address):);
     asm volatile("fence");
     asm volatile("rdcycle %0\n" : "=r"(end2)::);
     asm volatile("fence");
@@ -102,7 +103,7 @@ int main()
     asm volatile("fence");
     asm volatile("rdcycle %0\n" : "=r"(start3)::);
     asm volatile("fence");
-    asm volatile("ld %0, %1\n" :"=r" (tmp) : "m"(address):);
+    asm volatile("ld %0, %1\n" :"=r" (tmp3) : "m"(address):);
     asm volatile("fence");
     asm volatile("rdcycle %0\n" : "=r"(end3)::);
     asm volatile("fence");
@@ -112,7 +113,7 @@ int main()
     asm volatile("fence");
     asm volatile("rdcycle %0\n" : "=r"(start4)::);
     asm volatile("fence");
-    asm volatile("ld %0, %1\n" :"=r" (tmp) : "m"(address):);
+    asm volatile("ld %0, %1\n" :"=r" (tmp4) : "m"(address):);
     asm volatile("fence");
     asm volatile("rdcycle %0\n" : "=r"(end4)::);
     asm volatile("fence");
