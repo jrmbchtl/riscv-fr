@@ -50,7 +50,7 @@ void shuffle_list(uint64_t* list, size_t size) {
 
 void evict() {
     for (int i = 0; i < SIZE; i+=64) {
-        if (i % OFFSET == -1) {
+        if (addresses[i] % OFFSET == -1) {
             printf("You never should have come here\n");
             break;
         }
