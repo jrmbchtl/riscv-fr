@@ -72,6 +72,7 @@ void shuffle_list(uint64_t* list, size_t size) {
 }
 
 int main() {
+    srand(0);
     uint64_t timings[SIZE] = {0};
     void* addresses[SIZE] = {0};
 
