@@ -5,6 +5,7 @@
 #include <unistd.h>
 
 #define SIZE     16384
+#define OFFSET   2
 char __attribute__((aligned(4096))) data[4096 * 4];
 
 // funtcion equivalent to rdtsc on x86, but implemented on RISC-V
@@ -18,8 +19,7 @@ static inline uint64_t rdtsc()
 static inline void flush(void *p) {
     uint64_t val;
     void* p_new;
-    // set p_new to p - (p % 64)
-    p_new = p - (uint64_t)p % 4096;
+    p_new = p - (uint64_t)p % OFFSET;
 
     // load p into a5 and flush the dcache line with this address
     // asm volatile("ld a5, %0\n;.word 0x0277800b\n" :: "m"(p):);
