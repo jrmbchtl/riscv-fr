@@ -88,7 +88,7 @@ int main() {
     }
 
     for (int i = 0; i < SIZE; i++) {
-        if (i % OFFSET != 0) {
+        if (((uint64_t) addresses[access_pattern[i]]) % OFFSET != 0) {
             continue;
         }
         flush(addresses[access_pattern[i]]);
