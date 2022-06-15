@@ -89,9 +89,9 @@ int main()
     printf("median_cached: %lu\n", median_cached);
 
     for (int i = 0; i < SAMPLE_SIZE; i++) {
-        print("%d\n", i);
+        printf("%d\n", i);
         flush(address);
-        print("also %d\n", i);
+        printf("also %d\n", i);
         timings[i] = timed_load(address);
     }
     uint64_t median_uncached = median(timings, SIZE);
