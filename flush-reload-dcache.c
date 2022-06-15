@@ -8,6 +8,7 @@
 #define OFFSET   64
 char __attribute__((aligned(4096))) data[4096 * 4];
 void* max_addr = &data[SIZE-1];
+void* min_addr = &data[0];
 
 uint64_t access_pattern[SIZE] = {0};
 
@@ -34,6 +35,16 @@ static inline void flush(void *p) {
     // load p into a5 and flush the dcache line with this address
     // asm volatile("ld a5, %0\n;.word 0x0277800b\n" :: "m"(p):);
     asm volatile("mv a5, %0; .word 0x0277800b\n" : : "r"(p_new) :"a5","memory");
+}
+
+static inline void flush_range(void* p) {
+    for (int i = 0; i < 2*OFFSET; i++) {
+        void* target = p - OFFSET + i;
+        if (target < min_addr || target > max_addr) {
+            continue;
+        }
+        flush(target);
+    }
 }
 
 static inline void maccess(void *p) {
@@ -78,10 +89,9 @@ int main() {
     int j = 0;
     while(j < SIZE) {
         // printf("%d\n", j);
-        flush(addresses[j]);
+        flush_range(addresses[j]);
         timings[j] = timed_load(addresses[j]);
         j++;
-        usleep(1000);
     }
 
     for (int i = 0; i < SIZE; i++)
