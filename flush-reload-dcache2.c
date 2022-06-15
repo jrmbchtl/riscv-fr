@@ -4,87 +4,109 @@
 #include <string.h>
 #include <unistd.h>
 
-#define SIZE     16384
-#define OFFSET   16
+#define SIZE 32768
+#define OFFSET 64
+#define SAMPLE_SIZE     3
 char __attribute__((aligned(4096))) data[4096 * 4];
-void* max_addr = &data[SIZE-1];
+void *max_addr = &data[SIZE - 1];
+void *min_addr = &data[0];
 
-uint64_t access_pattern[SIZE] = {0};
+char __attribute__((aligned(4096))) tmp[4096 * 4];
 
 // funtcion equivalent to rdtsc on x86, but implemented on RISC-V
 static inline uint64_t rdtsc()
 {
     uint64_t val;
-    asm volatile("rdcycle %0\n" : "=r"(val)::);
+    asm volatile("rdcycle %0\n"
+                 : "=r"(val)::);
     return val;
 }
 
-static inline void flush(void *p) {
+static inline void flush(void *p)
+{
     uint64_t val;
-    void* p_new;
-    if (OFFSET - ((uint64_t)p % OFFSET) == OFFSET) {
-        p_new = p;
-    } else {
-        p_new = p - ((uint64_t)p % OFFSET) + OFFSET;
-    }
-    if(p_new > max_addr) {
-        p_new = p;
-    }
-
-    // load p into a5 and flush the dcache line with this address
-    // asm volatile("ld a5, %0\n;.word 0x0277800b\n" :: "m"(p):);
-    asm volatile("mv a5, %0; .word 0x0277800b\n" : : "r"(p_new) :"a5","memory");
+    asm volatile("mv a5, %0; .word 0x0277800b;fence\n"
+                 :
+                 : "r"(p)
+                 : "a5", "memory");
 }
 
-static inline void maccess(void *p) {
+static inline void maccess(void *p)
+{
     uint64_t val;
-    asm volatile("ld %0, %1\n" :"=r" (val) : "m"(p):);
+    asm volatile("ld %0, %1\n"
+                 : "=r"(val)
+                 : "m"(p)
+                 :);
 }
 
-static inline uint64_t timed_load(void *p){
+static inline uint64_t timed_load(void *p)
+{
     uint64_t start, end;
     start = rdtsc();
     maccess(p);
     end = rdtsc();
-    return end-start;
+    return end - start;
 }
 
-void shuffle_list(uint64_t* list, size_t size) {
-    // randomize the list
-    for (int i = 0; i < size; i++) {
-        int j = rand() % size;
-        uint64_t tmp = list[i];
-        list[i] = list[j];
-        list[j] = tmp;
+void* calculate(void* d)
+{
+    size_t* done = (size_t*)d;
+
+    for (size_t i=0; i<10; i++) {
+        usleep(1000);
     }
+    usleep(1000);
+    *done = 1;
 }
 
-int main() {
-    uint64_t timings[SIZE] = {0};
-    void* addresses[SIZE] = {0};
+// compare function for qsort
+int compare_uint64_t (const void * a, const void * b) 
+{
+   return ( *(int*)a - *(int*)b );
+}
 
-    for (uint64_t i = 0; i < SIZE; i++) {
-        access_pattern[i] = i;
-    }
+uint64_t median(uint64_t* list, uint64_t size)
+{
+    uint64_t* sorted = malloc(size * sizeof(uint64_t));
+    memcpy(sorted, list, size * sizeof(uint64_t));
+    qsort(sorted, size, sizeof(uint64_t), compare_uint64_t);
+    uint64_t median = sorted[size / 2];
+    free(sorted);
+    return median;
+}
 
-    shuffle_list(access_pattern, SIZE);
+int main()
+{
+    void *address = &data[0];
+    uint64_t timings[SAMPLE_SIZE] = {0};
+    
+    
+    // for (int i = 0; i < SAMPLE_SIZE; i++) {
+    //     timings[i] = timed_load(address);
+    // }
+    // uint64_t median_cached = median(timings, SAMPLE_SIZE);
+    // printf("median_cached: %lu\n", median_cached);
 
-    memset(data, 0, 4096 * 4);
+    // for (int i = 0; i < SAMPLE_SIZE; i++) {
+    //     flush(address);
+    //     timings[i] = timed_load(address);
+    //     printf("%lu\n", timings[i]);
+    // }
+    // uint64_t median_uncached = median(timings, SAMPLE_SIZE);
+    // printf("median_uncached: %lu\n", median_uncached);
 
-    for (int i = 0; i < SIZE; i++) {
-        addresses[access_pattern[i]] = &data[i];
-    }
-
-    for (int i = 0; i < SIZE; i++) {
-        flush(addresses[i]);
-        timings[i] = timed_load(addresses[i]);
-    }
-
-    for (int i = 0; i < SIZE; i++)
-    {
-        if (timings[i] > 30) {
-            printf("%d, %lu, %p\n", i, timings[i], addresses[i]);
-        }
+    for (int j = 0; j < 64; j++) {
+        char tmp = data[j];
+        uint64_t timing = timed_load(address);
+        printf("This should be low: %lu\n", timing);
+        timing = timed_load(address);
+        printf("This should be low: %lu\n", timing);
+        flush(address);
+        timing = timed_load(address);
+        printf("This should be high: %lu\n", timing);
+        timing = timed_load(address);
+        printf("This should be low: %lu\n", timing);
     }
 
     return 0;

@@ -6,7 +6,6 @@
 
 #define SIZE 32768
 #define OFFSET 64
-#define SAMPLE_SIZE     3
 char __attribute__((aligned(4096))) data[4096 * 4];
 void *max_addr = &data[SIZE - 1];
 void *min_addr = &data[0];
@@ -60,54 +59,21 @@ void* calculate(void* d)
     *done = 1;
 }
 
-// compare function for qsort
-int compare_uint64_t (const void * a, const void * b) 
-{
-   return ( *(int*)a - *(int*)b );
-}
-
-uint64_t median(uint64_t* list, uint64_t size)
-{
-    uint64_t* sorted = malloc(size * sizeof(uint64_t));
-    memcpy(sorted, list, size * sizeof(uint64_t));
-    qsort(sorted, size, sizeof(uint64_t), compare_uint64_t);
-    uint64_t median = sorted[size / 2];
-    free(sorted);
-    return median;
-}
-
 int main()
 {
     void *address = &data[0];
-    uint64_t timings[SAMPLE_SIZE] = {0};
-    
-    
-    // for (int i = 0; i < SAMPLE_SIZE; i++) {
-    //     timings[i] = timed_load(address);
-    // }
-    // uint64_t median_cached = median(timings, SAMPLE_SIZE);
-    // printf("median_cached: %lu\n", median_cached);
-
-    // for (int i = 0; i < SAMPLE_SIZE; i++) {
-    //     flush(address);
-    //     timings[i] = timed_load(address);
-    //     printf("%lu\n", timings[i]);
-    // }
-    // uint64_t median_uncached = median(timings, SAMPLE_SIZE);
-    // printf("median_uncached: %lu\n", median_uncached);
-
-    for (int j = 0; j < 64; j++) {
-        char tmp = data[j];
-        uint64_t timing = timed_load(address);
-        printf("This should be low: %lu\n", timing);
-        timing = timed_load(address);
-        printf("This should be low: %lu\n", timing);
+    char tmp = data[0];
+    uint64_t timing = timed_load(address);
+    printf("This should be low: %lu\n", timing);
+    timing = timed_load(address);
+    printf("This should be low: %lu\n", timing);
+    for (int i = 0; i < 3; i++) {
         flush(address);
         timing = timed_load(address);
         printf("This should be high: %lu\n", timing);
-        timing = timed_load(address);
-        printf("This should be low: %lu\n", timing);
     }
+    timing = timed_load(address);
+    printf("This should be low: %lu\n", timing);
 
     return 0;
 }
