@@ -10,7 +10,7 @@ char __attribute__((aligned(4096))) data[4096 * 4];
 void* max_addr = &data[SIZE-1];
 void* min_addr = &data[0];
 
-uint64_t access_pattern[SIZE] = {0};
+uint64_t access_pattern[8] = {0, 2048, 4096, 6144, 8192, 10240, 12288, 14336};
 
 // funtcion equivalent to rdtsc on x86, but implemented on RISC-V
 static inline uint64_t rdtsc()
@@ -53,11 +53,7 @@ int main() {
     uint64_t timings[SIZE] = {0};
     void* addresses[SIZE] = {0};
 
-    for (uint64_t i = 0; i < SIZE; i++) {
-        access_pattern[i] = i;
-    }
-
-    shuffle_list(access_pattern, SIZE);
+    shuffle_list(access_pattern, 8);
 
     memset(data, 0, 4096 * 4);
 
