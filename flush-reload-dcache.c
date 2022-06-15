@@ -88,9 +88,12 @@ int main() {
     }
 
 
-    for (int i = 0; i < SIZE; i+=OFFSET) {
-        flush(addresses[i]);
-        timings[i] = timed_load(addresses[i]);
+    for (int i = 0; i < SIZE; i++) {
+        if (((uint64_t) addresses[access_pattern[i]]) % OFFSET != 0) {
+            continue;
+        }
+        flush(addresses[access_pattern[i]]);
+        timings[access_pattern[i]] = timed_load(addresses[access_pattern[i]]);
     }
 
     for (int i = 0; i < SIZE; i++)
