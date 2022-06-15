@@ -77,6 +77,7 @@ int main() {
 
     int j;
     while(j < SIZE) {
+        printf("%d\n", j);
         flush(addresses[j]);
         timings[j] = timed_load(addresses[j]);
         j++;
