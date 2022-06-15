@@ -89,8 +89,8 @@ int main() {
 
     int j = 0;
     while(j < SIZE) {
-        flush_range(addresses[j]);
-        timings[j] = timed_load(addresses[j]);
+        flush_range(addresses[access_pattern[j]]);
+        timings[access_pattern[j]] = timed_load(addresses[access_pattern[j]]);
         j++;
     }
 
