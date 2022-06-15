@@ -65,7 +65,7 @@ int main()
     }
     void *address = &data[0];
     // uint64_t timings[15] = {0};
-    char tmp = data[0];
+    maccess(address);
     uint64_t timing = timed_load(address);
     printf("This should be low: %lu\n", timing);
     timing = timed_load(address);
