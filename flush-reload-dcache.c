@@ -43,6 +43,7 @@ static inline void flush_range(void* p) {
         if (target < min_addr || target > max_addr) {
             continue;
         }
+        print("flush %p cause of %p\n", target, p);
         flush(target);
     }
 }
@@ -88,7 +89,6 @@ int main() {
 
     int j = 0;
     while(j < SIZE) {
-        // printf("%d\n", j);
         flush(addresses[j]);
         timings[j] = timed_load(addresses[j]);
         j++;
