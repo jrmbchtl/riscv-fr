@@ -30,7 +30,6 @@ static inline void flush_offset(void *p, uint64_t offset) {
     if(p2 > (uint64_t)p) {
         p2 -= 0x800;
     }
-    printf("p: %lx, p2: %lx\n", p, p2);
     // load p into a5 and flush the dcache line with this address
     // asm volatile("ld a5, %0\n;.word 0x0277800b\n" :: "m"(p):);
     asm volatile("mv a5, %0; .word 0x0277800b\n" : : "r"(p) :"a5","memory");
