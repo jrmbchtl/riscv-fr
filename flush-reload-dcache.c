@@ -87,10 +87,9 @@ int main() {
         addresses[i] = &data[i];
     }
 
-    int j = 0;
-    while(j < SIZE) {
-        flush(addresses[access_pattern[j]]);
-        timings[access_pattern[j]] = timed_load(addresses[access_pattern[j]]);
+    for (int i = 0; i < SIZE; i++) {
+        flush(addresses[access_pattern[i]]);
+        timings[access_pattern[i]] = timed_load(addresses[access_pattern[i]]);
         j++;
     }
 
