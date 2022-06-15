@@ -22,30 +22,7 @@ static inline uint64_t rdtsc()
 
 static inline void flush(void *p) {
     uint64_t val;
-    void* p_new = p;
-    // if (OFFSET - ((uint64_t)p % OFFSET) == OFFSET) {
-    //     p_new = p;
-    // } else {
-    //     p_new = p - ((uint64_t)p % OFFSET) + OFFSET;
-    // }
-    // if(p_new > max_addr) {
-    //     p_new = p;
-    // }
-    // printf("flush %p\n", p_new);
-    // load p into a5 and flush the dcache line with this address
-    // asm volatile("ld a5, %0\n;.word 0x0277800b\n" :: "m"(p):);
-    asm volatile("mv a5, %0; .word 0x0277800b\n" : : "r"(p_new) :"a5","memory");
-}
-
-static inline void flush_range(void* p) {
-    for (int i = 0; i < 2*OFFSET; i++) {
-        void* target = p - OFFSET + i;
-        if (target < min_addr || target > max_addr) {
-            continue;
-        }
-        // printf("flush %p cause of %p\n", target, p);
-        flush(target);
-    }
+    asm volatile("mv a5, %0; .word 0x0277800b\n" : : "r"(p) :"a5","memory");
 }
 
 static inline void maccess(void *p) {
@@ -88,23 +65,11 @@ int main() {
         addresses[i] = &data[i];
     }
 
-    for (int i = 0; i < SIZE; i++) {
-        if (((uint64_t) addresses[access_pattern[i]]) % OFFSET != 0) {
-            continue;
-        }
-        flush(addresses[access_pattern[i]]);
-        timings[access_pattern[i]] = timed_load(addresses[access_pattern[i]]);
+    for (int i = 0; i < SIZE; i+=OFFSET) {
+        flush(addresses[i]);
+        timings[i] = timed_load(addresses[i]);
     }
-
-    // write access_pattern to log.csv
-    FILE* fp = fopen("log.csv", "w");
-    for (int i = 0; i < SIZE; i++) {
-        if (((uint64_t) addresses[access_pattern[i]]) % OFFSET != 0) {
-            continue;
-        }
-        fprintf(fp, "%lu\n", access_pattern[i]);
-    }
-
+    
     for (int i = 0; i < SIZE; i++)
     {
         if (timings[i] > 30) {
