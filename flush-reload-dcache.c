@@ -61,7 +61,7 @@ void* calculate(void* d)
 
 int main()
 {
-    memset(data, 0, sizeof(data));
+    // memset(data, 0, sizeof(data));
     void *address = &data[0];
     // uint64_t timings[15] = {0};
     char tmp = data[0];
