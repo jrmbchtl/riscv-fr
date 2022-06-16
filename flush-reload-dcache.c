@@ -12,41 +12,30 @@ void *min_addr = &data[0];
 char __attribute__((aligned(4096))) tmp[4096 * 4];
 
 // funtcion equivalent to rdtsc on x86, but implemented on RISC-V
-static inline uint64_t rdtsc()
-{
-    uint64_t val;
-    asm volatile("rdcycle %0\n"
-                 : "=r"(val)::);
-    return val;
-}
+#define rdtsc() ({ \
+    uint64_t val; \
+    asm volatile("rdcycle %0\n" : "=r"(val)::); \
+    val; \
+})
 
-static inline void flush(void *p)
-{
-    uint64_t val;
-    asm volatile("mv a5, %0; .word 0x0277800b\n" : : "r"(p) :"a5","memory");
-}
+#define flush(p) ({ \
+    uint64_t val; \
+    asm volatile("mv a5, %0; .word 0x0277800b\n" : : "r"(p) :"a5","memory"); \
+})
 
-static inline void maccess(void *p)
-{
-    uint64_t val;
-    asm volatile("ld %0, %1\n"
-                 : "=r"(val)
-                 : "m"(p)
-                 :);
-}
+#define maccess(p) ({ \
+    uint64_t val; \
+    asm volatile("ld %0, %1\n" :"=r" (val) : "m"(p):); \
+    val; \
+})
 
-static inline uint64_t timed_load(void *p)
-{
-    uint64_t start, end;
-    asm volatile("fence");
-    start = rdtsc();
-    asm volatile("fence");
-    maccess(p);
-    asm volatile("fence");
-    end = rdtsc();
-    asm volatile("fence");
-    return end - start;
-}
+#define timed_load(p) ({ \
+    uint64_t start, end; \
+    start = rdtsc(); \
+    maccess(p); \
+    end = rdtsc(); \
+    end-start; \
+})
 
 void* calculate(void* d)
 {
@@ -69,58 +58,21 @@ int main()
     uint64_t timing, start, end;
     uint64_t tmp1, tmp2, tmp3, tmp4;
 
-    asm volatile("fence");
-    asm volatile("mv a5, %0; .word 0x0277800b\n" : : "r"(address) :"a5","memory");
-    asm volatile("fence");
-    asm volatile("rdcycle %0\n" : "=r"(start)::);
-    asm volatile("fence");
-    asm volatile("ld %0, %1\n" :"=r" (tmp3) : "m"(address):);
-    asm volatile("fence");
-    asm volatile("rdcycle %0\n" : "=r"(end)::);
-    asm volatile("fence");
-    timing = end - start;
+    flush(address);
+    timing = timed_load(address);
     printf(("This should be high: %lu\n"), timing);
 
-    asm volatile("fence");
-    asm volatile("rdcycle %0\n" : "=r"(start)::);
-    asm volatile("fence");
-    asm volatile("ld %0, %1\n" :"=r" (tmp1) : "m"(address):);
-    asm volatile("fence");
-    asm volatile("rdcycle %0\n" : "=r"(end)::);
-    asm volatile("fence");
-    timing = end - start;
+    timing = timed_load(address);
     printf(("This should be low: %lu\n"), timing);
 
-    asm volatile("fence");
-    asm volatile("rdcycle %0\n" : "=r"(start)::);
-    asm volatile("fence");
-    asm volatile("ld %0, %1\n" :"=r" (tmp1) : "m"(address):);
-    asm volatile("fence");
-    asm volatile("rdcycle %0\n" : "=r"(end)::);
-    asm volatile("fence");
-    timing = end - start;
+    timing = timed_load(address);
     printf(("This should be low: %lu\n"), timing);
 
-    asm volatile("fence");
-    asm volatile("mv a5, %0; .word 0x0277800b\n" : : "r"(address) :"a5","memory");
-    asm volatile("fence");
-    asm volatile("rdcycle %0\n" : "=r"(start)::);
-    asm volatile("fence");
-    asm volatile("ld %0, %1\n" :"=r" (tmp3) : "m"(address):);
-    asm volatile("fence");
-    asm volatile("rdcycle %0\n" : "=r"(end)::);
-    asm volatile("fence");
-    timing = end - start;
+    flush(address);
+    timing = timed_load(address);
     printf(("This should be high: %lu\n"), timing);
 
-    asm volatile("fence");
-    asm volatile("rdcycle %0\n" : "=r"(start)::);
-    asm volatile("fence");
-    asm volatile("ld %0, %1\n" :"=r" (tmp4) : "m"(address):);
-    asm volatile("fence");
-    asm volatile("rdcycle %0\n" : "=r"(end)::);
-    asm volatile("fence"); 
-    timing = end - start;
+    timing = timed_load(address);
     printf(("This should be low: %lu\n"), timing);
 
     return 0;
