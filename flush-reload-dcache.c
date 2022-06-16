@@ -12,30 +12,30 @@ void *min_addr = &data[0];
 char __attribute__((aligned(4096))) tmp[4096 * 4];
 
 // funtcion equivalent to rdtsc on x86, but implemented on RISC-V
-#define rdtsc() ({ \
-    uint64_t val; \
-    asm volatile("rdcycle %0\n" : "=r"(val)::); \
-    val; \
-})
+uint64_t rdtsc() { 
+    uint64_t val; 
+    asm volatile("rdcycle %0\n" : "=r"(val)::); 
+    val; 
+}
 
-#define flush(p) ({ \
+void flush(void* p) { 
     uint64_t val; \
     asm volatile("mv a5, %0; .word 0x0277800b\n" : : "r"(p) :"a5","memory"); \
-})
+}
 
-#define maccess(p) ({ \
-    uint64_t val; \
-    asm volatile("ld %0, %1\n" :"=r" (val) : "m"(p):); \
-    val; \
-})
+void maccess(void* p) { 
+    uint64_t val; 
+    asm volatile("ld %0, %1\n" :"=r" (val) : "m"(p):); 
+    val; 
+}
 
-#define timed_load(p) ({ \
-    uint64_t start, end; \
-    start = rdtsc(); \
-    maccess(p); \
-    end = rdtsc(); \
-    end-start; \
-})
+uint64_t timed_load(void* p) { 
+    uint64_t start, end; 
+    start = rdtsc(); 
+    maccess(p); 
+    end = rdtsc(); 
+    return end-start; 
+}
 
 void* calculate(void* d)
 {
