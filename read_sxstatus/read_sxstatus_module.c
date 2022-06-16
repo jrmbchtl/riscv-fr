@@ -7,8 +7,9 @@ MODULE_AUTHOR("Jorim Bechtle");
 MODULE_DESCRIPTION("A simple RISC-V module reading sxtatus.");
 MODULE_VERSION("0.01");
 
-static inline void flush() {
+static inline int flush() {
     asm volatile(".word 0x0030000b");
+    return 0;
 }
 
 static inline uint64_t rdtsc()
@@ -19,13 +20,14 @@ static inline uint64_t rdtsc()
     return val;
 }
 
-static inline void maccess(void *p)
+static inline int maccess(void *p)
 {
     uint64_t val;
     asm volatile("ld %0, %1\n"
                  : "=r"(val)
                  : "m"(p)
                  :);
+    return 0;
 }
 
 static inline uint64_t timed_load(void *p)
@@ -40,7 +42,7 @@ static inline uint64_t timed_load(void *p)
 static int __init read_sxstatus_module_init(void) {
     char __attribute__((aligned(4096))) data[4096 * 4];
     memset(data, 0, 4096 * 4);
-    uint64_t timing = 0;
+    uint64_t timing;
 
     timing = timed_load(&data[0]);
     printk(KERN_INFO "timing: %lu\n", timing);
