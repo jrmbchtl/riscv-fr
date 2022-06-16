@@ -7,11 +7,53 @@ MODULE_AUTHOR("Jorim Bechtle");
 MODULE_DESCRIPTION("A simple RISC-V module reading sxtatus.");
 MODULE_VERSION("0.01");
 
-static int __init read_sxstatus_module_init(void) {
-    // uint64_t val = 0;
-    // asm volatile("csrrs %0, 0x7C5, x0": "=r"(val)::);
+static inline void flush() {
     asm volatile(".word 0x0030000b");
-    // printk(KERN_INFO "0x%lx\n", val);
+}
+
+static inline void maccess(void *p)
+{
+    uint64_t val;
+    asm volatile("ld %0, %1\n"
+                 : "=r"(val)
+                 : "m"(p)
+                 :);
+}
+
+static inline void maccess(void *p)
+{
+    uint64_t val;
+    asm volatile("ld %0, %1\n"
+                 : "=r"(val)
+                 : "m"(p)
+                 :);
+}
+
+static inline uint64_t timed_load(void *p)
+{
+    uint64_t start, end;
+    start = rdtsc();
+    maccess(p);
+    end = rdtsc();
+    return end - start;
+}
+
+static int __init read_sxstatus_module_init(void) {
+    char __attribute__((aligned(4096))) data[4096 * 4];
+    memset(data, 0, 4096 * 4);
+    uint64_t timing = 0;
+
+    timing = timed_load(&data[0]);
+    printk(KERN_INFO "timing: %lu\n", timing);
+    flush();
+    timing = timed_load(&data[0]);
+    printk(KERN_INFO "timing: %lu\n", timing);
+    flush();
+    timing = timed_load(&data[0]);
+    printk(KERN_INFO "timing: %lu\n", timing);
+    timing = timed_load(&data[0]);
+    printk(KERN_INFO "timing: %lu\n", timing);
+
     return 0;
 }
 
