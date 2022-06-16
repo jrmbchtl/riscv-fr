@@ -10,7 +10,6 @@ MODULE_VERSION("0.01");
 
 static int __init read_sxstatus_module_init(void) {
     asm volatile(".word 0x0030000b");
-
     return 0;
 }
 
