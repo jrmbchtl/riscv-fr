@@ -11,13 +11,12 @@ static inline void flush() {
     asm volatile(".word 0x0030000b");
 }
 
-static inline void maccess(void *p)
+static inline uint64_t rdtsc()
 {
     uint64_t val;
-    asm volatile("ld %0, %1\n"
-                 : "=r"(val)
-                 : "m"(p)
-                 :);
+    asm volatile("rdcycle %0\n"
+                 : "=r"(val)::);
+    return val;
 }
 
 static inline void maccess(void *p)
