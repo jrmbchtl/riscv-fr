@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -55,25 +56,17 @@ int main()
     }
     // memset(data, 0, SIZE);
     void *address = &data[0];
-    uint64_t timing, start, end;
-    uint64_t tmp1, tmp2, tmp3, tmp4;
+    uint64_t timing_low, timing_high, threshold;
 
     flush(address);
-    timing = timed_load(address);
-    printf(("This should be high: %lu\n"), timing);
+    timing_high = timed_load(address);
+    timing_low = timed_load(address);
+    assert(timing_high > timing_low);
 
-    timing = timed_load(address);
-    printf(("This should be low: %lu\n"), timing);
+    threshold = (timing_high + timing_low) / 2;
 
-    timing = timed_load(address);
-    printf(("This should be low: %lu\n"), timing);
+    printf("threshold: %lu\n", threshold);
 
-    flush(address);
-    timing = timed_load(address);
-    printf(("This should be high: %lu\n"), timing);
-
-    timing = timed_load(address);
-    printf(("This should be low: %lu\n"), timing);
 
     return 0;
 }
