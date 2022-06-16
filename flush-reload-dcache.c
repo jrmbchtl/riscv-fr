@@ -76,6 +76,7 @@ int main()
     flush(address + 896);
     flush(address + 960);
     flush(address + 1024);
+    flush(address);
     timing_high = timed_load(address);
     printf("%lu\n", timing_high);
     timing_low = timed_load(address);
