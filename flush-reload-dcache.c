@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <pthread.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -67,6 +68,18 @@ int main()
 
     printf("threshold: %lu\n", threshold);
 
+    size_t done = 0;
+    pthread_t do_stuff;
+
+    pthread_create(&do_stuff, NULL, calculate, &done);
+    while (!done) {
+        flush(address);
+        uint64_t timing = timed_load(address);
+        if (timing > threshold) {
+            printf("%lu: %p\n", timing, address);
+        }
+    }
+    pthread_join(do_stuff, NULL);
 
     return 0;
 }
