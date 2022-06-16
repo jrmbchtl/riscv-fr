@@ -60,6 +60,22 @@ int main()
     uint64_t timing_low, timing_high, threshold;
 
     flush(address);
+    flush(address + 64);
+    flush(address + 128);
+    flush(address + 192);
+    flush(address + 256);
+    flush(address + 320);
+    flush(address + 384);
+    flush(address + 448);
+    flush(address + 512);
+    flush(address + 576);
+    flush(address + 640);
+    flush(address + 704);
+    flush(address + 768);
+    flush(address + 832);
+    flush(address + 896);
+    flush(address + 960);
+    flush(address + 1024);
     timing_high = timed_load(address);
     printf("%lu\n", timing_high);
     timing_low = timed_load(address);
