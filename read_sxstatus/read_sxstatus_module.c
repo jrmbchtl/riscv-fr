@@ -7,12 +7,12 @@ MODULE_AUTHOR("Jorim Bechtle");
 MODULE_DESCRIPTION("A simple RISC-V module reading sxtatus.");
 MODULE_VERSION("0.01");
 
-static inline int flush() {
+static inline int flush(void) {
     asm volatile(".word 0x0030000b");
     return 0;
 }
 
-static inline uint64_t rdtsc()
+static inline uint64_t rdtsc(void)
 {
     uint64_t val;
     asm volatile("rdcycle %0\n"
