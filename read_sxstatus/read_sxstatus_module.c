@@ -9,7 +9,7 @@ MODULE_VERSION("0.01");
 
 static int __init read_sxstatus_module_init(void) {
     uint64_t val = 0;
-    asm volatile("csrrs %0, 0x5C0, x0": "=r"(val)::);
+    asm volatile("csrrs %0, 0x5C1, x0": "=r"(val)::);
     printk(KERN_INFO "0x%lx\n", val);
     return 0;
 }
