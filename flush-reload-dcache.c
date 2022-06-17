@@ -148,7 +148,7 @@ int main()
             if (timing.duration < threshold) {
                 fprintf(data_0, "%lu\n", timing.start - start);
             }
-            if (k < 10000) k++;
+            if (k < 100000) k++;
             else done = 1;
         }
         // pthread_join(victim, NULL);
