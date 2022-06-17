@@ -59,7 +59,8 @@ int main()
     void *address = &data[0];
     uint64_t timing_low, timing_high, threshold;
 
-    timed_load(address);
+    maccess(address);
+    timing_low = rdtsc();
     timing_low = timed_load(address);
     printf("%lu\n", timing_low);
     flush(address);
