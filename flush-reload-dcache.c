@@ -81,6 +81,9 @@ int main()
     printf("%lu\n", timing_high);
     timing_low = timed_load(address);
     printf("%lu\n", timing_low);
+    flush(address);
+    timing_high = timed_load(address);
+    printf("%lu\n", timing_high);
     assert(timing_high > timing_low);
 
     threshold = (timing_high + timing_low) / 2;
