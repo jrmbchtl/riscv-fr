@@ -81,7 +81,7 @@ int main()
     printf("%lu\n", timing_high);
     timing_low = timed_load(address);
     printf("%lu\n", timing_low);
-    lush(address);
+    flush(address);
     flush(address + 64);
     flush(address + 128);
     flush(address + 192);
