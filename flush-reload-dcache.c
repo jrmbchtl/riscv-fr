@@ -37,7 +37,10 @@ uint64_t timed_load(void* p) {
 int main()
 {
     // avoid lazy allocation
-    memset(data, 0, SIZE);
+    // memset(data, 0, SIZE);
+    for (int i = 0; i < SIZE; i++) {
+        data[i] = 0;
+    }
     void* addresses[SIZE];
     for (size_t i=0; i<SIZE; i++) {
         addresses[i] = &data[i];
