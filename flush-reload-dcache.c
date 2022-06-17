@@ -36,9 +36,7 @@ void flush(void* p) {
 
 void maccess(void* p) { 
     uint64_t val; 
-    asm volatile("fence");
     asm volatile("ld %0, %1\n" :"=r" (val) : "m"(p):); 
-    asm volatile("fence");
 }
 
 sample_t timed_load(void* p) { 
