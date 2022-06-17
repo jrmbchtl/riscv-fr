@@ -62,14 +62,16 @@ int main()
     timing_low = timed_load(addresses[index]);
     printf("This should be a cache hit:  %lu\n", timing_low);
 
-    // flush everything +/- 64 in case element doesn't line up with cache line
-    for (int i = max(0, index - 2048); i < min(SIZE-1, index + 2048); i++) {
-        flush(addresses[i]);
+    for (int i = 0; i < SIZE; i++) {
+        // flush everything +/- 2048 in case element doesn't line up with cache line
+        for (int i = max(0, index - 2048); i < min(SIZE-1, index + 2048); i++) {
+            flush(addresses[i]);
+        }
+        // should be a cache miss since everything was flushed
+        timing_high = timed_load(addresses[index]);
+        printf("This should be a cache miss: %lu\n", timing_high);
+        assert(timing_high > timing_low);
     }
-    // should be a cache miss since everything was flushed
-    timing_high = timed_load(addresses[index]);
-    printf("This should be a cache miss: %lu\n", timing_high);
-    assert(timing_high > timing_low);
 
     return 0;
 }
