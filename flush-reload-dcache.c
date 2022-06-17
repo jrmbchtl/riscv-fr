@@ -53,7 +53,6 @@ int main()
     printf("This should be a cache hit:  %lu\n", timing_low);
     // flush everything +/- 64 in case element doesn't line up with cache line
     for (int i = 0; i<128; i++) {
-        printf("%d\n", i);
         flush(addresses[i]);
     }
     // should be a cache miss since everything was flushed
