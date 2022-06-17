@@ -6,7 +6,8 @@
 #include <string.h>
 #include <unistd.h>
 
-#define SIZE 16384
+#define SIZE        16384
+#define PRIME_RUNS  10000
 // make data span over exactly 4 pages (a 4K))
 char __attribute__((aligned(4096))) data[4096 * 4];
 
@@ -35,6 +36,23 @@ uint64_t timed_load(void* p) {
     return end-start; 
 }
 
+int compare_uint64_t (const void * a, const void * b) 
+{
+   return ( *(int*)a - *(int*)b );
+}
+
+// returns the median of a list given a list and its length
+// works by sorting the list and returning the middle element
+uint64_t median(uint64_t* list, uint64_t size)
+{
+    uint64_t* sorted = malloc(size * sizeof(uint64_t));
+    memcpy(sorted, list, size * sizeof(uint64_t));
+    qsort(sorted, size, sizeof(uint64_t), compare_uint64_t);
+    uint64_t median = sorted[size / 2];
+    free(sorted);
+    return median;
+}
+
 int main()
 {
     // avoid lazy allocation
@@ -44,21 +62,29 @@ int main()
         addresses[i] = &(data[i]);
     }
 
-    // timings for cache hit/cache miss
-    uint64_t timing_low, timing_high;
-    // needed to put all necessary functions into i-cache
-    timing_low = timed_load(&data[SIZE-1]);
+    uint64_t cached_timing[PRIME_RUNS];
+    uint64_t uncached_timing[PRIME_RUNS];
+
+    timed_load(&data[SIZE-1]);
     // put data[0] into d-cache
     maccess(addresses[0]);
-    // should be a cache hit
-    timing_low = timed_load(addresses[0]);
-    printf("This should be a cache hit:  %lu\n", timing_low);
 
-    flush(addresses[0]);
-    // should be a cache miss since element was just flushed
-    timing_high = timed_load(addresses[0]);
-    printf("This should be a cache miss: %lu\n", timing_high);
-    assert(timing_high > timing_low);
+    for (int i = 0; i < PRIME_RUNS; i++) {
+        cached_timing[i] = timed_load(addresses[0]);
+    }
+
+    for(int i = 0; i < PRIME_RUNS; i++) {
+        flush(addresses[0]);
+        uncached_timing[i] = timed_load(addresses[0]);
+    }
+
+    uint64_t cached_median = median(cached_timing, PRIME_RUNS);
+    uint64_t uncached_median = median(uncached_timing, PRIME_RUNS);
+    uint64_t threshold = (cached_median + uncached_median) / 2;
+
+    printf("cached median: %lu\n", cached_median);
+    printf("uncached median: %lu\n", uncached_median);
+    printf("threshold: %lu\n", threshold);
 
     return 0;
 }
