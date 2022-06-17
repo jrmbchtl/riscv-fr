@@ -150,6 +150,7 @@ int main()
     int k = 0;
     for (size_t i = 0; i < RUNS; i++) {
         size_t done = 0;
+        size_t done2 = 0;
         pthread_create(&victim, NULL, calculate, &done);
         uint64_t start = rdtsc();
         for (int j = 0; j < EVICTION_SIZE; j++) {
