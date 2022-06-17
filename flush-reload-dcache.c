@@ -135,6 +135,16 @@ int main()
     // victim thread
     pthread_t victim;
 
+    size_t done1 = 0;
+    size_t done2 = 0;
+    size_t done3 = 0;
+    size_t done4 = 0;
+    size_t done5 = 0;
+    size_t done6 = 0;
+    size_t done7 = 0;
+    size_t done8 = 0;
+    size_t done9 = 0;
+
     // observing data[0]
     FILE* data_0 = fopen("data_0.csv", "w");
     int k = 0;
