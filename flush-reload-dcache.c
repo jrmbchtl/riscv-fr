@@ -50,10 +50,12 @@ int main()
     // needed to put all necessary function into i-cache
     timing_low = timed_load(&data[SIZE-1]);
     // put data[0] into d-cache
+    maccess(addresses[0]);
     // should be a cache hit
     timing_low = timed_load(addresses[index]);
     printf("This should be a cache hit:  %lu\n", timing_low);
-    for (int i = 0; i<128; i++) {
+    // flush everything +/- 64 in case element doesn't line up with cache line
+    for (int i = 0; i<256; i++) {
         flush(addresses[i]);
     }
     timing_high = timed_load(addresses[index]);
