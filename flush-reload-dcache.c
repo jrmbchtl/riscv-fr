@@ -52,10 +52,10 @@ void* calculate(void* d)
 
 int main()
 {
-    // for (size_t i=0; i<SIZE; i++) {
-    //     data[i] = 0;
-    // }
-    memset(data, 0, SIZE);
+    for (size_t i=0; i<SIZE; i++) {
+        data[i] = 0;
+    }
+    // memset(data, 0, SIZE);
     void *address = &data[0];
     uint64_t timing_low, timing_high, threshold;
 
