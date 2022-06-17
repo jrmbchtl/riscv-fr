@@ -86,7 +86,7 @@ int main()
     printf("This should be a cache hit:  %lu\n", timing_low);
 
     for (int i = 0; i < SIZE; i++) {
-        for (int j = index; j < index + 4096; j++)
+        for (int j = 0; j < 4096; j++)
         {
             maccess(addresses_tmp[j]);
         }
