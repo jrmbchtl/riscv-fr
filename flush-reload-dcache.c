@@ -81,7 +81,7 @@ int main()
 
     for (int i = 0; i < SIZE; i++) {
         if (i < SIZE) {
-            for (int j = index; j < index + 8192; j+2)
+            for (int j = index; j < index + 8192; j++)
             {
                 // flush(addresses[j]);
                 tmp = addresses[j];
