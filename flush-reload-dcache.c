@@ -140,7 +140,7 @@ int main()
             maccess(addresses_tmp[j]);
         }
         while (!done) {
-            sched_yield();
+            // sched_yield();
             sample_t timing = timed_load(addresses_data[4096]);
             for (int j = 0; j < EVICTION_SIZE; j++) {
                 maccess(addresses_tmp[j]);
