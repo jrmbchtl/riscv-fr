@@ -80,12 +80,12 @@ int main()
 
     for (int i = 0; i < SIZE; i++) {
         if (i < SIZE / 2) {
-            for (int j = i; j < i + 4096; j++)
+            for (int j = index; j < index + 4096; j++)
             {
                 flush(addresses[j]);
             }
         } else {
-            for (int j = i - 4096; j < i; j++)
+            for (int j = index - 4096; j < index; j++)
             {
                 flush(addresses[j]);
             }
