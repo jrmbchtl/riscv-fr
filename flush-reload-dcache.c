@@ -7,7 +7,7 @@
 #include <unistd.h>
 
 #define SIZE        16384
-#define PRIME_RUNS  5
+#define PRIME_RUNS  100
 // make data span over exactly 4 pages (a 4K))
 char __attribute__((aligned(4096))) data[4096 * 4];
 
