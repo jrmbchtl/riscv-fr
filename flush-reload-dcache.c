@@ -9,7 +9,7 @@
 #define SIZE 16384
 // make data span over exactly 4 pages (a 4KiB))
 char __attribute__((aligned(4096))) data[4096 * 4];
-char __attribute__((aligned(4096))) tmp[4096 * 4];
+char __attribute__((aligned(4096))) tmp[4096];
 
 // funtcion equivalent to rdtsc on x86, but implemented on RISC-V
 uint64_t rdtsc() { 
