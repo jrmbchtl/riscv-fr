@@ -75,9 +75,9 @@ void* calculate(void* d)
     void* tmp = &(data[16383]);
 
     usleep(1000);
-    maccess(tmp);
-    usleep(1000);
-    maccess(tmp);
+    // maccess(tmp);
+    // usleep(1000);
+    // maccess(tmp);
     usleep(1000);
     *done = 1;
 }
