@@ -16,9 +16,10 @@ uint64_t rdtsc() {
     val; 
 }
 
-void flush(void* p) { 
-    uint64_t val; \
-    asm volatile("mv a5, %0; .word 0x0277800b\n" : : "r"(p) :"a5","memory"); \
+void flush(void* p) {
+
+    asm volatile("ld a5, %0; .word 0x0277800b\n" :: "m"(p):);
+    // asm volatile("mv a5, %0; .word 0x0277800b\n" : : "r"(p) :"a5","memory");
 }
 
 void maccess(void* p) { 
