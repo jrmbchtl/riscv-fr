@@ -88,7 +88,7 @@ int main()
     for (int i = 0; i < SIZE; i++) {
         for (int j = index; j < index + 4096; j++)
         {
-            maccess(addresses[j]);
+            maccess(addresses_tmp[j]);
         }
 
         // should be a cache miss since everything was flushed
