@@ -24,6 +24,7 @@ void flush(void* p) {
 void maccess(void* p) { 
     uint64_t val; 
     asm volatile("ld %0, %1\n" :"=r" (val) : "m"(p):); 
+    val; 
 }
 
 uint64_t timed_load(void* p) { 
@@ -37,13 +38,10 @@ uint64_t timed_load(void* p) {
 int main()
 {
     // avoid lazy allocation
-    // memset(data, 0, SIZE);
-    for (int i = 0; i < SIZE; i++) {
-        data[i] = 0;
-    }
+    memset(data, 0, SIZE);
     void* addresses[SIZE];
     for (size_t i=0; i<SIZE; i++) {
-        addresses[i] = &data[i];
+        addresses[i] = &(data[i]);
     }
 
     // timings for cache hit/cache miss
