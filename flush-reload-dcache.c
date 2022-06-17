@@ -75,18 +75,18 @@ uint64_t median(uint64_t* list, uint64_t size)
     return median;
 }
 
-void* calculate(void* d)
-{
-    size_t* done = (size_t*)d;
-    // void* tmp = &(data[16383]);
+// void* calculate(void* d)
+// {
+//     size_t* done = (size_t*)d;
+//     // void* tmp = &(data[16383]);
 
-    usleep(1000);
-    // maccess(tmp);
-    // usleep(1000);
-    // maccess(tmp);
-    usleep(1000);
-    *done = 1;
-}
+//     usleep(1000);
+//     // maccess(tmp);
+//     // usleep(1000);
+//     // maccess(tmp);
+//     usleep(1000);
+//     *done = 1;
+// }
 
 int main()
 {
@@ -142,7 +142,7 @@ int main()
     for (size_t i = 0; i < RUNS; i++) {
         size_t done = 0;
         // size_t done2 = 0;
-        pthread_create(&victim, NULL, calculate, &done);
+        // pthread_create(&victim, NULL, calculate, &done);
         uint64_t start = rdtsc();
         for (int j = 0; j < EVICTION_SIZE; j++) {
             maccess(addresses_tmp[j]);
@@ -155,8 +155,10 @@ int main()
             if (timing.duration < threshold) {
                 fprintf(data_0, "%lu\n", timing.start - start);
             }
+            if (k < 10000) k+=1;
+            else done = 1;
         }
-        pthread_join(victim, NULL);
+        // pthread_join(victim, NULL);
     }
     fclose(data_0);
 
