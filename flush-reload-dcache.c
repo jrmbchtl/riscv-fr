@@ -56,14 +56,16 @@ int main()
         data[i] = 0;
     }
     // memset(data, 0, SIZE);
-    void *address = &data[0];
+    void *address = &data[64];
     uint64_t timing_low, timing_high, threshold;
 
     // maccess(address);
     timing_low = timed_load(&data[SIZE-1]);
     timing_low = timed_load(address);
     printf("%lu\n", timing_low);
-    flush(address);
+    for (int i = 0; i<64; i++) {
+        flush(&data[i]);
+    }
     timing_high = timed_load(address);
     printf("%lu\n", timing_high);
     assert(timing_high > timing_low);
