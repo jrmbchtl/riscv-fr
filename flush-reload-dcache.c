@@ -52,21 +52,25 @@ void* calculate(void* d)
 
 int main()
 {
+    size_t index = 64;
     for (size_t i=0; i<SIZE; i++) {
         data[i] = 0;
     }
     // memset(data, 0, SIZE);
-    void *address = &data[64];
+    void* addresses[SIZE];
+    for (size_t i=0; i<SIZE; i++) {
+        addresses[i] = &data[i];
+    }
     uint64_t timing_low, timing_high, threshold;
 
     // maccess(address);
     timing_low = timed_load(&data[SIZE-1]);
-    timing_low = timed_load(address);
+    timing_low = timed_load(addresses[index]);
     printf("%lu\n", timing_low);
     for (int i = 0; i<128; i++) {
-        flush(&data[i]);
+        flush(addresses[i]);
     }
-    timing_high = timed_load(address);
+    timing_high = timed_load(addresses[index]);
     printf("%lu\n", timing_high);
     assert(timing_high > timing_low);
 
