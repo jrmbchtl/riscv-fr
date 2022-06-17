@@ -9,8 +9,6 @@
 #define SIZE 32768
 char __attribute__((aligned(4096))) data[4096 * 4];
 
-char __attribute__((aligned(4096))) tmp[4096 * 4];
-
 // funtcion equivalent to rdtsc on x86, but implemented on RISC-V
 uint64_t rdtsc() { 
     uint64_t val; 
@@ -55,9 +53,10 @@ int main()
     timing_low = timed_load(addresses[index]);
     printf("This should be a cache hit:  %lu\n", timing_low);
     // flush everything +/- 64 in case element doesn't line up with cache line
-    for (int i = 0; i<256; i++) {
+    for (int i = 0; i<128; i++) {
         flush(addresses[i]);
     }
+    // should be a cache miss since everything was flushed
     timing_high = timed_load(addresses[index]);
     printf("This should be a cache miss: %lu\n", timing_high);
     assert(timing_high > timing_low);
