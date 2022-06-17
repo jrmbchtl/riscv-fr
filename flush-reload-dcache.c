@@ -74,11 +74,8 @@ void* calculate(void* d)
     size_t* done = (size_t*)d;
     void* tmp = &(data[4096]);
 
-    for (size_t i=0; i<10; i++) {
-        usleep(1000);
-        maccess(tmp);
-        sched_yield();
-    }
+    usleep(1000);
+    maccess(tmp);
     usleep(1000);
     *done = 1;
 }
