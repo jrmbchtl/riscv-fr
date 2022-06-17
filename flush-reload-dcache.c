@@ -65,7 +65,7 @@ int main()
     for (int i = 2048; i < SIZE - 2048; i++) {
         // flush everything +/- 2048 in case element doesn't line up with cache line
         for (int j = max(0, index - 2048); j < min(SIZE-1, index + 2048); j++) {
-            flush(addresses[i]);
+            flush(addresses[j]);
         }
         // should be a cache miss since everything was flushed
         timing_high = timed_load(addresses[index]);
