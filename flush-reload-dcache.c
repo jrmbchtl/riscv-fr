@@ -93,7 +93,7 @@ int main()
 
         // should be a cache miss since everything was flushed
         timing_high = timed_load(addresses[i]);
-        printf("This should be a cache miss @ %d: %lu\n", i, timing_high);
+        // printf("This should be a cache miss @ %d: %lu\n", i, timing_high);
         assert(timing_high > timing_low);
         assert(timing_high > 100);
     }
