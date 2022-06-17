@@ -64,11 +64,11 @@ int main()
 
     for (int i = 0; i < SIZE; i++) {
         // flush everything +/- 2048 in case element doesn't line up with cache line
-        for (int i = index; i < min(SIZE-1, index + 4096); i++) {
+        for (int j = i; j < min(SIZE-1, i + 4096); j++) {
             flush(addresses[i]);
         }
         // should be a cache miss since everything was flushed
-        timing_high = timed_load(addresses[index]);
+        timing_high = timed_load(addresses[i]);
         // printf("This should be a cache miss: %lu\n", timing_high);
         assert(timing_high > timing_low);
         assert(timing_high > 100);
