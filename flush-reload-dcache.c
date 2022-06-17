@@ -67,6 +67,7 @@ int main()
     for (size_t i=0; i<SIZE; i++) {
         addresses[i] = &data[i];
     }
+    void* tmp;
 
     // timings for cache hit/cache miss
     uint64_t timing_low, timing_high;
@@ -82,12 +83,14 @@ int main()
         if (i < SIZE / 2) {
             for (int j = index; j < index + 4096; j++)
             {
-                flush(addresses[j]);
+                // flush(addresses[j]);
+                tmp = addresses[j];
             }
         } else {
             for (int j = index - 4096; j < index; j++)
             {
-                flush(addresses[j]);
+                // flush(addresses[j]);
+                tmp = addresses[j];
             }
         }
         // should be a cache miss since everything was flushed
