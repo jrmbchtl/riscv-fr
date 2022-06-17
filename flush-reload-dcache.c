@@ -46,7 +46,7 @@ int main()
 
     // timings for cache hit/cache miss
     uint64_t timing_low, timing_high;
-    // needed to put all necessary function into i-cache
+    // needed to put all necessary functions into i-cache
     timing_low = timed_load(&data[SIZE-1]);
     // put data[0] into d-cache
     maccess(addresses[0]);
@@ -54,8 +54,10 @@ int main()
     timing_low = timed_load(addresses[0]);
     printf("This should be a cache hit:  %lu\n", timing_low);
 
-    flush(addresses[0]);
-    // should be a cache miss since everything was flushed
+    for (int i=0; i < 4096; i++) {
+        flush(addresses[i]);
+    }
+    // should be a cache miss since element was just flushed
     timing_high = timed_load(addresses[0]);
     printf("This should be a cache miss: %lu\n", timing_high);
     assert(timing_high > timing_low);
