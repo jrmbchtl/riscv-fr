@@ -8,8 +8,6 @@
 
 #define SIZE 32768
 char __attribute__((aligned(4096))) data[4096 * 4];
-void *max_addr = &data[SIZE - 1];
-void *min_addr = &data[0];
 
 char __attribute__((aligned(4096))) tmp[4096 * 4];
 
@@ -39,43 +37,28 @@ uint64_t timed_load(void* p) {
     return end-start; 
 }
 
-void* calculate(void* d)
-{
-    size_t* done = (size_t*)d;
-
-    for (size_t i=0; i<10; i++) {
-        usleep(1000);
-    }
-    usleep(1000);
-    *done = 1;
-}
-
 int main()
 {
     size_t index = 64;
-    for (size_t i=0; i<SIZE; i++) {
-        data[i] = 0;
-    }
-    // memset(data, 0, SIZE);
+    memset(data, 0, SIZE);
     void* addresses[SIZE];
     for (size_t i=0; i<SIZE; i++) {
         addresses[i] = &data[i];
     }
-    uint64_t timing_low, timing_high, threshold;
+    uint64_t timing_low, timing_high;
 
-    // maccess(address);
+    // needed to put all necessary function into i-cache
     timing_low = timed_load(&data[SIZE-1]);
+    // put data[0] into d-cache
+    // should be a cache hit
     timing_low = timed_load(addresses[index]);
-    printf("%lu\n", timing_low);
+    printf("This should be a cache hit:  %lu\n", timing_low);
     for (int i = 0; i<128; i++) {
         flush(addresses[i]);
     }
     timing_high = timed_load(addresses[index]);
-    printf("%lu\n", timing_high);
+    printf("This should be a cache miss: %lu\n", timing_high);
     assert(timing_high > timing_low);
-
-    threshold = (timing_high + timing_low) / 2;
-    printf("threshold: %lu\n", threshold);
 
     return 0;
 }
