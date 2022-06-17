@@ -132,9 +132,10 @@ int main()
 
     // observing data[0]
     FILE* data_0 = fopen("data_0.csv", "w");
+    int k = 0;
     for (size_t i = 0; i < RUNS; i++) {
         size_t done = 0;
-        pthread_create(&victim, NULL, calculate, &done);
+        // pthread_create(&victim, NULL, calculate, &done);
         uint64_t start = rdtsc();
         for (int j = 0; j < EVICTION_SIZE; j++) {
             maccess(addresses_tmp[j]);
@@ -147,8 +148,10 @@ int main()
             if (timing.duration < threshold) {
                 fprintf(data_0, "%lu\n", timing.start - start);
             }
+            if (k < 10000) k++;
+            else done = 1;
         }
-        pthread_join(victim, NULL);
+        // pthread_join(victim, NULL);
     }
     fclose(data_0);
 
