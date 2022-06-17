@@ -40,7 +40,7 @@ int main()
     memset(data, 0, SIZE);
     void* addresses[SIZE];
     for (size_t i=0; i<SIZE; i++) {
-        addresses[i] = &(data[i]);
+        addresses[i] = &data[i];
     }
 
     // timings for cache hit/cache miss
