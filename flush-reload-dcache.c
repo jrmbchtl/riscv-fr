@@ -60,7 +60,7 @@ int main()
     uint64_t timing_low, timing_high, threshold;
 
     maccess(address);
-    timing_low = rdtsc();
+    timing_low = timed_load(SIZE-1);
     timing_low = timed_load(address);
     printf("%lu\n", timing_low);
     flush(address);
