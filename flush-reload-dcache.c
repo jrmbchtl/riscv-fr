@@ -6,8 +6,8 @@
 #include <string.h>
 #include <unistd.h>
 
-#define SIZE 32768
-char __attribute__((aligned(4096))) data[4096 * 8];
+#define SIZE 16384
+char __attribute__((aligned(4096))) data[4096 * 4];
 
 // funtcion equivalent to rdtsc on x86, but implemented on RISC-V
 uint64_t rdtsc() { 
@@ -37,7 +37,6 @@ uint64_t timed_load(void* p) {
 
 int main()
 {
-    printf("1\n");
     size_t index = 64;
     memset(data, 0, SIZE);
     void* addresses[SIZE];
@@ -45,22 +44,18 @@ int main()
         addresses[i] = &data[i];
     }
     uint64_t timing_low, timing_high;
-    printf("2\n");
     // needed to put all necessary function into i-cache
     timing_low = timed_load(&data[SIZE-1]);
     // put data[0] into d-cache
     maccess(addresses[0]);
-    printf("2\n");
     // should be a cache hit
     timing_low = timed_load(addresses[index]);
     printf("This should be a cache hit:  %lu\n", timing_low);
     // flush everything +/- 64 in case element doesn't line up with cache line
-    printf("3\n");
     for (int i = 0; i<128; i++) {
         printf("%d\n", i);
         flush(addresses[i]);
     }
-    printf("4\n");
     // should be a cache miss since everything was flushed
     timing_high = timed_load(addresses[index]);
     printf("This should be a cache miss: %lu\n", timing_high);
