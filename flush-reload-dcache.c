@@ -64,9 +64,9 @@ int main()
     size_t index = 2048;
     // avoid lazy allocation
     memset(data, 0, SIZE);
-    memset(tmp, 0, SIZE);
+    memset(tmp, 0, 4096);
     void* addresses[SIZE];
-    void* addresses_tmp[SIZE];
+    void* addresses_tmp[4096];
     for (size_t i=0; i<SIZE; i++) {
         addresses[i] = &data[i];
     }
@@ -88,7 +88,7 @@ int main()
     for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j < 4096; j++)
         {
-            maccess(addresses_tmp[j]);
+            maccess(&tmp[j]);
         }
 
         // should be a cache miss since everything was flushed
