@@ -77,6 +77,8 @@ void* calculate(void* d)
     usleep(1000);
     maccess(tmp);
     usleep(1000);
+    maccess(tmp);
+    usleep(1000);
     *done = 1;
 }
 
