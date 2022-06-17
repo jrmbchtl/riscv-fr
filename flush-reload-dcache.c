@@ -59,9 +59,7 @@ int main()
     void *address = &data[0];
     uint64_t timing_low, timing_high, threshold;
 
-    flush(address);
-    timing_high = timed_load(address);
-    printf("%lu\n", timing_high);
+    maccess(address);
     timing_low = timed_load(address);
     printf("%lu\n", timing_low);
     flush(address);
@@ -70,21 +68,7 @@ int main()
     assert(timing_high > timing_low);
 
     threshold = (timing_high + timing_low) / 2;
-
     printf("threshold: %lu\n", threshold);
-
-    // size_t done = 0;
-    // pthread_t do_stuff;
-
-    // pthread_create(&do_stuff, NULL, calculate, &done);
-    // while (!done) {
-    //     flush(address);
-    //     uint64_t timing = timed_load(address);
-    //     if (timing > threshold) {
-    //         printf("%lu: %p\n", timing, address);
-    //     }
-    // }
-    // pthread_join(do_stuff, NULL);
 
     return 0;
 }
