@@ -9,7 +9,7 @@
 #define SIZE            16384
 #define SAMPLE_SIZE     10000
 #define RUNS            10000
-#define EVICTION_SIZE   8192
+#define EVICTION_SIZE   16384
 // make data span over exactly 4 pages (a 4KiB))
 char __attribute__((aligned(4096))) data[4096 * 4];
 char __attribute__((aligned(4096))) tmp[EVICTION_SIZE];
@@ -142,7 +142,6 @@ int main()
             maccess(addresses_tmp[j]);
         }
         while (!done) {
-            // sched_yield();
             sample_t timing = timed_load(addresses_data[4096]);
             for (int j = 0; j < EVICTION_SIZE; j++) {
                 maccess(addresses_tmp[j]);
