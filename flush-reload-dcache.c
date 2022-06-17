@@ -135,22 +135,22 @@ int main()
     // victim thread
     pthread_t victim;
 
-    size_t done1 = 0;
-    size_t done2 = 0;
-    size_t done3 = 0;
-    size_t done4 = 0;
-    size_t done5 = 0;
-    size_t done6 = 0;
-    size_t done7 = 0;
-    size_t done8 = 0;
-    size_t done9 = 0;
+    // size_t done1 = 0;
+    // size_t done2 = 0;
+    // size_t done3 = 0;
+    // size_t done4 = 0;
+    // size_t done5 = 0;
+    // size_t done6 = 0;
+    // size_t done7 = 0;
+    // size_t done8 = 0;
+    // size_t done9 = 0;
 
     // observing data[0]
     FILE* data_0 = fopen("data_0.csv", "w");
     int k = 0;
     for (size_t i = 0; i < RUNS; i++) {
         size_t done = 0;
-        // pthread_create(&victim, NULL, calculate, &done);
+        pthread_create(&victim, NULL, calculate, &done);
         uint64_t start = rdtsc();
         for (int j = 0; j < EVICTION_SIZE; j++) {
             maccess(addresses_tmp[j]);
@@ -166,7 +166,7 @@ int main()
             if (k < 100000) k++;
             else done = 1;
         }
-        // pthread_join(victim, NULL);
+        pthread_join(victim, NULL);
     }
     fclose(data_0);
 
