@@ -82,12 +82,12 @@ int main()
         if (i < SIZE / 2) {
             for (int j = i; j < i + 4096; j++)
             {
-                flush(list[j]);
+                flush(addresses[j]);
             }
         } else {
             for (int j = i - 4096; j < i; j++)
             {
-                flush(list[j]);
+                flush(addresses[j]);
             }
         }
         // should be a cache miss since everything was flushed
