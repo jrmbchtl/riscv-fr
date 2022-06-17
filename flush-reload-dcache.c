@@ -25,7 +25,6 @@ void flush(void* p) {
 void maccess(void* p) { 
     uint64_t val; 
     asm volatile("ld %0, %1\n" :"=r" (val) : "m"(p):); 
-    val; 
 }
 
 uint64_t timed_load(void* p) { 
