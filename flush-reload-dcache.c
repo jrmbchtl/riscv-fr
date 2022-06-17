@@ -139,7 +139,7 @@ int main()
             maccess(addresses_tmp[j]);
         }
         while (!done) {
-            sample_t timing = timed_load(addresses_data[0]);
+            sample_t timing = timed_load(addresses_data[4096]);
             for (int j = 0; j < 4096; j++) {
                 maccess(addresses_tmp[j]);
             }
