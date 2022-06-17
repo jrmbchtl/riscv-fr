@@ -66,13 +66,13 @@ int main()
     memset(data, 0, SIZE);
     memset(tmp, 0, 4096);
     void* addresses[SIZE];
-    // void* addresses_tmp[4096];
+    void* addresses_tmp[4096];
     for (size_t i=0; i<SIZE; i++) {
         addresses[i] = &data[i];
     }
-    // for (size_t i=0; i<SIZE; i++) {
-    //     addresses_tmp[i] = &tmp[i];
-    // }
+    for (size_t i=0; i<SIZE; i++) {
+        addresses_tmp[i] = &tmp[i];
+    }
 
     // timings for cache hit/cache miss
     uint64_t timing_low, timing_high;
@@ -87,7 +87,7 @@ int main()
     for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j < 4096; j++)
         {
-            maccess(&tmp[j]);
+            maccess(addresses_tmp[j]);
         }
 
         // should be a cache miss since everything was flushed
