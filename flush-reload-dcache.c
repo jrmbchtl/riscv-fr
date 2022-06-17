@@ -9,6 +9,7 @@
 #define SIZE 16384
 // make data span over exactly 4 pages (a 4KiB))
 char __attribute__((aligned(4096))) data[4096 * 4];
+char __attribute__((aligned(4096))) tmp[4096 * 4];
 
 // funtcion equivalent to rdtsc on x86, but implemented on RISC-V
 uint64_t rdtsc() { 
@@ -63,9 +64,14 @@ int main()
     size_t index = 2048;
     // avoid lazy allocation
     memset(data, 0, SIZE);
+    memset(tmp, 0, SIZE);
     void* addresses[SIZE];
+    void* addresses_tmp[SIZE];
     for (size_t i=0; i<SIZE; i++) {
         addresses[i] = &data[i];
+    }
+    for (size_t i=0; i<SIZE; i++) {
+        addresses_tmp[i] = &tmp[i];
     }
     void* tmp;
 
@@ -80,19 +86,11 @@ int main()
     printf("This should be a cache hit:  %lu\n", timing_low);
 
     for (int i = 0; i < SIZE; i++) {
-        if (i < SIZE) {
-            for (int j = index; j < index + 4096; j++)
-            {
-                // flush(addresses[j]);
-                maccess(addresses[j]);
-            }
-        } else {
-            for (int j = index - 4096; j < index; j++)
-            {
-                // flush(addresses[j]);
-                tmp = addresses[j];
-            }
+        for (int j = index; j < index + 4096; j++)
+        {
+            maccess(addresses[j]);
         }
+
         // should be a cache miss since everything was flushed
         timing_high = timed_load(addresses[i]);
         printf("This should be a cache miss @ %d: %lu\n", i, timing_high);
