@@ -28,15 +28,11 @@ uint64_t rdtsc() {
     return val;
 }
 
-void flush(void* p) {
-    asm volatile("fence");
-    asm volatile("mv a5, %0; .word 0x0277800b\n" : : "r"(p) :"a5","memory");
-    asm volatile("fence");
-}
-
 void maccess(void* p) { 
     uint64_t val; 
+    asm volatile("fence");
     asm volatile("ld %0, %1\n" :"=r" (val) : "m"(p):); 
+    asm volatile("fence");
 }
 
 sample_t timed_load(void* p) { 
