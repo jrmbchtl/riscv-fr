@@ -9,9 +9,10 @@
 #define SIZE            16384
 #define SAMPLE_SIZE     10000
 #define RUNS            1000
+#define EVICTION_SIZE   8192
 // make data span over exactly 4 pages (a 4KiB))
 char __attribute__((aligned(4096))) data[4096 * 4];
-char __attribute__((aligned(4096))) tmp[4096];
+char __attribute__((aligned(4096))) tmp[EVICTION_SIZE];
 
 typedef struct {
     uint64_t start;
@@ -89,11 +90,11 @@ int main()
 
     // store addresses in separate array to avoid accidental accesses
     void* addresses_data[SIZE];
-    void* addresses_tmp[4096];
+    void* addresses_tmp[EVICTION_SIZE];
     for (size_t i=0; i<SIZE; i++) {
         addresses_data[i] = &data[i];
     }
-    for (size_t i=0; i<SIZE; i++) {
+    for (size_t i=0; i<EVICTION_SIZE; i++) {
         addresses_tmp[i] = &tmp[i];
     }
 
@@ -135,12 +136,12 @@ int main()
         size_t done = 0;
         pthread_create(&victim, NULL, calculate, &done);
         uint64_t start = rdtsc();
-        for (int j = 0; j < 4096; j++) {
+        for (int j = 0; j < EVICTION_SIZE; j++) {
             maccess(addresses_tmp[j]);
         }
         while (!done) {
             sample_t timing = timed_load(addresses_data[4096]);
-            for (int j = 0; j < 4096; j++) {
+            for (int j = 0; j < EVICTION_SIZE; j++) {
                 maccess(addresses_tmp[j]);
             }
             if (timing.duration < threshold) {
