@@ -42,6 +42,21 @@ int max(int a, int b) {
     return a > b ? a : b; 
 }
 
+void flush_range(void** list, int n, size_t len) {
+    assert(len > 8192);
+    if (n < len / 2) {
+        for (int i = n; i < n + 4096; i++)
+        {
+            flush(list[i]);
+        }
+    } else {
+        for (int i = n - 4096; i < n; i++)
+        {
+            flush(list[i]);
+        }
+    }
+}
+
 int main()
 {
     size_t index = 2048;
@@ -64,9 +79,10 @@ int main()
 
     for (int i = 0; i < SIZE - 4096; i++) {
         // flush everything +/- 2048 in case element doesn't line up with cache line
-        for (int j = max(0, i); j <= min(SIZE-1, i + 4096); j++) {
-            flush(addresses[j]);
-        }
+        // for (int j = max(0, i); j <= min(SIZE-1, i + 4096); j++) {
+        //     flush(addresses[j]);
+        // }
+        flush_range(addresses, i, SIZE);
         // should be a cache miss since everything was flushed
         timing_high = timed_load(addresses[i]);
         printf("This should be a cache miss @ %d: %lu\n", i, timing_high);
