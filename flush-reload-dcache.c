@@ -72,12 +72,12 @@ uint64_t median(uint64_t* list, uint64_t size)
 void* calculate(void* d)
 {
     size_t* done = (size_t*)d;
-    // char tmp;
+    char tmp;
 
-    // for (size_t i=0; i<10; i++) {
-    //     usleep(1000);
-    //     tmp = data[0];
-    // }
+    for (size_t i=0; i<10; i++) {
+        usleep(1000);
+        tmp = data[4096];
+    }
     usleep(1000);
     *done = 1;
 }
@@ -127,23 +127,8 @@ int main()
     printf("Cached: %lu\n", cached_timing);
     printf("Threshold: %lu\n", threshold);
 
-    // for (size_t i=0; i<SAMPLE_SIZE; i++) {
-    //     printf("%lu\n", uncached_timings[i]);
-    //     assert(uncached_timings[i] > threshold);
-    // }
-
     // victim thread
     pthread_t victim;
-
-    // size_t done1 = 0;
-    // size_t done2 = 0;
-    // size_t done3 = 0;
-    // size_t done4 = 0;
-    // size_t done5 = 0;
-    // size_t done6 = 0;
-    // size_t done7 = 0;
-    // size_t done8 = 0;
-    // size_t done9 = 0;
 
     // observing data[0]
     FILE* data_0 = fopen("data_0.csv", "w");
