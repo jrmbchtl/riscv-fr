@@ -73,7 +73,6 @@ int main()
     // for (size_t i=0; i<SIZE; i++) {
     //     addresses_tmp[i] = &tmp[i];
     // }
-    void* tmp;
 
     // timings for cache hit/cache miss
     uint64_t timing_low, timing_high;
