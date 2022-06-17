@@ -71,9 +71,11 @@ uint64_t median(uint64_t* list, uint64_t size)
 void* calculate(void* d)
 {
     size_t* done = (size_t*)d;
+    char tmp;
 
     for (size_t i=0; i<10; i++) {
         usleep(1000);
+        tmp = data[0];
     }
     usleep(1000);
     *done = 1;
