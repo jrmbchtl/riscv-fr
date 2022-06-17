@@ -127,9 +127,10 @@ int main()
     printf("Cached: %lu\n", cached_timing);
     printf("Threshold: %lu\n", threshold);
 
-    for (size_t i=0; i<SAMPLE_SIZE; i++) {
-        assert(uncached_timings[i] > threshold);
-    }
+    // for (size_t i=0; i<SAMPLE_SIZE; i++) {
+    //     printf("%lu\n", uncached_timings[i]);
+    //     assert(uncached_timings[i] > threshold);
+    // }
 
     // victim thread
     pthread_t victim;
