@@ -63,7 +63,7 @@ int main()
     timing_low = timed_load(&data[SIZE-1]);
     timing_low = timed_load(address);
     printf("%lu\n", timing_low);
-    for (int i = 0; i<64; i++) {
+    for (int i = 0; i<128; i++) {
         flush(&data[i]);
     }
     timing_high = timed_load(address);
