@@ -9,7 +9,7 @@
 #define SIZE            16384
 #define SAMPLE_SIZE     10000
 #define RUNS            1000
-#define EVICTION_SIZE   4096
+#define EVICTION_SIZE   8192
 // make data span over exactly 4 pages (a 4KiB))
 char __attribute__((aligned(4096))) data[4096 * 4];
 char __attribute__((aligned(4096))) tmp[EVICTION_SIZE];
