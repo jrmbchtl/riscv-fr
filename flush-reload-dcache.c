@@ -49,14 +49,6 @@ sample_t timed_load(void* p) {
     return (sample_t) {start, end-start}; 
 }
 
-int min(int a, int b) { 
-    return a < b ? a : b; 
-}
-
-int max(int a, int b) { 
-    return a > b ? a : b; 
-}
-
 // compare function for qsort
 int compare_uint64_t (const void * a, const void * b) 
 {
