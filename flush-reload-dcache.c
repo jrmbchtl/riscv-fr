@@ -7,13 +7,14 @@
 #include <unistd.h>
 
 #define SIZE 16384
+// make data span over exactly 4 pages (a 4KiB))
 char __attribute__((aligned(4096))) data[4096 * 4];
 
 // funtcion equivalent to rdtsc on x86, but implemented on RISC-V
 uint64_t rdtsc() { 
     uint64_t val; 
-    asm volatile("rdcycle %0\n" : "=r"(val)::); 
-    val; 
+    asm volatile("rdcycle %0\n" : "=r"(val)::);
+    return val;
 }
 
 void flush(void* p) {
@@ -23,7 +24,6 @@ void flush(void* p) {
 void maccess(void* p) { 
     uint64_t val; 
     asm volatile("ld %0, %1\n" :"=r" (val) : "m"(p):); 
-    val; 
 }
 
 uint64_t timed_load(void* p) { 
