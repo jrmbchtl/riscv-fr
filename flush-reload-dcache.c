@@ -36,7 +36,7 @@ uint64_t timed_load(void* p) {
 
 int main()
 {
-    size_t index = 64;
+    size_t index = 1024;
     // avoid lazy allocation
     memset(data, 0, SIZE);
     void* addresses[SIZE];
@@ -46,7 +46,7 @@ int main()
 
     // timings for cache hit/cache miss
     uint64_t timing_low, timing_high;
-    // needed to put all necessary function into i-cache
+    // needed to put all necessary functions into i-cache
     timing_low = timed_load(&data[SIZE-1]);
     // put data[0] into d-cache
     maccess(addresses[0]);
@@ -55,7 +55,7 @@ int main()
     printf("This should be a cache hit:  %lu\n", timing_low);
 
     // flush everything +/- 64 in case element doesn't line up with cache line
-    for (int i = 0; i<128; i++) {
+    for (int i = 0; i<2048; i++) {
         flush(addresses[i]);
     }
     // should be a cache miss since everything was flushed
