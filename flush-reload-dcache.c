@@ -64,7 +64,7 @@ int main()
 
     for (int i = 0; i < SIZE; i++) {
         // flush everything +/- 2048 in case element doesn't line up with cache line
-        for (int i = index; i < min(SIZE-1, index + 2048); i++) {
+        for (int i = index; i < min(SIZE-1, index + 4096); i++) {
             flush(addresses[i]);
         }
         // should be a cache miss since everything was flushed
