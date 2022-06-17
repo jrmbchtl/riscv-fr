@@ -55,7 +55,7 @@ uint64_t median(uint64_t* list, uint64_t size)
 int main()
 {
     // avoid lazy allocation
-    memset(data, 0, SIZE);
+    // memset(data, 0, SIZE);
     void* addresses[SIZE];
     for (size_t i=0; i<SIZE; i++) {
         addresses[i] = &(data[i]);
