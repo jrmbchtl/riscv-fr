@@ -45,6 +45,7 @@ int max(int a, int b) {
 void flush_range(void** list, int n, size_t len) {
     assert(len > 8192);
     if (n < len / 2) {
+        printf("%d, %d\n", n, n+2048);
         for (int i = n; i < n + 4096; i++)
         {
             flush(list[i]);
