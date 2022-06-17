@@ -77,6 +77,7 @@ void* calculate(void* d)
     for (size_t i=0; i<10; i++) {
         usleep(1000);
         maccess(tmp);
+        sched_yield();
     }
     usleep(1000);
     *done = 1;
