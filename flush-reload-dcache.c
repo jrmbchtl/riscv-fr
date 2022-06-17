@@ -81,7 +81,7 @@ int main()
 
     for (int i = 0; i < SIZE; i++) {
         if (i < SIZE) {
-            for (int j = index; j < index + 8192; j++)
+            for (int j = index; j < index + 4096; j++)
             {
                 // flush(addresses[j]);
                 maccess(addresses[j]);
