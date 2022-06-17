@@ -6,7 +6,8 @@
 #include <string.h>
 #include <unistd.h>
 
-#define SIZE 16384
+#define SIZE            16384
+#define SAMPLE_SIZE     10000
 // make data span over exactly 4 pages (a 4KiB))
 char __attribute__((aligned(4096))) data[4096 * 4];
 char __attribute__((aligned(4096))) tmp[4096];
@@ -43,60 +44,74 @@ int max(int a, int b) {
     return a > b ? a : b; 
 }
 
-void flush_range(void** list, int n, size_t len) {
-    assert(len > 8192);
-    if (n < len / 2) {
-        printf("%d, %d\n", n, n+4096);
-        for (int i = n; i < n + 4096; i++)
-        {
-            flush(list[i]);
-        }
-    } else {
-        for (int i = n - 4096; i < n; i++)
-        {
-            flush(list[i]);
-        }
-    }
+// compare function for qsort
+int compare_uint64_t (const void * a, const void * b) 
+{
+   return ( *(int*)a - *(int*)b );
+}
+
+// returns the median of a list given a list and its length
+// works by sorting the list and returning the middle element
+uint64_t median(uint64_t* list, uint64_t size)
+{
+    uint64_t* sorted = malloc(size * sizeof(uint64_t));
+    memcpy(sorted, list, size * sizeof(uint64_t));
+    qsort(sorted, size, sizeof(uint64_t), compare_uint64_t);
+    uint64_t median = sorted[size / 2];
+    free(sorted);
+    return median;
 }
 
 int main()
 {
-    size_t index = 2048;
     // avoid lazy allocation
     memset(data, 0, SIZE);
     memset(tmp, 0, 4096);
-    void* addresses[SIZE];
+
+    // store addresses in separate array to avoid accidental accesses
+    void* addresses_data[SIZE];
     void* addresses_tmp[4096];
     for (size_t i=0; i<SIZE; i++) {
-        addresses[i] = &data[i];
+        addresses_data[i] = &data[i];
     }
     for (size_t i=0; i<SIZE; i++) {
         addresses_tmp[i] = &tmp[i];
     }
 
-    // timings for cache hit/cache miss
-    uint64_t timing_low, timing_high;
+    // get threhold for cache hit/miss
+    uint64_t cached_timings[SAMPLE_SIZE];
+    uint64_t uncached_timings[SAMPLE_SIZE];
+    
     // needed to put all necessary functions into i-cache
-    timing_low = timed_load(&data[SIZE-1]);
-    // put data[0] into d-cache
-    maccess(addresses[0]);
-    // should be a cache hit
-    timing_low = timed_load(addresses[index]);
-    printf("This should be a cache hit:  %lu\n", timing_low);
+    timed_load(&data[SIZE-1]);
+    for (size_t i=0; i<SAMPLE_SIZE; i++) {
+        cached_timings[i] = timed_load(addresses_data[i % SIZE]);
+    }
 
-    for (int i = 0; i < SIZE; i++) {
+    // needed to put all necessary functions into i-cache
+    timed_load(&data[SIZE-1]);
+    // put data[0] into d-cache
+    maccess(addresses_data[0]);
+    // measure cache hits
+    for (size_t i=0; i<SAMPLE_SIZE; i++) {
+        cached_timings[i] = timed_load(addresses_data[i]);
+    }
+
+    // measure cache misses
+    for (size_t i=0; i<SAMPLE_SIZE; i++) {
         for (int j = 0; j < 4096; j++)
         {
             maccess(addresses_tmp[j]);
         }
-
-        // should be a cache miss since everything was flushed
-        timing_high = timed_load(addresses[i]);
-        // printf("This should be a cache miss @ %d: %lu\n", i, timing_high);
-        assert(timing_high > timing_low);
-        assert(timing_high > 100);
+        uncached_timings[i] = timed_load(addresses_data[i]);
     }
-    printf("This should be a cache miss: %lu\n", timing_high);
+
+    uint64_t cached_timing = median(cached_timings, SAMPLE_SIZE);
+    uint64_t uncached_timing = median(uncached_timings, SAMPLE_SIZE);
+    uint64_t threshold = (cached_timing + uncached_timing) / 2;
+    printf("Uncached: %lu\n", uncached_timing);
+    printf("Cached: %lu\n", cached_timing);
+    printf("Threshold: %lu\n", threshold);   
 
     return 0;
 }
