@@ -135,7 +135,8 @@ int main()
     int k = 0;
     for (size_t i = 0; i < RUNS; i++) {
         size_t done = 0;
-        // pthread_create(&victim, NULL, calculate, &done);
+        size_t done2 = 0;
+        pthread_create(&victim, NULL, calculate, &done2);
         uint64_t start = rdtsc();
         for (int j = 0; j < EVICTION_SIZE; j++) {
             maccess(addresses_tmp[j]);
@@ -151,7 +152,7 @@ int main()
             if (k < 100000) k++;
             else done = 1;
         }
-        // pthread_join(victim, NULL);
+        pthread_join(victim, NULL);
     }
     fclose(data_0);
 
