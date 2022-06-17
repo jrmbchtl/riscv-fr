@@ -8,9 +8,15 @@
 
 #define SIZE            16384
 #define SAMPLE_SIZE     10000
+#define RUNS            1000
 // make data span over exactly 4 pages (a 4KiB))
 char __attribute__((aligned(4096))) data[4096 * 4];
 char __attribute__((aligned(4096))) tmp[4096];
+
+typedef struct {
+    uint64_t start;
+    uint64_t duration;
+} sample_t;
 
 // funtcion equivalent to rdtsc on x86, but implemented on RISC-V
 uint64_t rdtsc() { 
@@ -28,12 +34,12 @@ void maccess(void* p) {
     asm volatile("ld %0, %1\n" :"=r" (val) : "m"(p):); 
 }
 
-uint64_t timed_load(void* p) { 
+sample_t timed_load(void* p) { 
     uint64_t start, end; 
     start = rdtsc(); 
     maccess(p); 
     end = rdtsc(); 
-    return end-start; 
+    return (sample_t) {start, end-start}; 
 }
 
 int min(int a, int b) { 
@@ -62,6 +68,17 @@ uint64_t median(uint64_t* list, uint64_t size)
     return median;
 }
 
+void* calculate(void* d)
+{
+    size_t* done = (size_t*)d;
+
+    for (size_t i=0; i<10; i++) {
+        usleep(1000);
+    }
+    usleep(1000);
+    *done = 1;
+}
+
 int main()
 {
     // avoid lazy allocation
@@ -81,12 +98,6 @@ int main()
     // get threhold for cache hit/miss
     uint64_t cached_timings[SAMPLE_SIZE];
     uint64_t uncached_timings[SAMPLE_SIZE];
-    
-    // needed to put all necessary functions into i-cache
-    timed_load(&data[SIZE-1]);
-    for (size_t i=0; i<SAMPLE_SIZE; i++) {
-        cached_timings[i] = timed_load(addresses_data[i % SIZE]);
-    }
 
     // needed to put all necessary functions into i-cache
     timed_load(&data[SIZE-1]);
@@ -94,7 +105,7 @@ int main()
     maccess(addresses_data[0]);
     // measure cache hits
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
-        cached_timings[i] = timed_load(addresses_data[i]);
+        cached_timings[i] = timed_load(addresses_data[i]).duration;
     }
 
     // measure cache misses
@@ -103,7 +114,7 @@ int main()
         {
             maccess(addresses_tmp[j]);
         }
-        uncached_timings[i] = timed_load(addresses_data[i]);
+        uncached_timings[i] = timed_load(addresses_data[i]).duration;
     }
 
     uint64_t cached_timing = median(cached_timings, SAMPLE_SIZE);
@@ -111,7 +122,32 @@ int main()
     uint64_t threshold = (cached_timing + uncached_timing) / 2;
     printf("Uncached: %lu\n", uncached_timing);
     printf("Cached: %lu\n", cached_timing);
-    printf("Threshold: %lu\n", threshold);   
+    printf("Threshold: %lu\n", threshold);
+
+    // victim thread
+    pthread_t victim;
+
+    // observing data[0]
+    FILE* data_0 = fopen("data_0.csv", "w");
+    for (size_t i = 0; i < RUNS; i++) {
+        size_t done = 0;
+        pthread_create(&victim, NULL, calculate, &done);
+        uint64_t start = rdtsc();
+        for (int j = 0; j < 4096; j++) {
+            maccess(addresses_tmp[j]);
+        }
+        while (!done) {
+            sample_t timing = timed_load(addresses_data[0]);
+            for (int j = 0; j < 4096; j++) {
+                maccess(addresses_tmp[j]);
+            }
+            if (timing.duration < threshold) {
+                fprintf(data_0, "%lu\n", timing.start - start);
+            }
+        }
+        pthread_join(victim, NULL);
+    }
+    fclose(data_0);
 
     return 0;
 }
