@@ -23,6 +23,7 @@ typedef struct {
 uint64_t rdtsc() { 
     uint64_t val; 
     asm volatile("rdcycle %0\n" : "=r"(val)::);
+    asm volatile("fence");
     return val;
 }
 
