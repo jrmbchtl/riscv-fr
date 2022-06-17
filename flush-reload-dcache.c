@@ -143,7 +143,7 @@ int main()
     // size_t done6 = 0;
     // size_t done7 = 0;
     // size_t done8 = 0;
-    size_t done9 = 0;
+    // size_t done9 = 0;
 
     // observing data[0]
     FILE* data_0 = fopen("data_0.csv", "w");
