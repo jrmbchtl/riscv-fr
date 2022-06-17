@@ -22,9 +22,7 @@ typedef struct {
 // funtcion equivalent to rdtsc on x86, but implemented on RISC-V
 uint64_t rdtsc() { 
     uint64_t val; 
-    asm volatile("fence");
     asm volatile("rdcycle %0\n" : "=r"(val)::);
-    asm volatile("fence");
     return val;
 }
 
