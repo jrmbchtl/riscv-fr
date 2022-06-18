@@ -65,8 +65,6 @@ int main()
     uint64_t cached_timing[PRIME_RUNS];
     uint64_t uncached_timing[PRIME_RUNS];
 
-    timed_load(&data[SIZE-1]);
-    // put data[0] into d-cache
     maccess(addresses[0]);
 
     for (int i = 0; i < PRIME_RUNS; i++) {
