@@ -45,10 +45,9 @@ void* calculate(void* d) {
     void* address = &data[0];
 
     usleep(1000);
-    for (int i = 0; i < 10; i++) {
-        maccess(address);
-        usleep(1000);
-    }
+    maccess(address);
+    usleep(1000);
+    maccess(address);
     usleep(1000);
 
     *done = 1;
