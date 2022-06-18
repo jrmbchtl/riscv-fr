@@ -8,8 +8,14 @@
 
 #define SIZE        16384
 #define PRIME_RUNS  100
+#define RUNS        1000
 // make data span over exactly 4 pages (a 4K))
 char __attribute__((aligned(4096))) data[4096 * 4];
+
+typedef struct {
+    uint64_t start;
+    uint64_t duration;
+} sample_t;
 
 // funtcion equivalent to rdtsc on x86, but implemented on RISC-V
 uint64_t rdtsc() { 
@@ -24,22 +30,30 @@ void flush(void* p) {
 
 void maccess(void* p) {
     *(volatile char*)p; 
-    // uint64_t val; 
-    // asm volatile("ld %0, %1\n" :"=r" (val) : "m"(p):); 
 }
 
-uint64_t timed_load(void* p) { 
+sample_t timed_load(void* p) { 
     uint64_t start, end; 
     start = rdtsc(); 
     maccess(p); 
     end = rdtsc(); 
-    return end-start; 
+    return (sample_t) {start, end - start};
+}
+
+void* calculate(void* d) {
+    size_t done = 0;
+
+    usleep(1000);
+    usleep(1000);
+
+    *done = 1;
 }
 
 int compare_uint64_t (const void * a, const void * b) 
 {
    return ( *(int*)a - *(int*)b );
 }
+
 
 // returns the median of a list given a list and its length
 // works by sorting the list and returning the middle element
@@ -83,6 +97,28 @@ int main()
     printf("cached median: %lu\n", cached_median);
     printf("uncached median: %lu\n", uncached_median);
     printf("threshold: %lu\n", threshold);
+
+    // focus data[0]
+    // victim thread
+    pthread_t victim;
+    flush(addresses[0]);
+    FILE* data_0 = fopen("data_0.csv", "w");
+    for (int i = 0; i < RUNS; i++) {
+        size_t done = 0;
+        pthread_create(&victim, NULL, calculate, &done);
+        
+        while(!done) {
+            sample_t timing = timed_load(addresses[0]);
+            uint64_t start =- rdtsc();
+            flush(addresses[0]);
+
+            if (timing.duration > threshold) {
+                fprintf(data_0, "%lu\n", timing.start - start);
+            }
+        }
+        pthread_join(victim, NULL);
+    }
+    fclose(data_0);
 
     return 0;
 }
