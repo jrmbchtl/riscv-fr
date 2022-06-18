@@ -44,6 +44,10 @@ void* calculate(void* d) {
     size_t* done = (size_t*)d;
 
     usleep(1000);
+    for (int i = 0; i < 10; i++) {
+        maccess(&data[0]);
+        usleep(1000);
+    }
     usleep(1000);
 
     *done = 1;
