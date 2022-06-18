@@ -42,7 +42,7 @@ sample_t timed_load(void* p) {
 
 void* calculate(void* d) {
     size_t* done = (size_t*)d;
-    void* address = &data[4096];
+    void* address = &data[1024];
 
     usleep(1000);
     maccess(address);
