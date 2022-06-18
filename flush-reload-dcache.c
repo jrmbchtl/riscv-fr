@@ -22,9 +22,10 @@ void flush(void* p) {
     asm volatile("mv a5, %0; .word 0x0277800b\n" : : "r"(p) :"a5","memory");
 }
 
-void maccess(void* p) { 
-    uint64_t val; 
-    asm volatile("ld %0, %1\n" :"=r" (val) : "m"(p):); 
+void maccess(void* p) {
+    *(volatile char*)p; 
+    // uint64_t val; 
+    // asm volatile("ld %0, %1\n" :"=r" (val) : "m"(p):); 
 }
 
 uint64_t timed_load(void* p) { 
@@ -55,7 +56,7 @@ uint64_t median(uint64_t* list, uint64_t size)
 int main()
 {
     // avoid lazy allocation
-    // memset(data, 0, SIZE);
+    memset(data, 0, SIZE);
     void* addresses[SIZE];
     for (size_t i=0; i<SIZE; i++) {
         addresses[i] = &(data[i]);
