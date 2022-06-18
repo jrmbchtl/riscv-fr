@@ -41,7 +41,7 @@ sample_t timed_load(void* p) {
 }
 
 void* calculate(void* d) {
-    size_t done = 0;
+    size_t* done = (size_t*)d;
 
     usleep(1000);
     usleep(1000);
@@ -82,12 +82,12 @@ int main()
     maccess(addresses[0]);
 
     for (int i = 0; i < PRIME_RUNS; i++) {
-        cached_timing[i] = timed_load(addresses[0]);
+        cached_timing[i] = timed_load(addresses[0]).duration;
     }
 
     for(int i = 0; i < PRIME_RUNS; i++) {
         flush(addresses[0]);
-        uncached_timing[i] = timed_load(addresses[0]);
+        uncached_timing[i] = timed_load(addresses[0]).duration;
     }
 
     uint64_t cached_median = median(cached_timing, PRIME_RUNS);
