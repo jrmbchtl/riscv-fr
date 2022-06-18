@@ -112,7 +112,7 @@ int main()
             uint64_t start =- rdtsc();
             flush(addresses[0]);
 
-            if (timing.duration > threshold) {
+            if (timing.duration < threshold) {
                 fprintf(data_0, "%lu\n", timing.start - start);
             }
         }
