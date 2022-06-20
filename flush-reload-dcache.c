@@ -48,10 +48,12 @@ void* calculate(void* d) {
     flush(address_0);
     flush(address_1);
 
-    usleep(1000);
-    maccess(address_0);
-    usleep(1000);
-    maccess(address_1);
+    for (int i = 0; i < 10; i++) {
+        usleep(1000);
+        maccess(address_0);
+        usleep(1000);
+        maccess(address_1);
+    }
     usleep(1000);
 
     *done = 1;
