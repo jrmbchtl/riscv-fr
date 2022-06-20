@@ -108,6 +108,7 @@ int main()
 
     // focus data[0]
     // victim thread
+    printf("Observing data[0]\n");
     pthread_t victim;
     flush(addresses[0 * CACHE_LINE_SIZE]);
     FILE* data_0 = fopen("data_0.csv", "w");
@@ -127,7 +128,9 @@ int main()
         pthread_join(victim, NULL);
     }
     fclose(data_0);
+    printf("Observing data[0] done\n");
 
+    printf("Observing data[64]\n");
     flush(addresses[1 * CACHE_LINE_SIZE]);
     FILE* data_1 = fopen("data_1.csv", "w");
     for (int i = 0; i < RUNS; i++) {
@@ -146,6 +149,7 @@ int main()
         pthread_join(victim, NULL);
     }
     fclose(data_1);
+    printf("Observing data[64] done\n");
 
     return 0;
 }
