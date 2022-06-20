@@ -128,7 +128,6 @@ int main()
     }
     fclose(data_0);
 
-    pthread_t victim;
     flush(addresses[1 * CACHE_LINE_SIZE]);
     FILE* data_1 = fopen("data_1.csv", "w");
     for (int i = 0; i < RUNS; i++) {
