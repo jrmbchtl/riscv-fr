@@ -117,10 +117,12 @@ int main()
     for (int i = 0; i < RUNS; i++) {
         size_t done = 0;
         pthread_create(&victim, NULL, calculate, &done);
+        uint64_t start = rdtsc();
+        flush(addresses[0 * CACHE_LINE_SIZE]);
         
         while(!done) {
             sample_t timing = timed_load(addresses[0 * CACHE_LINE_SIZE]);
-            uint64_t start = rdtsc();
+            
             flush(addresses[0 * CACHE_LINE_SIZE]);
 
             if (timing.duration < threshold) {
@@ -138,10 +140,12 @@ int main()
     for (int i = 0; i < RUNS; i++) {
         size_t done = 0;
         pthread_create(&victim, NULL, calculate, &done);
+        uint64_t start = rdtsc();
+        flush(addresses[0 * CACHE_LINE_SIZE]);
         
         while(!done) {
             sample_t timing = timed_load(addresses[1 * CACHE_LINE_SIZE]);
-            uint64_t start = rdtsc();
+            
             flush(addresses[1 * CACHE_LINE_SIZE]);
 
             if (timing.duration < threshold) {
