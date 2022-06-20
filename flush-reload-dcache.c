@@ -120,7 +120,7 @@ int main()
         
         while(!done) {
             sample_t timing = timed_load(addresses[0 * CACHE_LINE_SIZE]);
-            uint64_t start =- rdtsc();
+            uint64_t start = rdtsc();
             flush(addresses[0 * CACHE_LINE_SIZE]);
 
             if (timing.duration < threshold) {
@@ -141,7 +141,7 @@ int main()
         
         while(!done) {
             sample_t timing = timed_load(addresses[1 * CACHE_LINE_SIZE]);
-            uint64_t start =- rdtsc();
+            uint64_t start = rdtsc();
             flush(addresses[1 * CACHE_LINE_SIZE]);
 
             if (timing.duration < threshold) {
