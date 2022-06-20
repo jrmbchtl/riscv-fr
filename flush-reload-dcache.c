@@ -6,9 +6,10 @@
 #include <string.h>
 #include <unistd.h>
 
-#define SIZE        16384
-#define PRIME_RUNS  100
-#define RUNS        10000
+#define SIZE            16384
+#define PRIME_RUNS      100
+#define RUNS            10000
+#define CACHE_LINE_SIZE 64
 // make data span over exactly 4 pages (a 4K))
 char __attribute__((aligned(4096))) data[4096 * 4];
 
@@ -42,12 +43,15 @@ sample_t timed_load(void* p) {
 
 void* calculate(void* d) {
     size_t* done = (size_t*)d;
-    void* address = &data[63];
+    void* address_0 = &data[0];
+    void* address_1 = &data[1 * CACHE_LINE_SIZE];
+    flush(address_0);
+    flush(address_1);
 
     usleep(1000);
-    maccess(address);
+    maccess(address_0);
     usleep(1000);
-    maccess(address);
+    maccess(address_1);
     usleep(1000);
 
     *done = 1;
@@ -105,16 +109,16 @@ int main()
     // focus data[0]
     // victim thread
     pthread_t victim;
-    flush(addresses[0]);
+    flush(addresses[0 * CACHE_LINE_SIZE]);
     FILE* data_0 = fopen("data_0.csv", "w");
     for (int i = 0; i < RUNS; i++) {
         size_t done = 0;
         pthread_create(&victim, NULL, calculate, &done);
         
         while(!done) {
-            sample_t timing = timed_load(addresses[0]);
+            sample_t timing = timed_load(addresses[0 * CACHE_LINE_SIZE]);
             uint64_t start =- rdtsc();
-            flush(addresses[0]);
+            flush(addresses[0 * CACHE_LINE_SIZE]);
 
             if (timing.duration < threshold) {
                 fprintf(data_0, "%lu\n", timing.start - start);
@@ -123,6 +127,26 @@ int main()
         pthread_join(victim, NULL);
     }
     fclose(data_0);
+
+    pthread_t victim;
+    flush(addresses[1 * CACHE_LINE_SIZE]);
+    FILE* data_1 = fopen("data_1.csv", "w");
+    for (int i = 0; i < RUNS; i++) {
+        size_t done = 0;
+        pthread_create(&victim, NULL, calculate, &done);
+        
+        while(!done) {
+            sample_t timing = timed_load(addresses[1 * CACHE_LINE_SIZE]);
+            uint64_t start =- rdtsc();
+            flush(addresses[1 * CACHE_LINE_SIZE]);
+
+            if (timing.duration < threshold) {
+                fprintf(data_1, "%lu\n", timing.start - start);
+            }
+        }
+        pthread_join(victim, NULL);
+    }
+    fclose(data_1);
 
     return 0;
 }
