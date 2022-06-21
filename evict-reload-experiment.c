@@ -130,9 +130,9 @@ int main() {
         }
 
         // print all addresses
-        // for (int i = 0; i < len; i++) {
-        //     printf("%p\n", addresses_evict[i]);
-        // }
+        for (int i = 0; i < len; i++) {
+            printf("%p\n", addresses_evict[i]);
+        }
 
         // maccess(target);
         // timing = timed_load(target).duration;
