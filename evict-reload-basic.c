@@ -154,14 +154,15 @@ int main() {
     for (int i = 0; i < len; i++) {
         maccess(addresses_evict[i]);
     }
+
+    new_timing = timed_load(target).duration;
+    printf("%lu\n", new_timing);
+
     for (int i = 0; i < 4096; i++) {
         if (addresses_evict[i] == &eviction_data[i * 64]) {
             printf("%d\n", i);
         }
     }
-
-    new_timing = timed_load(target).duration;
-    printf("%lu\n", new_timing);
 
     return 0;
 }
