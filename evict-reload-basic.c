@@ -36,21 +36,6 @@ sample_t timed_load(void* p) {
     return (sample_t) {start, end - start};
 }
 
-void* pop(void** list, size_t len, size_t index) {
-    // pop item at index from list
-    void* item = list[index];
-    for (size_t i = index; i < len - 1; i++) {
-        list[i] = list[i + 1];
-    }
-    list[len - 1] = NULL;
-    return item;
-}
-
-void append(void** list, size_t len, void* item) {
-    // append item to list
-    list[len - 1] = item;
-}
-
 char eviction_test(void** list, size_t len, void* target) {
     // get reference value for cache hit
     maccess(target);
@@ -109,8 +94,8 @@ int main() {
         maccess(addresses_evict[i]);
     }
     uint64_t new_timing = timed_load(target).duration;
-    printf("%lu\n", timing);
-    printf("%lu\n", new_timing);
+    printf("reference cache hit:  %lu\n", timing);
+    printf("reference cache miss: %lu\n", new_timing);
     assert(timing < new_timing);
     assert(new_timing > 100);
     assert(timing < 100);
@@ -132,15 +117,11 @@ int main() {
             len--;
             index--;
         }
-        // printf("new index: %lu\n", index);
-        // printf("test1: %d\n", eviction_test(addresses_evict, len, target));
-        // printf("test2: %d\n", eviction_test(addresses_evict, len, target));
         if (!eviction_test(addresses_evict, len, target)) {
             printf("failed at len %lu and index %lu\n", len, index);
             return 1;
         }
     }
-    printf("new len: %lu\n", len);
 
     // print all addresses
     for (int i = 0; i < len; i++) {
@@ -149,7 +130,7 @@ int main() {
 
     maccess(target);
     timing = timed_load(target).duration;
-    printf("%lu\n", timing);
+    printf("cache hit  with eviction: %lu\n", timing);
     
     maccess(target);
     for (int i = 0; i < len; i++) {
@@ -157,15 +138,17 @@ int main() {
     }
 
     new_timing = timed_load(target).duration;
-    printf("%lu\n", new_timing);
+    printf("cache miss with evictionL: %lu\n", new_timing);
 
+    printf("needed indices: ");
     for (int i = 0; i < len; i++) {
         for (int j = 0; j < EVICT_PAGES; j++) {
             if (addresses_evict[i] == &eviction_data[j * 64]) {
-                printf("%d\n", j);
+                printf("%d ", j);
             }
         }
     }
+    printf("\n");
 
     return 0;
 }
