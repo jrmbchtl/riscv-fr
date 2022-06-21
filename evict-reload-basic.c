@@ -76,6 +76,7 @@ char eviction_test(void** list, size_t len, void* target) {
         uint64_t uncached_timing = timed_load(target).duration;
         // if timing is lower than threshold, even just once, then
         // the eviction set isn't working
+        printf("uncached timing: %lu\n", uncached_timing);
         if (uncached_timing < THRESHOLD) {
             return 0;
         }
