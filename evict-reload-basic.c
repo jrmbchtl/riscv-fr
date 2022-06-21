@@ -68,7 +68,7 @@ char eviction_test(void** list, size_t len, void* target) {
 
     // test eviction 10 times to make sure it's working and not just working at
     // random due to context switches
-    for (int j = 0; j < 10; j++) {
+    for (int j = 0; j < 100; j++) {
         maccess(target);
         for (int i = 0; i < len; i++) {
             maccess(list[i]);
