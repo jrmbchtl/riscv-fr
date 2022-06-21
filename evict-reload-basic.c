@@ -110,9 +110,9 @@ int main() {
         len--;
         char test = eviction_test(addresses_evict, len, target);
         if (!test) {
-            append(addresses_evict, len, tmp);
             len++;
             index++;
+            append(addresses_evict, len, tmp);
         }
         printf("1\n");
         printf("new len: %lu\n", len);
