@@ -102,6 +102,10 @@ int main() {
 
     for (int k = 0; k < 128; k++) {
         target = &data[k * 64];
+        for (int i = 0; i < EVICT_PAGES; i++) {
+            addresses_evict[i] = &eviction_data[i * 64];
+        }
+
         size_t len = EVICT_PAGES;
         int index = EVICT_PAGES - 1;
         while (index >= 0) {
