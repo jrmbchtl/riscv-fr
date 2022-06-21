@@ -9,7 +9,7 @@
 #define SIZE            16384
 #define THRESHOLD       100
 char __attribute__((aligned(4096))) data[4096 * 4];
-char __attribute__((aligned(4096))) eviction_data[4096 * 64];
+char __attribute__((aligned(4096))) eviction_data[512 * 64];
 
 typedef struct {
     uint64_t start;
