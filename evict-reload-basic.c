@@ -158,10 +158,13 @@ int main() {
     new_timing = timed_load(target).duration;
     printf("%lu\n", new_timing);
 
-    for (int i = 0; i < 4096; i++) {
-        if (addresses_evict[i] == &eviction_data[i * 64]) {
-            printf("%d\n", i);
+    for (int i = 0; i < len; i++) {
+        for (int j = 0; j < 4096; j++) {
+            if (addresses_evict[i] == &eviction_data[j * 64]) {
+                printf("%d\n", j);
+            }
         }
+        
     }
 
     return 0;
