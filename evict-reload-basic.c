@@ -51,15 +51,12 @@ void append(void** list, size_t len, void* item) {
 }
 
 char eviction_test(void** list, size_t len, void* target) {
-    printf("2\n");
     maccess(target);
     uint64_t cached_timing = timed_load(target).duration;
-    printf("3\n");
     if (cached_timing > THRESHOLD) {
         printf("no cache hit after maccess\n");
         return 0;
     }
-    printf("4\n");
 
     for (int i = 0; i < len; i++) {
         maccess(list[i]);
@@ -70,7 +67,6 @@ char eviction_test(void** list, size_t len, void* target) {
         printf("cache hit after eviction\n");
         return 0;
     }
-    printf("6\n");
 
     return 1;
 }
@@ -114,10 +110,14 @@ int main() {
             index++;
             append(addresses_evict, len, tmp);
         }
-        printf("1\n");
         printf("new len: %lu\n", len);
         printf("current index: %lu\n", index);
         printf("test is working: %d\n", eviction_test(addresses_evict, len, target));
+    }
+
+    // print all addresses
+    for (int i = 0; i < len; i++) {
+        printf("%p\n", addresses_evict[i]);
     }
 
     return 0;
