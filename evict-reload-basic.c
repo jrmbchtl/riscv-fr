@@ -127,11 +127,14 @@ int main() {
             index++;
             // printf("revert\n");
         }
-        printf("new index: %lu\n", index);
+        // printf("new index: %lu\n", index);
         // printf("test1: %d\n", eviction_test(addresses_evict, len, target));
         // printf("test2: %d\n", eviction_test(addresses_evict, len, target));
         maccess(target);
-        assert(eviction_test(addresses_evict, len, target));
+        if (!eviction_test(addresses_evict, len, target)) {
+            printf("failed at len %lu and index %lu\n", len, index);
+            return 1;
+        }
     }
     printf("new len: %lu\n", len);
 
