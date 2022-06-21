@@ -119,14 +119,14 @@ int main() {
     while (index < len) {
         void* tmp = pop(addresses_evict, len, index);
         len--;
-        char test = eviction_test(addresses_evict, len, target) + eviction_test(addresses_evict, len, target);
-        if (test < 2) {
+        char test = eviction_test(addresses_evict, len, target);
+        if (!test) {
             len++;
+            addresses_evict[len - 1] = addresses_evict[index];
+            addresses_evict[index] = tmp;
             index++;
-            append(addresses_evict, len, tmp);
             // printf("revert\n");
         }
-        printf("new len: %lu\n", len);
         // printf("new index: %lu\n", index);
         // printf("test1: %d\n", eviction_test(addresses_evict, len, target));
         // printf("test2: %d\n", eviction_test(addresses_evict, len, target));
