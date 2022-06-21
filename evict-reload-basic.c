@@ -150,6 +150,7 @@ int main() {
     timing = timed_load(target).duration;
     printf("%lu\n", timing);
     
+    maccess(target);
     for (int i = 0; i < len; i++) {
         maccess(addresses_evict[i]);
     }
