@@ -100,55 +100,58 @@ int main() {
     assert(new_timing > 100);
     assert(timing < 100);
 
-    size_t len = EVICT_PAGES;
-    int index = EVICT_PAGES - 1;
-    while (index >= 0) {
-        void* tmp = addresses_evict[index];
-        addresses_evict[index] = NULL;
-        char test = eviction_test(addresses_evict, len, target);
-        if (!test) {
-            addresses_evict[index] = tmp;
-            index--;
-        } else {
-            for (int i = index; i < len - 1; i++) {
-                addresses_evict[i] = addresses_evict[i + 1];
+    for (int k = 0; k < 128; k++) {
+        target = target = &data[k];
+        size_t len = EVICT_PAGES;
+        int index = EVICT_PAGES - 1;
+        while (index >= 0) {
+            void* tmp = addresses_evict[index];
+            addresses_evict[index] = NULL;
+            char test = eviction_test(addresses_evict, len, target);
+            if (!test) {
+                addresses_evict[index] = tmp;
+                index--;
+            } else {
+                for (int i = index; i < len - 1; i++) {
+                    addresses_evict[i] = addresses_evict[i + 1];
+                }
+                addresses_evict[len - 1] = NULL;
+                len--;
+                index--;
             }
-            addresses_evict[len - 1] = NULL;
-            len--;
-            index--;
-        }
-        if (!eviction_test(addresses_evict, len, target)) {
-            printf("failed at len %lu and index %lu\n", len, index);
-            return 1;
-        }
-    }
-
-    // print all addresses
-    for (int i = 0; i < len; i++) {
-        printf("%p\n", addresses_evict[i]);
-    }
-
-    maccess(target);
-    timing = timed_load(target).duration;
-    printf("cache hit  with eviction: %lu\n", timing);
-    
-    maccess(target);
-    for (int i = 0; i < len; i++) {
-        maccess(addresses_evict[i]);
-    }
-
-    new_timing = timed_load(target).duration;
-    printf("cache miss with evictionL: %lu\n", new_timing);
-
-    printf("needed indices: ");
-    for (int i = 0; i < len; i++) {
-        for (int j = 0; j < EVICT_PAGES; j++) {
-            if (addresses_evict[i] == &eviction_data[j * 64]) {
-                printf("%d ", j);
+            if (!eviction_test(addresses_evict, len, target)) {
+                printf("failed at len %lu and index %lu\n", len, index);
+                return 1;
             }
         }
+
+        // print all addresses
+        // for (int i = 0; i < len; i++) {
+        //     printf("%p\n", addresses_evict[i]);
+        // }
+
+        // maccess(target);
+        // timing = timed_load(target).duration;
+        // printf("cache hit  with eviction: %lu\n", timing);
+        
+        // maccess(target);
+        // for (int i = 0; i < len; i++) {
+        //     maccess(addresses_evict[i]);
+        // }
+
+        // new_timing = timed_load(target).duration;
+        // printf("cache miss with eviction: %lu\n", new_timing);
+
+        printf("needed indices for offset %d: ", k);
+        for (int i = 0; i < len; i++) {
+            for (int j = 0; j < EVICT_PAGES; j++) {
+                if (addresses_evict[i] == &eviction_data[j * 64]) {
+                    printf("%d ", j);
+                }
+            }
+        }
+        printf("\n");
     }
-    printf("\n");
 
     return 0;
 }
