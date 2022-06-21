@@ -101,7 +101,7 @@ int main() {
         addresses_evict[i] = &eviction_data[i * 64];
     }
 
-    void* target = &data[16320];
+    void* target = &data[128];
     maccess(target);
     uint64_t timing = timed_load(target).duration;
 
