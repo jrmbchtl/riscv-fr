@@ -109,7 +109,7 @@ int main() {
             len++;
             index++;
         }
-        printf("test is working: %d", eviction_test(addresses_evict, len, target));
+        printf("test is working: %d\n", eviction_test(addresses_evict, len, target));
         printf("new len: %lu\n", len);
         printf("current index: %lu\n", index);
     }
