@@ -58,14 +58,17 @@ char eviction_test(void** list, size_t len, void* target) {
         return 0;
     }
 
-    for (int i = 0; i < len; i++) {
-        maccess(list[i]);
+    for (int j = 0; j < 10; j++) {
+        for (int i = 0; i < len; i++) {
+            maccess(list[i]);
+        }
+        uint64_t uncached_timing = timed_load(target).duration;
+        if (uncached_timing < THRESHOLD) {
+            printf("cache hit after eviction\n");
+            return 0;
+        }
     }
-    uint64_t uncached_timing = timed_load(target).duration;
-    if (uncached_timing < THRESHOLD) {
-        printf("cache hit after eviction\n");
-        return 0;
-    }
+    
 
     return 1;
 }
