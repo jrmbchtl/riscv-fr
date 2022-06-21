@@ -101,7 +101,7 @@ int main() {
     assert(timing < 100);
 
     for (int k = 0; k < 128; k++) {
-        target = target = &data[k];
+        target = &data[i * 64];
         size_t len = EVICT_PAGES;
         int index = EVICT_PAGES - 1;
         while (index >= 0) {
