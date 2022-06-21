@@ -115,8 +115,8 @@ int main() {
     assert(timing < 100);
 
     size_t len = 4096;
-    size_t index = 4095;
-    while (index > 0) {
+    int index = 4095;
+    while (index >= 0) {
         void* tmp = addresses_evict[index];
         addresses_evict[index] = NULL;
         char test = eviction_test(addresses_evict, len, target);
