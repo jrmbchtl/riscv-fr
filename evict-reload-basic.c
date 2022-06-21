@@ -61,7 +61,7 @@ char eviction_test(void** list, size_t len, void* target) {
         }
     }
 
-    for (int j = 0; j < 100; j++) {
+    for (int j = 0; j < 10; j++) {
         for (int i = 0; i < len; i++) {
             maccess(list[i]);
         }
