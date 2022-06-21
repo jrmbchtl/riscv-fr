@@ -124,7 +124,7 @@ int main() {
             len++;
             index++;
             append(addresses_evict, len, tmp);
-            // printf("revert\n");
+            printf("revert\n");
         }
         // printf("new len: %lu\n", len);
         // printf("new index: %lu\n", index);
