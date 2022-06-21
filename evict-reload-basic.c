@@ -71,7 +71,7 @@ char eviction_test(void** list, size_t len, void* target) {
     for (int j = 0; j < 10; j++) {
         maccess(target);
         for (int i = 0; i < len; i++) {
-            maccess(list[i]);
+            if (list[i] != NULL) maccess(list[i]);
         }
         uint64_t uncached_timing = timed_load(target).duration;
         // if timing is lower than threshold, even just once, then
@@ -115,22 +115,25 @@ int main() {
     assert(timing < 100);
 
     size_t len = 4096;
-    size_t index = 0;
-    while (index < len) {
-        void* tmp = pop(addresses_evict, len, index);
-        len--;
+    size_t index = 4095;
+    while (index > 0) {
+        void* tmp = addresses_evict[index];
+        addresses_evict[index] = NULL;
         char test = eviction_test(addresses_evict, len, target);
         if (!test) {
-            len++;
-            addresses_evict[len - 1] = addresses_evict[index];
             addresses_evict[index] = tmp;
-            index++;
-            // printf("revert\n");
+            index--;
+        } else {
+            for (int i = index; i < len - 1; i++) {
+                addresses_evict[i] = addresses_evict[i + 1];
+            }
+            addresses_evict[len - 1] = NULL;
+            len--;
+            index--;
         }
         // printf("new index: %lu\n", index);
         // printf("test1: %d\n", eviction_test(addresses_evict, len, target));
         // printf("test2: %d\n", eviction_test(addresses_evict, len, target));
-        maccess(target);
         if (!eviction_test(addresses_evict, len, target)) {
             printf("failed at len %lu and index %lu\n", len, index);
             return 1;
