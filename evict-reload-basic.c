@@ -76,7 +76,7 @@ char eviction_test(void** list, size_t len, void* target) {
         uint64_t uncached_timing = timed_load(target).duration;
         // if timing is lower than threshold, even just once, then
         // the eviction set isn't working
-        printf("uncached timing: %lu\n", uncached_timing);
+        // printf("uncached timing: %lu\n", uncached_timing);
         if (uncached_timing < THRESHOLD) {
             return 0;
         }
@@ -127,8 +127,8 @@ int main() {
         }
         // printf("new len: %lu\n", len);
         // printf("new index: %lu\n", index);
-        printf("test1: %d\n", eviction_test(addresses_evict, len, target));
-        printf("test2: %d\n", eviction_test(addresses_evict, len, target));
+        // printf("test1: %d\n", eviction_test(addresses_evict, len, target));
+        // printf("test2: %d\n", eviction_test(addresses_evict, len, target));
         assert(eviction_test(addresses_evict, len, target));
     }
     printf("new len: %lu\n", len);
