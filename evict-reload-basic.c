@@ -7,9 +7,10 @@
 #include <unistd.h>
 
 #define SIZE            16384
+#define EVICT_PAGES     512
 #define THRESHOLD       100
 char __attribute__((aligned(4096))) data[4096 * 4];
-char __attribute__((aligned(4096))) eviction_data[512 * 64];
+char __attribute__((aligned(4096))) eviction_data[EVICT_PAGES * 64];
 
 typedef struct {
     uint64_t start;
@@ -90,13 +91,13 @@ int main() {
     memset(data, 0, sizeof(data));
     memset(eviction_data, 0, sizeof(eviction_data));
     void* addresses_data[SIZE];
-    void* addresses_evict[4096];
+    void* addresses_evict[EVICT_PAGES];
 
     for (int i = 0; i < SIZE; i++) {
         addresses_data[i] = &data[i];
     }
 
-    for (int i = 0; i < 4096; i++) {
+    for (int i = 0; i < EVICT_PAGES; i++) {
         addresses_evict[i] = &eviction_data[i * 64];
     }
 
@@ -104,7 +105,7 @@ int main() {
     maccess(target);
     uint64_t timing = timed_load(target).duration;
 
-    for (int i =0; i < 4096; i++) {
+    for (int i =0; i < EVICT_PAGES; i++) {
         maccess(addresses_evict[i]);
     }
     uint64_t new_timing = timed_load(target).duration;
@@ -114,8 +115,8 @@ int main() {
     assert(new_timing > 100);
     assert(timing < 100);
 
-    size_t len = 4096;
-    int index = 4095;
+    size_t len = EVICT_PAGES;
+    int index = EVICT_PAGES - 1;
     while (index >= 0) {
         void* tmp = addresses_evict[index];
         addresses_evict[index] = NULL;
@@ -159,7 +160,7 @@ int main() {
     printf("%lu\n", new_timing);
 
     for (int i = 0; i < len; i++) {
-        for (int j = 0; j < 4096; j++) {
+        for (int j = 0; j < EVICT_PAGES; j++) {
             if (addresses_evict[i] == &eviction_data[j * 64]) {
                 printf("%d\n", j);
             }
