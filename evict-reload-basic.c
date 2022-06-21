@@ -54,7 +54,7 @@ int main() {
     uint64_t tmp = target_index / 64;
     uint64_t base = target_index % 128;
     for (int i = 0; i < 4; i ++) {
-        addresses_evict[i] = &eviction_data[(base + i * 64) * 64];
+        addresses_evict[i] = &eviction_data[(base + i * 128) * 64];
     }
     maccess(target);
     uint64_t cached_timing = timed_load(target).duration;
