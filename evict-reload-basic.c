@@ -130,6 +130,7 @@ int main() {
         // printf("new index: %lu\n", index);
         // printf("test1: %d\n", eviction_test(addresses_evict, len, target));
         // printf("test2: %d\n", eviction_test(addresses_evict, len, target));
+        maccess(target);
         assert(eviction_test(addresses_evict, len, target));
     }
     printf("new len: %lu\n", len);
