@@ -49,6 +49,7 @@ int main() {
     }
 
     void* target = &data[0];
+    maccess(target);
     uint64_t timing = timed_load(target).duration;
 
     for (int i =0; i < 4096; i++) {
