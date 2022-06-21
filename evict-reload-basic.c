@@ -68,7 +68,7 @@ char eviction_test(void** list, size_t len, void* target) {
 
     // test eviction 10 times to make sure it's working and not just working at
     // random due to context switches
-    for (int j = 0; j < 100; j++) {
+    for (int j = 0; j < 10; j++) {
         maccess(target);
         for (int i = 0; i < len; i++) {
             maccess(list[i]);
@@ -76,7 +76,7 @@ char eviction_test(void** list, size_t len, void* target) {
         uint64_t uncached_timing = timed_load(target).duration;
         // if timing is lower than threshold, even just once, then
         // the eviction set isn't working
-        // printf("uncached timing: %lu\n", uncached_timing);
+        printf("uncached timing: %lu\n", uncached_timing);
         if (uncached_timing < THRESHOLD) {
             return 0;
         }
@@ -119,8 +119,8 @@ int main() {
     while (index < len) {
         void* tmp = pop(addresses_evict, len, index);
         len--;
-        char test = eviction_test(addresses_evict, len, target);
-        if (!test) {
+        char test = eviction_test(addresses_evict, len, target) + eviction_test(addresses_evict, len, target);
+        if (test < 2) {
             len++;
             index++;
             append(addresses_evict, len, tmp);
