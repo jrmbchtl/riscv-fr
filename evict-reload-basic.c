@@ -37,7 +37,7 @@ sample_t timed_load(void* p) {
     return (sample_t) {start, end - start};
 }
 
-void main() {
+int main() {
     // initialize data to avoid lazy allocation
     memset(data, 0, sizeof(data));
     memset(eviction_data, 0, sizeof(eviction_data));
@@ -60,6 +60,9 @@ void main() {
     uint64_t cached_timing = timed_load(target).duration;
     for (int i = 0; i < 4; i++) {
         maccess(addresses_evict[i]);
+    }
+    for (int i = 0; i < 4; i++) {
+        printf("%p\n", addresses_evict[i]);
     }
     uint64_t uncached_timing = timed_load(target).duration;
     printf("cached timing: %lu\n", cached_timing);
