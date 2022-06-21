@@ -111,7 +111,7 @@ int main() {
         }
         printf("new len: %lu\n", len);
         printf("new index: %lu\n", index);
-        // printf("test is working: %d\n", eviction_test(addresses_evict, len, target));
+        printf("test is working: %d\n", eviction_test(addresses_evict, len, target));
         assert(eviction_test(addresses_evict, len, target));
     }
     printf("new len: %lu\n", len);
