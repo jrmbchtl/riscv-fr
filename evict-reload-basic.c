@@ -123,14 +123,17 @@ int main() {
             index++;
             append(addresses_evict, len, tmp);
         }
+        printf("new len: %lu\n", len);
+        printf("new index: %lu\n", index);
+        printf("test: %d\n", eviction_test(addresses_evict, len, target));
         assert(eviction_test(addresses_evict, len, target));
     }
     printf("new len: %lu\n", len);
 
     // print all addresses
-    // for (int i = 0; i < len; i++) {
-    //     printf("%p\n", addresses_evict[i]);
-    // }
+    for (int i = 0; i < len; i++) {
+        printf("%p\n", addresses_evict[i]);
+    }
 
     maccess(target);
     timing = timed_load(target).duration;
