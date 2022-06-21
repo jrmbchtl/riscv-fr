@@ -51,33 +51,40 @@ void append(void** list, size_t len, void* item) {
 }
 
 char eviction_test(void** list, size_t len, void* target) {
+    // get reference value for cache hit
     maccess(target);
     uint64_t cached_timing = timed_load(target).duration;
     if (cached_timing > THRESHOLD) {
+        // it can happen that the first check fails due to context switches, so just retry
         maccess(target);
         cached_timing = timed_load(target).duration;
+        // if it happens twice in a row, something is broken
         if (cached_timing > THRESHOLD) {
             printf("no cache hit after maccess\n");
+            printf("This should never happen and if it does, your're in for some trouble\n");
             return 0;
         }
     }
 
+    // test eviction 10 times to make sure it's working and not just working at
+    // random due to context switches
     for (int j = 0; j < 10; j++) {
         for (int i = 0; i < len; i++) {
             maccess(list[i]);
         }
         uint64_t uncached_timing = timed_load(target).duration;
+        // if timing is lower than threshold, even just once, then
+        // the eviction set isn't working
         if (uncached_timing < THRESHOLD) {
-            printf("cache hit after eviction\n");
             return 0;
         }
     }
-    
 
     return 1;
 }
 
 int main() {
+    // initialize data to avoid lazy allocation
     memset(data, 0, sizeof(data));
     memset(eviction_data, 0, sizeof(eviction_data));
     void* addresses_data[SIZE];
@@ -116,17 +123,14 @@ int main() {
             index++;
             append(addresses_evict, len, tmp);
         }
-        printf("new len: %lu\n", len);
-        printf("new index: %lu\n", index);
-        printf("test is working: %d\n", eviction_test(addresses_evict, len, target));
         assert(eviction_test(addresses_evict, len, target));
     }
     printf("new len: %lu\n", len);
 
     // print all addresses
-    for (int i = 0; i < len; i++) {
-        printf("%p\n", addresses_evict[i]);
-    }
+    // for (int i = 0; i < len; i++) {
+    //     printf("%p\n", addresses_evict[i]);
+    // }
 
     maccess(target);
     timing = timed_load(target).duration;
