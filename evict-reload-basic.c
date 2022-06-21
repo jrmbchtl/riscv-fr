@@ -127,7 +127,7 @@ int main() {
             index++;
             // printf("revert\n");
         }
-        // printf("new index: %lu\n", index);
+        printf("new index: %lu\n", index);
         // printf("test1: %d\n", eviction_test(addresses_evict, len, target));
         // printf("test2: %d\n", eviction_test(addresses_evict, len, target));
         maccess(target);
