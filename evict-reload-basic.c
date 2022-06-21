@@ -61,7 +61,6 @@ char eviction_test(void** list, size_t len, void* target) {
     for (int i = 0; i < len; i++) {
         maccess(list[i]);
     }
-    printf("5\n");
     uint64_t uncached_timing = timed_load(target).duration;
     if (uncached_timing < THRESHOLD) {
         printf("cache hit after eviction\n");
@@ -110,6 +109,8 @@ int main() {
             index++;
             append(addresses_evict, len, tmp);
         }
+        printf("new len: %lu\n", len);
+        printf("new index: %lu\n", index);
         // printf("test is working: %d\n", eviction_test(addresses_evict, len, target));
         assert(eviction_test(addresses_evict, len, target));
     }
