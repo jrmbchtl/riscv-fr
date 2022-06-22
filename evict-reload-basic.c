@@ -9,7 +9,6 @@
 
 #define SIZE            16384
 #define EVICT_PAGES     512
-#define THRESHOLD       100
 char __attribute__((aligned(4096))) data[4096 * 4];
 char __attribute__((aligned(4096))) eviction_data[EVICT_PAGES * 64];
 
@@ -37,18 +36,44 @@ sample_t timed_load(void* p) {
     return (sample_t) {start, end - start};
 }
 
+uint64_t get_threshold() {
+    void* target = &data[0];
+    maccess(target);
+    uint64_t cached_timing = timed_load(target).duration;
+    if (cached_timing > THRESHOLD) {
+        // it can happen that the first check fails due to context switches, so just retry
+        maccess(target);
+        cached_timing = timed_load(target).duration;
+        // if it happens twice in a row, something is broken
+        if (cached_timing > THRESHOLD) {
+            printf("no cache hit after maccess\n");
+            printf("This should never happen and if it does, your're in for some trouble\n");
+            return 0;
+        }
+    }
+
+    for (int i = 0; i < EVICT_PAGES * 64; i+= 64) {
+        maccess(&eviction_data[i]);
+    } 
+    uint64_t uncached_timing = timed_load(target).duration;
+    return (uncached_timing + cached_timing) / 2;
+}
+
 int main() {
     // initialize data to avoid lazy allocation
     memset(data, 0, sizeof(data));
     memset(eviction_data, 0, sizeof(eviction_data));
     void* addresses_data[SIZE];
     void* addresses_evict[4];
+    uint64_t threshold = get_threshold();
+    printf("threshold: %lu\n", threshold);
 
     for (int i = 0; i < SIZE; i++) {
         addresses_data[i] = &data[i];
     }
 
     for (int k = 0; k < 128; k++) {
+        // step with cachline size
         void* target = addresses_data[k * 64];
         // uint64_t target_index = k * 64;
         // void* target = addresses_data[target_index];
