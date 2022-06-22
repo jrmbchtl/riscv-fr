@@ -36,16 +36,56 @@ sample_t timed_load(void* p) {
     return (sample_t) {start, end - start};
 }
 
+// compare function for qsort
+int compare_uint64_t (const void * a, const void * b) 
+{
+   return ( *(int*)a - *(int*)b );
+}
+
+// returns the median of a list given a list and its length
+// works by sorting the list and returning the middle element
+uint64_t median(uint64_t* list, uint64_t size)
+{
+    uint64_t* sorted = malloc(size * sizeof(uint64_t));
+    memcpy(sorted, list, size * sizeof(uint64_t));
+    qsort(sorted, size, sizeof(uint64_t), compare_uint64_t);
+    uint64_t median = sorted[size / 2];
+    free(sorted);
+    return median;
+}
+
 uint64_t get_threshold() {
     void* target = &data[0];
-    maccess(target);
-    uint64_t cached_timing = timed_load(target).duration;
+    uint64_t cached_timings[100];
+    for (int i = 0; i < 100; i++) {
+        maccess(target);
+        cached_timings[i] = timed_load(target).duration;
+    }
+    uint64_t cached_median = median(cached_timings, 100);
 
-    for (int i = 0; i < EVICT_PAGES * 64; i+= 64) {
-        maccess(&eviction_data[i]);
-    } 
-    uint64_t uncached_timing = timed_load(target).duration;
-    return (uncached_timing + cached_timing) / 2;
+    uint64_t base;
+    if (((uint64_t) target / 64) % 128 == 0) {
+        base = ((uint64_t) target / 64) % 128;
+    } else {
+        base = (((uint64_t) target / 64) + 64) % 128;
+    }
+    void* addresses_evict[4];
+    for (int i = 0; i < 4; i++) {
+        addresses_evict[i] = &eviction_data[(base + i * 128) * 64];
+    }
+    uint64_t uncached_timings[100];
+    for (int i = 0; i < 100; i++) {
+        for (int j = 0; j < 4; j++) {
+            maccess(addresses_evict[j]);
+        }
+        uncached_timings[i] = timed_load(target).duration;
+    }
+    uint64_t uncached_median = median(uncached_timings, 100);
+    printf("cached median: %lu\n", cached_median);
+    printf("uncached median: %lu\n", uncached_median);
+    return (cached_median + uncached_median) / 2;
+
+
 }
 
 int main() {
@@ -57,36 +97,36 @@ int main() {
     uint64_t threshold = get_threshold();
     printf("threshold: %lu\n", threshold);
 
-    for (int i = 0; i < SIZE; i++) {
-        addresses_data[i] = &data[i];
-    }
+    // for (int i = 0; i < SIZE; i++) {
+    //     addresses_data[i] = &data[i];
+    // }
 
-    for (int k = 0; k < 128; k++) {
-        // step with cachline size
-        void* target = addresses_data[k * 64];
-        // uint64_t target_index = k * 64;
-        // void* target = addresses_data[target_index];
-        // get down to cache line granularity
-        uint64_t tmp = ((uint64_t) target) / 64;
-        uint64_t base = tmp % 128;
-        printf("target: %p, base: %lu, tmp: %lu\n", target, base, tmp);
-        for (int i = 0; i < 4; i ++) {
-            // printf("%d\n", (base + i * 128));
-            addresses_evict[i] = &eviction_data[(base + i * 128) * 64];
-        }
-        maccess(target);
-        uint64_t cached_timing = timed_load(target).duration;
-        for (int i = 0; i < 4; i++) {
-            maccess(addresses_evict[i]);
-        }
-        uint64_t uncached_timing = timed_load(target).duration;
-        printf("cached timing: %lu\n", cached_timing);
-        printf("uncached timing: %lu\n", uncached_timing);
+    // for (int k = 0; k < 128; k++) {
+    //     // step with cachline size
+    //     void* target = addresses_data[k * 64];
+    //     // uint64_t target_index = k * 64;
+    //     // void* target = addresses_data[target_index];
+    //     // get down to cache line granularity
+    //     uint64_t tmp = ((uint64_t) target) / 64;
+    //     uint64_t base = tmp % 128;
+    //     printf("target: %p, base: %lu, tmp: %lu\n", target, base, tmp);
+    //     for (int i = 0; i < 4; i ++) {
+    //         // printf("%d\n", (base + i * 128));
+    //         addresses_evict[i] = &eviction_data[(base + i * 128) * 64];
+    //     }
+    //     maccess(target);
+    //     uint64_t cached_timing = timed_load(target).duration;
+    //     for (int i = 0; i < 4; i++) {
+    //         maccess(addresses_evict[i]);
+    //     }
+    //     uint64_t uncached_timing = timed_load(target).duration;
+    //     printf("cached timing: %lu\n", cached_timing);
+    //     printf("uncached timing: %lu\n", uncached_timing);
 
-        for (int i = 0; i < 4; i++) {
-            printf("%p\n", addresses_evict[i]);
-        }
-    }
+    //     for (int i = 0; i < 4; i++) {
+    //         printf("%p\n", addresses_evict[i]);
+    //     }
+    // }
     
 
     return 0;
