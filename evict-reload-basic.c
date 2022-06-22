@@ -55,6 +55,7 @@ int main() {
         // get down to cache line granularity
         uint64_t tmp = ((uint64_t) target) / 64;
         uint64_t base = tmp % 128;
+        printf("%d %d\n", k, base);
         for (int i = 0; i < 4; i ++) {
             // printf("%d\n", (base + i * 128));
             addresses_evict[i] = &eviction_data[(base + i * 128) * 64];
@@ -68,7 +69,7 @@ int main() {
         printf("cached timing: %lu\n", cached_timing);
         printf("uncached timing: %lu\n", uncached_timing);
 
-        printf("%p\n", addresses_evict[0]);
+        printf("%p\n",)
         for (int i = 0; i < 4; i++) {
             printf("%p\n", addresses_evict[i]);
         }
