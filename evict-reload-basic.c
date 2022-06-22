@@ -112,6 +112,7 @@ int main() {
     void* addresses_data[SIZE];
     void* addresses_evict[4];
     uint64_t threshold = get_threshold();
+    printf("threshold: %lu\n", threshold);
     
 
     // for (int i = 0; i < SIZE; i++) {
