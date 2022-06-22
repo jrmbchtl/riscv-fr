@@ -49,10 +49,11 @@ int main() {
     }
 
     for (int k = 0; k < 128; k++) {
+        void* target = addresses_data[k * 64];
         uint64_t target_index = k * 64;
         void* target = addresses_data[target_index];
         // get down to cache line granularity
-        uint64_t tmp = target_index / 64;
+        uint64_t tmp = ((uint64_t) target) / 64;
         uint64_t base = tmp % 128;
         for (int i = 0; i < 4; i ++) {
             // printf("%d\n", (base + i * 128));
@@ -66,10 +67,6 @@ int main() {
         uint64_t uncached_timing = timed_load(target).duration;
         printf("cached timing: %lu\n", cached_timing);
         printf("uncached timing: %lu\n", uncached_timing);
-
-        for (int i = 0; i < 4; i++) {
-            printf("%p\n", addresses_evict[i]);
-        }
     }
     
 
