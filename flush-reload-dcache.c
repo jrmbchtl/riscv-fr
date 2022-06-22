@@ -8,7 +8,7 @@
 
 #define SIZE            16384
 #define PRIME_RUNS      100
-#define RUNS            1000
+#define RUNS            10000
 #define CACHE_LINE_SIZE 64
 // make data span over exactly 4 pages (a 4K))
 char __attribute__((aligned(4096))) data[SIZE];
