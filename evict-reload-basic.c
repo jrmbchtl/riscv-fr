@@ -55,7 +55,7 @@ int main() {
         // get down to cache line granularity
         uint64_t tmp = ((uint64_t) target) / 64;
         uint64_t base = tmp % 128;
-        printf("%d %d\n", k, base);
+        printf("target: %p, base: %lu, tmp: %lu\n", target, base, tmp);
         for (int i = 0; i < 4; i ++) {
             // printf("%d\n", (base + i * 128));
             addresses_evict[i] = &eviction_data[(base + i * 128) * 64];
