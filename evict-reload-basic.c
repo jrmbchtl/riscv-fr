@@ -10,7 +10,7 @@
 #define SIZE            16384
 #define EVICT_PAGES     512
 #define PRIME_RUNS      100
-#define RUNS            1000
+#define RUNS            10000
 #define CACHE_LINE_SIZE 64
 char __attribute__((aligned(4096))) data[SIZE];
 char __attribute__((aligned(4096))) eviction_data[EVICT_PAGES * CACHE_LINE_SIZE];
@@ -170,8 +170,8 @@ int main() {
             sample_t timing = timed_load(addresses_data[1 * CACHE_LINE_SIZE]);
             
             evict(addresses_evict);
-
             if (timing.duration < threshold) {
+
                 fprintf(data_1, "%lu\n", timing.start - start);
             }
         }
