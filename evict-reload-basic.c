@@ -82,6 +82,22 @@ void get_eviction_set(void* target, void* eviction_set[]) {
     }
 }
 
+void* calculate(void* d) {
+    size_t* done = (size_t*)d;
+    void* address_0 = &data[0];
+    void* address_1 = &data[1 * CACHE_LINE_SIZE];
+
+    for (int i = 0; i < 10; i++) {
+        usleep(1000);
+        maccess(address_0);
+        usleep(1000);
+        maccess(address_1);
+    }
+    usleep(1000);
+
+    *done = 1;
+}
+
 uint64_t get_threshold() {
     void* target = &data[0];
     uint64_t cached_timings[100];
@@ -108,41 +124,61 @@ int main() {
     memset(data, 0, sizeof(data));
     memset(eviction_data, 0, sizeof(eviction_data));
     void* addresses_data[SIZE];
+    for (size_t i=0; i<SIZE; i++) {
+        addresses_data[i] = &(data[i]);
+    }
     void* addresses_evict[4];
     uint64_t threshold = get_threshold();
     printf("threshold: %lu\n", threshold);
+    get_eviction_set(&data[0 * CACHE_LINE_SIZE], addresses_evict);
     
+    printf("Observing data[0]\n");
+    pthread_t victim;
+    flush(addresses_data[0 * CACHE_LINE_SIZE]);
+    FILE* data_0 = fopen("data_0.csv", "w");
+    for (int i = 0; i < RUNS; i++) {
+        size_t done = 0;
+        pthread_create(&victim, NULL, calculate, &done);
+        uint64_t start = rdtsc();
+        evict(addresses_evict);
+        
+        while(!done) {
+            sample_t timing = timed_load(addresses_data[0 * CACHE_LINE_SIZE]);
+            
+            evict(addresses_evict);
 
-    // for (int i = 0; i < SIZE; i++) {
-    //     addresses_data[i] = &data[i];
-    // }
+            if (timing.duration < threshold) {
+                fprintf(data_0, "%lu\n", timing.start - start);
+            }
+        }
+        pthread_join(victim, NULL);
+    }
+    fclose(data_0);
+    printf("Observing data[0] done\n");
 
-    // for (int k = 0; k < 128; k++) {
-    //     // step with cachline size
-    //     void* target = addresses_data[k * 64];
-    //     // uint64_t target_index = k * 64;
-    //     // void* target = addresses_data[target_index];
-    //     // get down to cache line granularity
-    //     uint64_t tmp = ((uint64_t) target) / 64;
-    //     uint64_t base = tmp % 128;
-    //     printf("target: %p, base: %lu, tmp: %lu\n", target, base, tmp);
-    //     for (int i = 0; i < 4; i ++) {
-    //         // printf("%d\n", (base + i * 128));
-    //         addresses_evict[i] = &eviction_data[(base + i * 128) * 64];
-    //     }
-    //     maccess(target);
-    //     uint64_t cached_timing = timed_load(target).duration;
-    //     for (int i = 0; i < 4; i++) {
-    //         maccess(addresses_evict[i]);
-    //     }
-    //     uint64_t uncached_timing = timed_load(target).duration;
-    //     printf("cached timing: %lu\n", cached_timing);
-    //     printf("uncached timing: %lu\n", uncached_timing);
+    get_eviction_set(&data[1 * CACHE_LINE_SIZE], addresses_evict);
+    printf("Observing data[64]\n");
+    fevict(addresses_evict);
+    FILE* data_1 = fopen("data_1.csv", "w");
+    for (int i = 0; i < RUNS; i++) {
+        size_t done = 0;
+        pthread_create(&victim, NULL, calculate, &done);
+        uint64_t start = rdtsc();
+        evict(addresses_evict);
+        
+        while(!done) {
+            sample_t timing = timed_load(addresses_data[1 * CACHE_LINE_SIZE]);
+            
+            evict(addresses_evict);
 
-    //     for (int i = 0; i < 4; i++) {
-    //         printf("%p\n", addresses_evict[i]);
-    //     }
-    // }
+            if (timing.duration < threshold) {
+                fprintf(data_1, "%lu\n", timing.start - start);
+            }
+        }
+        pthread_join(victim, NULL);
+    }
+    fclose(data_1);
+    printf("Observing data[64] done\n");
     
 
     return 0;
