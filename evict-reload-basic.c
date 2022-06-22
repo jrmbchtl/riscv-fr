@@ -65,8 +65,10 @@ uint64_t get_threshold() {
 
     uint64_t base;
     if (((uint64_t) target / 64) % 128 == 0) {
+        printf("1");
         base = ((uint64_t) target / 64) % 128;
     } else {
+        printf("2");
         base = (((uint64_t) target / 64) + 64) % 128;
     }
     void* addresses_evict[4];
