@@ -69,7 +69,6 @@ int main() {
         printf("cached timing: %lu\n", cached_timing);
         printf("uncached timing: %lu\n", uncached_timing);
 
-        printf("%p\n",)
         for (int i = 0; i < 4; i++) {
             printf("%p\n", addresses_evict[i]);
         }
