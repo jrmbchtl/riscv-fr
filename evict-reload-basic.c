@@ -10,7 +10,7 @@
 #define SIZE            16384
 #define EVICT_PAGES     512
 #define PRIME_RUNS      100
-#define RUNS            10000
+#define RUNS            1000
 #define CACHE_LINE_SIZE 64
 char __attribute__((aligned(4096))) data[SIZE];
 char __attribute__((aligned(4096))) eviction_data[EVICT_PAGES * CACHE_LINE_SIZE];
@@ -180,6 +180,5 @@ int main() {
     fclose(data_1);
     printf("Observing data[64] done\n");
     
-
     return 0;
 }
