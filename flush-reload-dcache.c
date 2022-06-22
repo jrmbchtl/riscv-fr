@@ -11,7 +11,7 @@
 #define RUNS            1000
 #define CACHE_LINE_SIZE 64
 // make data span over exactly 4 pages (a 4K))
-char __attribute__((aligned(4096))) data[4096 * 4];
+char __attribute__((aligned(4096))) data[SIZE];
 
 typedef struct {
     uint64_t start;
