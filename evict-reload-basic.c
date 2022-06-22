@@ -134,7 +134,7 @@ int main() {
     
     printf("Observing data[0]\n");
     pthread_t victim;
-    flush(addresses_data[0 * CACHE_LINE_SIZE]);
+    evict(addresses_evict);
     FILE* data_0 = fopen("data_0.csv", "w");
     for (int i = 0; i < RUNS; i++) {
         size_t done = 0;
@@ -158,7 +158,7 @@ int main() {
 
     get_eviction_set(&data[1 * CACHE_LINE_SIZE], addresses_evict);
     printf("Observing data[64]\n");
-    fevict(addresses_evict);
+    evict(addresses_evict);
     FILE* data_1 = fopen("data_1.csv", "w");
     for (int i = 0; i < RUNS; i++) {
         size_t done = 0;
