@@ -55,7 +55,7 @@ int main() {
         uint64_t tmp = target_index / 64;
         uint64_t base = tmp % 128;
         for (int i = 0; i < 4; i ++) {
-            printf("%d\n", (base + i * 128));
+            // printf("%d\n", (base + i * 128));
             addresses_evict[i] = &eviction_data[(base + i * 128) * 64];
         }
         maccess(target);
