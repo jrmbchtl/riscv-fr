@@ -10,7 +10,7 @@
 #define SIZE            16384
 #define EVICT_PAGES     512
 #define PRIME_RUNS      100
-#define RUNS            5000
+#define RUNS            25000
 #define CACHE_LINE_SIZE 64
 char __attribute__((aligned(4096))) data[SIZE];
 char __attribute__((aligned(4096))) eviction_data[EVICT_PAGES * CACHE_LINE_SIZE];
