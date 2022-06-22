@@ -9,8 +9,11 @@
 
 #define SIZE            16384
 #define EVICT_PAGES     512
-char __attribute__((aligned(4096))) data[4096 * 4];
-char __attribute__((aligned(4096))) eviction_data[EVICT_PAGES * 64];
+#define PRIME_RUNS      100
+#define RUNS            1000
+#define CACHE_LINE_SIZE 64
+char __attribute__((aligned(4096))) data[SIZE];
+char __attribute__((aligned(4096))) eviction_data[EVICT_PAGES * CACHE_LINE_SIZE];
 
 typedef struct {
     uint64_t start;
@@ -41,6 +44,14 @@ int compare_uint64_t (const void * a, const void * b)
 {
    return ( *(int*)a - *(int*)b );
 }
+
+// evict by accessing all addresses in eviction_set
+// len of eviction_set has to be 4
+void evict(void* eviction_set[]) {
+    for (int i = 0; i < 4; i++) {
+        maccess(eviction_set[i]);
+    }
+} 
 
 // returns the median of a list given a list and its length
 // works by sorting the list and returning the middle element
@@ -80,28 +91,15 @@ uint64_t get_threshold() {
     }
     uint64_t cached_median = median(cached_timings, 100);
 
-    // uint64_t base;
-    // // since beginning of page can be offset, this needs to be asjusted
-    // if (((uint64_t) target / 64) % 128 == 0) {
-    //     base = ((uint64_t) target / 64) % 128;
-    // } else {
-    //     base = (((uint64_t) target / 64) + 64) % 128;
-    // }
     void* addresses_evict[4];
     get_eviction_set(target, addresses_evict);
-    // for (int i = 0; i < 4; i++) {
-    //     addresses_evict[i] = &eviction_data[(base + i * 128) * 64];
-    // }
+
     uint64_t uncached_timings[100];
     for (int i = 0; i < 100; i++) {
-        for (int j = 0; j < 4; j++) {
-            maccess(addresses_evict[j]);
-        }
+        evict(addresses_evict);
         uncached_timings[i] = timed_load(target).duration;
     }
     uint64_t uncached_median = median(uncached_timings, 100);
-    printf("cached median: %lu\n", cached_median);
-    printf("uncached median: %lu\n", uncached_median);
     return (cached_median + uncached_median) / 2;
 }
 
