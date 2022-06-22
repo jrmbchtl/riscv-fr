@@ -40,17 +40,6 @@ uint64_t get_threshold() {
     void* target = &data[0];
     maccess(target);
     uint64_t cached_timing = timed_load(target).duration;
-    if (cached_timing > THRESHOLD) {
-        // it can happen that the first check fails due to context switches, so just retry
-        maccess(target);
-        cached_timing = timed_load(target).duration;
-        // if it happens twice in a row, something is broken
-        if (cached_timing > THRESHOLD) {
-            printf("no cache hit after maccess\n");
-            printf("This should never happen and if it does, your're in for some trouble\n");
-            return 0;
-        }
-    }
 
     for (int i = 0; i < EVICT_PAGES * 64; i+= 64) {
         maccess(&eviction_data[i]);
@@ -66,7 +55,7 @@ int main() {
     void* addresses_data[SIZE];
     void* addresses_evict[4];
     uint64_t threshold = get_threshold();
-    printf("threshold: %lu\n", threshold);
+    
 
     for (int i = 0; i < SIZE; i++) {
         addresses_data[i] = &data[i];
