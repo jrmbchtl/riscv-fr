@@ -50,7 +50,7 @@ int main() {
 
     for (int k = 0; k < 128; k++) {
         uint64_t target_index = k;
-        void* target = addresses_data[target_index];
+        void* target = addresses_data[target_index * 64];
         // get down to cache line granularity
         uint64_t tmp = target_index / 64;
         uint64_t base = target_index % 128;
