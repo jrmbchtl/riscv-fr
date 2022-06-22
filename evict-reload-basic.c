@@ -54,6 +54,23 @@ uint64_t median(uint64_t* list, uint64_t size)
     return median;
 }
 
+// target is the address of the data to be evicted
+// eviction_set is a list of addresses that will be used to evict the target
+// eviction_set must be of length 4 and will be overwritten
+void get_eviction_set(void* target, void* eviction_set[]) {
+    uint64_t base;
+    // since beginning of page can be offset, this needs to be asjusted
+    if (((uint64_t) &eviction_data[0] / 64) % 128 == 0) {
+        base = ((uint64_t) target / 64) % 128;
+    } else {
+        base = (((uint64_t) target / 64) + 64) % 128;
+    }
+
+    for (int i = 0; i < 4; i++) {
+        eviction_set[i] = &eviction_data[(base + i * 128) * 64];
+    }
+}
+
 uint64_t get_threshold() {
     void* target = &data[0];
     uint64_t cached_timings[100];
@@ -63,18 +80,18 @@ uint64_t get_threshold() {
     }
     uint64_t cached_median = median(cached_timings, 100);
 
-    uint64_t base;
-    if (((uint64_t) target / 64) % 128 == 0) {
-        printf("1");
-        base = ((uint64_t) target / 64) % 128;
-    } else {
-        printf("2");
-        base = (((uint64_t) target / 64) + 64) % 128;
-    }
+    // uint64_t base;
+    // // since beginning of page can be offset, this needs to be asjusted
+    // if (((uint64_t) target / 64) % 128 == 0) {
+    //     base = ((uint64_t) target / 64) % 128;
+    // } else {
+    //     base = (((uint64_t) target / 64) + 64) % 128;
+    // }
     void* addresses_evict[4];
-    for (int i = 0; i < 4; i++) {
-        addresses_evict[i] = &eviction_data[(base + i * 128) * 64];
-    }
+    get_eviction_set(target, addresses_evict);
+    // for (int i = 0; i < 4; i++) {
+    //     addresses_evict[i] = &eviction_data[(base + i * 128) * 64];
+    // }
     uint64_t uncached_timings[100];
     for (int i = 0; i < 100; i++) {
         for (int j = 0; j < 4; j++) {
@@ -86,8 +103,6 @@ uint64_t get_threshold() {
     printf("cached median: %lu\n", cached_median);
     printf("uncached median: %lu\n", uncached_median);
     return (cached_median + uncached_median) / 2;
-
-
 }
 
 int main() {
@@ -97,7 +112,7 @@ int main() {
     void* addresses_data[SIZE];
     void* addresses_evict[4];
     uint64_t threshold = get_threshold();
-    printf("threshold: %lu\n", threshold);
+    
 
     // for (int i = 0; i < SIZE; i++) {
     //     addresses_data[i] = &data[i];
