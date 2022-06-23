@@ -199,7 +199,8 @@ int main()
     fclose(mul);
     printf("Done observing multiply\n");
 
-    maccess(square);
+    // maccess(square);
+    square(0);
     uint64_t tmp = timed_load(square).duration;
     printf("%lu\n", tmp);
     flush();
