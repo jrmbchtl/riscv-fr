@@ -84,7 +84,7 @@ int main()
     maccess(&data[0]);
 
     for (int i = 0; i < PRIME_RUNS; i++) {
-        cached_timing[i] = timed_loaWd(&data[0]).duration;
+        cached_timing[i] = timed_load(&data[0]).duration;
     }
 
     for(int i = 0; i < PRIME_RUNS; i++) {
