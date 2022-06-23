@@ -135,7 +135,7 @@ int main()
     }
     uint64_t cached_median_1 = median(chached_timings_1, SAMPLE_SIZE);
     printf("cached median: %lu\n", cached_median_1);
-    uint64_t uncached_min_1 = min(unchached_timings_1, SAMPLE_SIZE);
+    uint64_t uncached_min_1 = median(unchached_timings_1, SAMPLE_SIZE);
     printf("uncached min: %lu\n", uncached_min_1);
     threshold_1 = (uncached_min_1 + cached_median_1)/2;
     printf("threshold 1: %lu\n", threshold_1);
@@ -153,7 +153,7 @@ int main()
     }
     uint64_t cached_median_2 = median(chached_timings_2, SAMPLE_SIZE);
     printf("cached median: %lu\n", cached_median_2);
-    uint64_t uncached_min_2 = min(unchached_timings_2, SAMPLE_SIZE);
+    uint64_t uncached_min_2 = median(unchached_timings_2, SAMPLE_SIZE);
     printf("uncached min: %lu\n", uncached_min_2);
     threshold_2 = (uncached_min_2 + cached_median_2)/2;
     printf("threshold 2: %lu\n", threshold_2);
