@@ -28,6 +28,18 @@ static inline void flush()
     asm volatile("fence" ::: "memory");
 }
 
+void maccess(void* p) {
+    *(volatile char*)p; 
+}
+
+sample_t timed_load(void* p) { 
+    uint64_t start, end; 
+    start = rdtsc(); 
+    maccess(p); 
+    end = rdtsc(); 
+    return (sample_t) {start, end - start};
+}
+
 // measure the time it takes to execute function p(0) and return start and duration
 static inline sample_t timed_call_1(uint64_t (*p)(uint64_t))
 {
@@ -186,6 +198,13 @@ int main()
     }
     fclose(mul);
     printf("Done observing multiply\n");
+
+    maccess(square);
+    uint64_t tmp = timed_load(square).duration;
+    printf("%lu\n", tmp);
+    flush();
+    tmp = timed_load(square).duration;
+    printf("%lu\n", tmp);
 
     return 0;
 }

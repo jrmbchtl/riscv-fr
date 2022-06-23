@@ -65,12 +65,13 @@ uint64_t median(uint64_t* list, uint64_t size)
     return median;
 }
 
-// target is the address of the data to be evicted
-// eviction_set is a list of addresses that will be used to evict the target
-// eviction_set must be of length 4 and will be overwritten
+/* target is the address of the data to be evicted
+ * eviction_set is a list of addresses that will be used to evict the target
+ * eviction_set must be of length 4 and will be overwritten
+**/
 void get_eviction_set(void* target, void* eviction_set[]) {
     uint64_t base;
-    // since beginning of page can be offset, this needs to be asjusted
+    // since beginning of page can be offset by 64 * 64 bytes, this needs to be asjusted
     if (((uint64_t) &eviction_data[0] / 64) % 128 == 0) {
         base = ((uint64_t) target / 64) % 128;
     } else {
@@ -123,15 +124,11 @@ int main() {
     // initialize data to avoid lazy allocation
     memset(data, 0, sizeof(data));
     memset(eviction_data, 0, sizeof(eviction_data));
-    void* addresses_data[SIZE];
-    for (size_t i=0; i<SIZE; i++) {
-        addresses_data[i] = &(data[i]);
-    }
     void* addresses_evict[4];
     uint64_t threshold = get_threshold();
     printf("threshold: %lu\n", threshold);
+
     get_eviction_set(&data[0 * CACHE_LINE_SIZE], addresses_evict);
-    
     printf("Observing data[0]\n");
     pthread_t victim;
     evict(addresses_evict);
@@ -143,7 +140,7 @@ int main() {
         evict(addresses_evict);
         
         while(!done) {
-            sample_t timing = timed_load(addresses_data[0 * CACHE_LINE_SIZE]);
+            sample_t timing = timed_load(&data[0 * CACHE_LINE_SIZE]);
             
             evict(addresses_evict);
 
@@ -167,7 +164,7 @@ int main() {
         evict(addresses_evict);
         
         while(!done) {
-            sample_t timing = timed_load(addresses_data[1 * CACHE_LINE_SIZE]);
+            sample_t timing = timed_load(&data[1 * CACHE_LINE_SIZE]);
             
             evict(addresses_evict);
             if (timing.duration < threshold) {
