@@ -7,7 +7,7 @@
 #include "openssl/bn.h"
 
 #define SAMPLE_SIZE     20000
-#define RUNS            1000
+#define RUNS            10000
 
 typedef struct {
     uint64_t start;
