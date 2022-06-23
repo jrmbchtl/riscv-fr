@@ -6,7 +6,7 @@
 #include <unistd.h>
 
 #define SAMPLE_SIZE     10000
-#define RUNS            1000
+#define RUNS            10
 
 typedef struct {
     uint64_t start;
@@ -26,6 +26,18 @@ static inline void flush()
 {
     asm volatile("fence.i" ::: "memory");
     asm volatile("fence" ::: "memory");
+}
+
+void maccess(void* p) {
+    *(volatile char*)p; 
+}
+
+sample_t timed_load(void* p) { 
+    uint64_t start, end; 
+    start = rdtsc(); 
+    maccess(p); 
+    end = rdtsc(); 
+    return (sample_t) {start, end - start};
 }
 
 // measure the time it takes to execute function p(0) and return start and duration
@@ -186,6 +198,14 @@ int main()
     }
     fclose(mul);
     printf("Done observing multiply\n");
+
+    // maccess(square);
+    square(0);
+    uint64_t tmp = timed_load(square).duration;
+    printf("%lu\n", tmp);
+    flush();
+    tmp = timed_load(square).duration;
+    printf("%lu\n", tmp);
 
     return 0;
 }
