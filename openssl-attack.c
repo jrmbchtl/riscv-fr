@@ -134,7 +134,9 @@ int main()
         unchached_timings_1[i] = timed_call_1(BN_sqr, &r, &a, ctx).duration;
     }
     uint64_t cached_median_1 = median(chached_timings_1, SAMPLE_SIZE);
+    printf("cached median: %lu\n", cached_median_1);
     uint64_t uncached_min_1 = min(unchached_timings_1, SAMPLE_SIZE);
+    printf("uncached min: %lu\n", uncached_min_1);
     threshold_1 = (uncached_min_1 + cached_median_1)/2;
     printf("threshold 1: %lu\n", threshold_1);
 
