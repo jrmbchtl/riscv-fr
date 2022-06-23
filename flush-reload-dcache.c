@@ -43,16 +43,12 @@ sample_t timed_load(void* p) {
 
 void* calculate(void* d) {
     size_t* done = (size_t*)d;
-    void* address_0 = &data[0];
-    void* address_1 = &data[1 * CACHE_LINE_SIZE];
-    flush(address_0);
-    flush(address_1);
 
     for (int i = 0; i < 10; i++) {
         usleep(1000);
-        maccess(address_0);
+        maccess(&data[0]);
         usleep(1000);
-        maccess(address_1);
+        maccess(&data[1 * CACHE_LINE_SIZE]);
     }
     usleep(1000);
 
@@ -81,23 +77,19 @@ int main()
 {
     // avoid lazy allocation
     memset(data, 0, SIZE);
-    void* addresses[SIZE];
-    for (size_t i=0; i<SIZE; i++) {
-        addresses[i] = &(data[i]);
-    }
 
     uint64_t cached_timing[PRIME_RUNS];
     uint64_t uncached_timing[PRIME_RUNS];
 
-    maccess(addresses[0]);
+    maccess(&data[0]);
 
     for (int i = 0; i < PRIME_RUNS; i++) {
-        cached_timing[i] = timed_load(addresses[0]).duration;
+        cached_timing[i] = timed_loaWd(&data[0]).duration;
     }
 
     for(int i = 0; i < PRIME_RUNS; i++) {
-        flush(addresses[0]);
-        uncached_timing[i] = timed_load(addresses[0]).duration;
+        flush(&data[0]);
+        uncached_timing[i] = timed_load(&data[0]).duration;
     }
 
     uint64_t cached_median = median(cached_timing, PRIME_RUNS);
@@ -112,18 +104,18 @@ int main()
     // victim thread
     printf("Observing data[0]\n");
     pthread_t victim;
-    flush(addresses[0 * CACHE_LINE_SIZE]);
+    flush(&data[0]);
     FILE* data_0 = fopen("data_0.csv", "w");
     for (int i = 0; i < RUNS; i++) {
         size_t done = 0;
         pthread_create(&victim, NULL, calculate, &done);
         uint64_t start = rdtsc();
-        flush(addresses[0 * CACHE_LINE_SIZE]);
+        flush(&data[0]);
         
         while(!done) {
-            sample_t timing = timed_load(addresses[0 * CACHE_LINE_SIZE]);
+            sample_t timing = timed_load(&data[0]);
             
-            flush(addresses[0 * CACHE_LINE_SIZE]);
+            flush(&data[0]);
 
             if (timing.duration < threshold) {
                 fprintf(data_0, "%lu\n", timing.start - start);
@@ -135,18 +127,18 @@ int main()
     printf("Observing data[0] done\n");
 
     printf("Observing data[64]\n");
-    flush(addresses[1 * CACHE_LINE_SIZE]);
+    flush(&data[CACHE_LINE_SIZE]);
     FILE* data_1 = fopen("data_1.csv", "w");
     for (int i = 0; i < RUNS; i++) {
         size_t done = 0;
         pthread_create(&victim, NULL, calculate, &done);
         uint64_t start = rdtsc();
-        flush(addresses[0 * CACHE_LINE_SIZE]);
+        flush(&data[CACHE_LINE_SIZE]);
         
         while(!done) {
-            sample_t timing = timed_load(addresses[1 * CACHE_LINE_SIZE]);
+            sample_t timing = timed_load(&data[CACHE_LINE_SIZE]);
             
-            flush(addresses[1 * CACHE_LINE_SIZE]);
+            flush(&data[CACHE_LINE_SIZE]);
 
             if (timing.duration < threshold) {
                 fprintf(data_1, "%lu\n", timing.start - start);
