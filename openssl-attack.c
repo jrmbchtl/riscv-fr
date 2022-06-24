@@ -135,7 +135,9 @@ void prepare_rsa(thread_data_t* td) {
 	// encrypt
 	printf("Encrypting...\n");
 	unsigned char* input = "Ciphertext";
+    printf("Encrypting2...\n");
     td->ciphertext = malloc(RSA_size(td->rsa));
+    printf("Encrypting3...\n");
 	td->len = RSA_public_encrypt(strlen(input), input, td->ciphertext, td->rsa, RSA_PKCS1_PADDING);
 	printf("Encrypted %d bytes\n", td->len);
 	
