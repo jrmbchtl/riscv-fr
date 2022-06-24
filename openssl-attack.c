@@ -7,7 +7,7 @@
 #include "openssl/bn.h"
 
 #define SAMPLE_SIZE     20000
-#define RUNS            10000
+#define RUNS            5000
 
 typedef struct {
     uint64_t start;
@@ -67,6 +67,7 @@ void* calculate(void* d)
         usleep(1000);
         BN_mul(&r, &a, &b, ctx);
     }
+    usleep(1000);
     // free the BN_CTX
     BN_CTX_free(ctx);
     *done = 1;
