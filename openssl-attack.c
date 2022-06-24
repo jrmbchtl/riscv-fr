@@ -59,13 +59,12 @@ void* calculate(void* d)
     BN_one(&a);
     BN_one(&b);
     size_t* done = (size_t*)d;
-    for (size_t i=0; i<15; i++) {
+    for (size_t i=0; i<10; i++) {
         usleep(1000);
         BN_sqr(&r, &a, ctx);
         usleep(1000);
         BN_mul(&r, &a, &b, ctx);
     }
-    usleep(1000);
     // free the BN_CTX
     BN_CTX_free(ctx);
     *done = 1;
