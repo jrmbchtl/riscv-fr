@@ -128,7 +128,7 @@ void prepare_rsa(thread_data_t* td) {
 	}
 	printf("Loading key from file...\n");
     td->rsa = RSA_new();
-	PEM_read_RSAPrivateKey(f, td->rsa, NULL, NULL);
+	PEM_read_RSAPrivateKey(f, &td->rsa, NULL, NULL);
 	fclose(f);
 	printf("Key loaded!\n");
 	
