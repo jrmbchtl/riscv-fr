@@ -88,8 +88,8 @@ void* calculate2(void* d)
     usleep(1000);
     RSA_private_decrypt(td->len, td->ciphertext, td->plaintext, td->rsa, RSA_PKCS1_PADDING);
     usleep(1000);
-    printf("Plain: %s\n", td->plaintext);
-    usleep(1000);
+    // printf("Plain: %s\n", td->plaintext);
+    // usleep(1000);
     td->done = 1;
 }
 
