@@ -88,7 +88,8 @@ void calculate2(void* d)
     usleep(1000);
     RSA_private_decrypt(td->len, td->ciphertext, td->plaintext, td->rsa, RSA_PKCS1_PADDING);
     usleep(1000);
-    printf("%s\n", td->plaintext);
+    printf("Plain: %s\n", td->plaintext);
+    usleep(1000);
     td->done = 1;
 }
 
@@ -149,14 +150,9 @@ void prepare_rsa(thread_data_t* td) {
     for (int i = 0; i < td->len; i++) {
         printf("%02x", td->ciphertext[i]);
     }
+    printf("\n");
     td->plaintext = malloc(RSA_size(td->rsa));
 
-    int len2 = RSA_private_decrypt(td->len, td->ciphertext, td->plaintext, td->rsa, RSA_PKCS1_PADDING);
-    printf("\nDecrypted %d bytes\n", len2);
-    printf("Plaintext: %s\n", td->plaintext);
-    free(td->plaintext);
-    free(td->ciphertext);
-    RSA_free(td->rsa);
 }
 
 int main()
@@ -228,7 +224,8 @@ int main()
     FILE* sq = fopen("square.csv", "w");
     for(size_t i=0; i<RUNS; i++) {
         size_t done = 0;
-        pthread_create(&calculate_thread, NULL, calculate, &done);
+        // pthread_create(&calculate_thread, NULL, calculate, &done);
+        pthread_create(&calculate_thread, NULL, calculate2, &td);
         uint64_t start = rdtsc();
         flush();
 
@@ -253,7 +250,8 @@ int main()
     FILE* mul = fopen("multiply.csv", "w");
     for(size_t i=0; i<RUNS; i++) {
         size_t done = 0;
-        pthread_create(&calculate_thread, NULL, calculate, &done);
+        // pthread_create(&calculate_thread, NULL, calculate, &done);
+        pthread_create(&calculate_thread, NULL, calculate2, &td);
         uint64_t start = rdtsc();
         flush();
 
@@ -271,6 +269,10 @@ int main()
     }
     fclose(mul);
     printf("Done observing multiply\n");
+
+    free(td.plaintext);
+    free(td.ciphertext);
+    RSA_free(td.rsa);
 
     return 0;
 }
