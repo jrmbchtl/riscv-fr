@@ -229,7 +229,7 @@ int main()
         uint64_t start = rdtsc();
         flush();
 
-        while(done == 0)
+        while(td.done == 0)
         {   
             sample_t sq_timing = timed_call_1(BN_sqr, &r, &a, ctx);
             // flush after call to reduce chance of access between measurement and flush
@@ -255,7 +255,7 @@ int main()
         uint64_t start = rdtsc();
         flush();
 
-        while(done == 0)
+        while(td.done == 0)
         {   
             sample_t mul_timing = timed_call_2(BN_mul, &r, &a, &b, ctx);
             // flush after call to reduce chance of access between measurement and flush
