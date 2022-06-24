@@ -169,9 +169,9 @@ int main()
         uint64_t start = rdtsc();
         flush();
 
+        printf("%lu\n", start);
         while(done == 0)
         {   
-            printf("atta 3\n");
             sample_t sq_timing = timed_call_1(BN_sqr, &r, &a, ctx);
             printf("atta 4\n");
             // flush after call to reduce chance of access between measurement and flush
