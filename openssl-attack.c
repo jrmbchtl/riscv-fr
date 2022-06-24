@@ -88,7 +88,7 @@ void* calculate2(void* d)
     usleep(1000);
     RSA_private_decrypt(td->len, td->ciphertext, td->plaintext, td->rsa, RSA_PKCS1_PADDING);
     usleep(1000);
-    printf("Plain: %s\n", td->plaintext);
+    // printf("Plain: %s\n", td->plaintext);
     // usleep(1000);
     td->done = 1;
 }
@@ -221,6 +221,7 @@ int main()
     printf("Observing square...\n");
     FILE* sq = fopen("square.csv", "w");
     for(size_t i=0; i<RUNS; i++) {
+        printf("Run %lu\n", i);
         size_t done = 0;
         // pthread_create(&calculate_thread, NULL, calculate, &done);
         pthread_create(&calculate_thread, NULL, calculate2, &td);
