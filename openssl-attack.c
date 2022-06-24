@@ -65,6 +65,7 @@ void* calculate(void* d)
         usleep(1000);
         BN_mul(&r, &a, &b, ctx);
     }
+    usleep(1000);
     // free the BN_CTX
     BN_CTX_free(ctx);
     *done = 1;
