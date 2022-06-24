@@ -124,7 +124,7 @@ void prepare_rsa(thread_data_t* td) {
     FILE* f = fopen("key.pem", "r");
 	if (f == NULL) {
 		printf("Error opening file for reading\n");
-		return 1;
+		return;
 	}
 	printf("Loading key from file...\n");
     td->rsa = RSA_new();
