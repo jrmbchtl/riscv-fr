@@ -82,7 +82,7 @@ void* calculate(void* d)
     *done = 1;
 }
 
-void calculate2(void* d)
+void* calculate2(void* d)
 {
     thread_data_t* td = (thread_data_t*)d;
     usleep(1000);
