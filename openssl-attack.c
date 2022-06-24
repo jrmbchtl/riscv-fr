@@ -15,17 +15,19 @@ typedef struct {
 } sample_t;
 
 // funtcion equivalent to rdtsc on x86, but implemented on RISC-V
-#define rdtsc() ({ \
-    uint64_t val; \
-    asm volatile("rdcycle %0\n" : "=r"(val)::); \
-    val;\
-})
+static inline uint64_t rdtsc()
+{
+    uint64_t val;
+    asm volatile("rdcycle %0\n" : "=r"(val)::);
+    return val;
+}
 
 // function to flush the I-cache
-#define flush() ({ \
-    asm volatile("fence.i" ::: "memory"); \
-    asm volatile("fence" ::: "memory"); \
-})
+static inline void flush()
+{
+    asm volatile("fence.i" ::: "memory");
+    asm volatile("fence" ::: "memory");
+}
 
 // measure the time it takes to execute function p(0) and return start and duration
 static inline sample_t timed_call_1(int (*p)(BIGNUM*, const BIGNUM*, BN_CTX*), BIGNUM* r, const BIGNUM* a, BN_CTX* ctx)
