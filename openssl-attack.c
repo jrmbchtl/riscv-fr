@@ -62,9 +62,7 @@ void* calculate(void* d)
     BN_one(&b);
     size_t* done = (size_t*)d;
     for (size_t i=0; i<10; i++) {
-        printf("%zu: %lu\n", i, rdtsc());
         usleep(1000);
-        printf("%zu: %lu\n", i, rdtsc());
         BN_sqr(&r, &a, ctx);
         usleep(1000);
         BN_mul(&r, &a, &b, ctx);
@@ -167,15 +165,13 @@ int main()
     for(size_t i=0; i<RUNS; i++) {
         size_t done = 0;
         pthread_create(&calculate_thread, NULL, calculate, &done);
-        pthread_join(calculate_thread, NULL);
         uint64_t start = rdtsc();
         flush();
 
-        printf("%lu\n", start);
         while(done == 0)
         {   
             sample_t sq_timing = timed_call_1(BN_sqr, &r, &a, ctx);
-            printf("atta 4\n");
+            // printf("atta 4\n");
             // flush after call to reduce chance of access between measurement and flush
             flush();
             if (sq_timing.duration < threshold_1)
