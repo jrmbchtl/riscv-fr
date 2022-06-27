@@ -221,7 +221,7 @@ int main()
     printf("Observing square...\n");
     FILE* sq = fopen("square.csv", "w");
     for(size_t i=0; i<RUNS; i++) {
-        printf("Run %lu\n", i);
+        printf("Square run %lu\n", i);
         size_t done = 0;
         // pthread_create(&calculate_thread, NULL, calculate, &done);
         pthread_create(&calculate_thread, NULL, calculate2, &td);
@@ -248,6 +248,7 @@ int main()
     printf("Observing multiply...\n");
     FILE* mul = fopen("multiply.csv", "w");
     for(size_t i=0; i<RUNS; i++) {
+        printf("Multiply run %lu\n", i);
         size_t done = 0;
         // pthread_create(&calculate_thread, NULL, calculate, &done);
         pthread_create(&calculate_thread, NULL, calculate2, &td);
