@@ -8,7 +8,7 @@
 #include "openssl/rsa.h"
 
 #define SAMPLE_SIZE     20000
-#define RUNS            5000
+#define RUNS            100
 
 typedef struct {
     uint64_t start;
