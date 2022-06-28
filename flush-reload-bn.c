@@ -137,7 +137,7 @@ int main()
     }
     for (int i = 0; i < SAMPLE_SIZE; i++)
     {
-        flush();
+        clflush();
         unchached_timings_2[i] = timed_call_2(BN_mul, &r, &a, &b, ctx).duration;
     }
     uint64_t cached_median_2 = median(chached_timings_2, SAMPLE_SIZE);
@@ -157,7 +157,7 @@ int main()
 
         while(done == 0)
         {   
-            sample_t sq_timing = timed_call_1(BN_sqr, &r, &a, &ctx);
+            sample_t sq_timing = timed_call_1(BN_sqr, &r, &a, ctx);
             // flush after call to reduce chance of access between measurement and flush
             clflush();
             if (sq_timing.duration < threshold_1)
