@@ -23,7 +23,7 @@ void clflush()
 }
 
 // flush p from dcache
-static inline flush(void* p) {
+static inline void flush(void* p) {
     asm volatile("mv a5, %0; .word 0x0277800b\n" : : "r"(p) :"a5","memory");
 }
 
@@ -37,11 +37,11 @@ static inline uint64_t timed_call(uint64_t (*p)(uint64_t))
     return end - start;
 }
 
-static inline maccess(void* p) {
+static inline void maccess(void* p) {
     *(volatile char*)p; 
 }
 
-uint64_t timed_load(void* p) { 
+static inline uint64_t timed_load(void* p) { 
     uint64_t start, end; 
     start = rdtsc(); 
     maccess(p); 
