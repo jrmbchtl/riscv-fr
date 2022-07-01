@@ -67,7 +67,7 @@ int main()
 
     for (int i = 0; i < RUNS; i++) {
         clflush();
-        timing =  timed_call(clflush);
+        timing =  timed_call(square);
         fprintf(ichm, "%lu\n", timing);
     }
     fclose(ichm);
