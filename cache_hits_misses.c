@@ -16,14 +16,14 @@ static inline uint64_t rdtsc()
 }
 
 // function to flush the I-cache
-static inline void clflush()
+void clflush()
 {
     asm volatile("fence.i" ::: "memory");
     asm volatile("fence" ::: "memory");
 }
 
 // flush p from dcache
-void flush(void* p) {
+static inline flush(void* p) {
     asm volatile("mv a5, %0; .word 0x0277800b\n" : : "r"(p) :"a5","memory");
 }
 
@@ -37,7 +37,7 @@ static inline uint64_t timed_call(uint64_t (*p)(uint64_t))
     return end - start;
 }
 
-void maccess(void* p) {
+static inline maccess(void* p) {
     *(volatile char*)p; 
 }
 
