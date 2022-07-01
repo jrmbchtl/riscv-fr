@@ -4,7 +4,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#define RUNS            10000
+#define RUNS            1000
 char __attribute__((aligned(4096))) data[4096];
 
 // funtcion equivalent to rdtsc on x86, but implemented on RISC-V
@@ -59,7 +59,7 @@ int main()
 {
     FILE* ichm = fopen("icache_hits_misses.csv", "w");
     uint64_t timing = 0;
-    for (int i = 0; i < RUNS/2; i++) {
+    for (int i = 0; i < RUNS; i++) {
         square(0);
         timing =  timed_call(square);
         fprintf(ichm, "%lu\n", timing);
@@ -73,7 +73,7 @@ int main()
     fclose(ichm);
 
     FILE* dchm = fopen("dcache_hits_misses.csv", "w");
-    for (int i = 0; i < RUNS/2; i++) {
+    for (int i = 0; i < RUNS; i++) {
         maccess(&data[0]);
         timing =  timed_load(&data[0]);
         fprintf(dchm, "%lu\n", timing);
