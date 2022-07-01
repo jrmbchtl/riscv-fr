@@ -60,9 +60,8 @@ void* calculate(void* d)
     BN_one(&r);
     BN_one(&a);
     BN_one(&b);
-    usleep(1000);
     size_t* done = (size_t*)d;
-    for (size_t i=0; i<10; i++) {
+    for (size_t i=0; i<5; i++) {
         usleep(1000);
         BN_mul(&r, &a, &b, ctx);
         usleep(1000);
