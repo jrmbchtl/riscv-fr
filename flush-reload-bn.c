@@ -7,7 +7,8 @@
 #include "openssl/bn.h"
 
 #define SAMPLE_SIZE     10000
-#define RUNS            1000
+#define RUNS            16000
+// values of difference between start of function and ret instruction
 #define OFFSET_SQUARE   0xC2
 #define OFFSET_MULTIPLY 0x56
 
@@ -43,6 +44,7 @@ static inline sample_t timed_call(void* p, uint64_t offset)
     return (sample_t) {start, end - start};
 }
 
+
 // victim function that calls square and multiply 10 times with usleeps inbetween
 void* calculate(void* d)
 {
@@ -57,9 +59,9 @@ void* calculate(void* d)
     size_t* done = (size_t*)d;
     for (size_t i=0; i<10; i++) {
         usleep(1000);
-        BN_mul(&r, &a, &b, ctx);
-        usleep(1000);
         BN_sqr(&r, &a, ctx);
+        usleep(1000);
+        BN_mul(&r, &a, &b, ctx);
     }
     usleep(1000);
     // free the BN_CTX
@@ -87,7 +89,6 @@ uint64_t median(uint64_t* list, uint64_t size)
 
 int main()
 {
-    printf("1\n");
     // cached timing arrays for square and multiply
     uint64_t chached_timings_1[SAMPLE_SIZE] = {0};
     uint64_t chached_timings_2[SAMPLE_SIZE] = {0};
@@ -109,7 +110,6 @@ int main()
     BN_one(&r);
     BN_one(&a);
     BN_one(&b);
-    printf("2\n");
 
     // get threshold for cached and uncached square access
     BN_sqr(&r, &a, ctx);
@@ -148,9 +148,6 @@ int main()
     printf("Observing square...\n");
     FILE* sq = fopen("square.csv", "w");
     for(size_t i=0; i<RUNS; i++) {
-        if (i % 100 == 0) {
-            printf("%lu\n", i);
-        }
         size_t done = 0;
         pthread_create(&calculate_thread, NULL, calculate, &done);
         uint64_t start = rdtsc();
@@ -176,9 +173,6 @@ int main()
     printf("Observing multiply...\n");
     FILE* mul = fopen("multiply.csv", "w");
     for(size_t i=0; i<RUNS; i++) {
-        if (i % 100 == 0) {
-            printf("%lu\n", i);
-        }
         size_t done = 0;
         pthread_create(&calculate_thread, NULL, calculate, &done);
         uint64_t start = rdtsc();
