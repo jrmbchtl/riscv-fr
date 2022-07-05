@@ -34,7 +34,8 @@ static inline sample_t timed_call_1(int (*p)(BIGNUM*, const BIGNUM*, BN_CTX*), B
 {
     uint64_t start, end;
     start = rdtsc();
-    p(r, a, ctx);
+    asm volatile("jal 0x15642\n" ::: "memory");
+    // p(r, a, ctx);
     end = rdtsc();
     return (sample_t) {start, end - start};
 }
