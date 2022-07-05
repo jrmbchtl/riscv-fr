@@ -108,7 +108,7 @@ int main()
         chached_timings_1[i] = timed_call(square, OFFSET_SQUARE).duration;
     }
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
-        fcllush();
+        clflush();
         unchached_timings_1[i] = timed_call(square, OFFSET_SQUARE).duration;
     }
     uint64_t cached_median_1 = median(chached_timings_1, SAMPLE_SIZE);
