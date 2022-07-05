@@ -95,6 +95,7 @@ uint64_t median(uint64_t* list, uint64_t size)
 
 int main()
 {
+    printf("1\n");
     // cached timing arrays for square and multiply
     uint64_t chached_timings_1[SAMPLE_SIZE] = {0};
     uint64_t chached_timings_2[SAMPLE_SIZE] = {0};
@@ -116,6 +117,7 @@ int main()
     BN_one(&r);
     BN_one(&a);
     BN_one(&b);
+    printf("2\n");
 
     // get threshold for cached and uncached square access
     BN_sqr(&r, &a, ctx);
@@ -126,10 +128,13 @@ int main()
         clflush();
         unchached_timings_1[i] = timed_call_1(BN_sqr, &r, &a, ctx).duration;
     }
+    printf("3\n");
     uint64_t cached_median_1 = median(chached_timings_1, SAMPLE_SIZE);
     uint64_t uncached_median_1 = median(unchached_timings_1, SAMPLE_SIZE);
     threshold_1 = (uncached_median_1 + cached_median_1)/2;
     printf("threshold 1: %lu\n", threshold_1);
+
+    printf("4\n");
 
     // get threshold for cached and uncached multiply access
     BN_mul(&r, &a, &b, ctx);
