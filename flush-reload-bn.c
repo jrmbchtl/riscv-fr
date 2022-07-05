@@ -117,6 +117,7 @@ int main()
     BN_one(&r);
     BN_one(&a);
     BN_one(&b);
+    printf("2\n");
 
     // get threshold for cached and uncached square access
     BN_sqr(&r, &a, ctx);
