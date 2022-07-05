@@ -33,8 +33,9 @@ static inline void flush()
 static inline sample_t timed_call_1(uint64_t (*p)(uint64_t))
 {
     uint64_t start, end;
+    void* addr = p + 0x18;
     start = rdtsc();
-    asm volatile("jal %0\n" : : "r"(p + 0x18));
+    asm volatile("jal %0\n" : : "r"(addr));
     end = rdtsc();
     return (sample_t) {start, end - start};
 }
