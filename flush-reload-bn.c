@@ -170,6 +170,7 @@ int main()
     printf("Observing square...\n");
     FILE* sq = fopen("square.csv", "w");
     for(size_t i=0; i<RUNS; i++) {
+        printf("%lu\n", i);
         size_t done = 0;
         pthread_create(&calculate_thread, NULL, calculate, &done);
         uint64_t start = rdtsc();
