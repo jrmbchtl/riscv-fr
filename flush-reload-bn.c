@@ -43,28 +43,6 @@ static inline sample_t timed_call(void* p, uint64_t offset)
     return (sample_t) {start, end - start};
 }
 
-// // measure the time it takes to execute function p(r, a, ctx) and return start and duration
-// static inline sample_t timed_call_1(int (*p)(BIGNUM*, const BIGNUM*, BN_CTX*), BIGNUM* r, const BIGNUM* a, BN_CTX* ctx)
-// {
-//     uint64_t start, end;
-//     start = rdtsc();
-//     asm volatile("jal 0x15642\n" ::: "memory");
-//     // p(r, a, ctx);
-//     end = rdtsc();
-//     return (sample_t) {start, end - start};
-// }
-
-// // measure the time it takes to execute function p(r, a, b, ctx) and return start and duration
-// static inline sample_t timed_call_2(int (*p)(BIGNUM*, const BIGNUM*, const BIGNUM*, BN_CTX*), BIGNUM* r, const BIGNUM* a, const BIGNUM* b, BN_CTX* ctx)
-// {
-//     uint64_t start, end;
-//     start = rdtsc();
-//     // p(r, a, b, ctx);
-//     asm volatile("jal 0x14e56\n" ::: "memory");
-//     end = rdtsc();
-//     return (sample_t) {start, end - start};
-// }
-
 // victim function that calls square and multiply 10 times with usleeps inbetween
 void* calculate(void* d)
 {
