@@ -34,7 +34,7 @@ static inline uint64_t rdtsc()
 }
 
 // function to flush the I-cache
-static inline void flush()
+static inline void clflush()
 {
     asm volatile("fence.i" ::: "memory");
     asm volatile("fence" ::: "memory");
@@ -225,13 +225,13 @@ int main()
         // pthread_create(&calculate_thread, NULL, calculate, &done);
         pthread_create(&calculate_thread, NULL, calculate2, &td);
         uint64_t start = rdtsc();
-        flush();
+        clflush();
 
         while(td.done == 0)
         {   
             sample_t sq_timing = timed_call(BN_sqr, OFFSET_SQUARE);
             // flush after call to reduce chance of access between measurement and flush
-            flush();
+            clflush();
             if (sq_timing.duration < threshold_1)
             {
                 fprintf(sq, "%lu\n", sq_timing.start - start);
@@ -255,13 +255,13 @@ int main()
         // pthread_create(&calculate_thread, NULL, calculate, &done);
         pthread_create(&calculate_thread, NULL, calculate2, &td);
         uint64_t start = rdtsc();
-        flush();
+        clflush();
 
         while(td.done == 0)
         {   
             sample_t mul_timing = timed_call(BN_mul, OFFSET_MULTIPLY);
             // flush after call to reduce chance of access between measurement and flush
-            flush();
+            clflush();
             if (mul_timing.duration < threshold_2)
             {
                 fprintf(mul, "%lu\n", mul_timing.start - start);
