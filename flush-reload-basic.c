@@ -6,7 +6,7 @@
 #include <unistd.h>
 
 #define SAMPLE_SIZE     10000
-#define RUNS            1000
+#define RUNS            16000
 #define OFFSET_SQUARE   0x18
 #define OFFSET_MULTIPLY 0x20
 
@@ -15,7 +15,7 @@ typedef struct {
     uint64_t duration;
 } sample_t;
 
-// funtcion equivalent to rdtsc on x86, but implemented on RISC-V
+// function equivalent to rdtsc on x86, but implemented on RISC-V
 static inline uint64_t rdtsc()
 {
     uint64_t val;
@@ -24,7 +24,7 @@ static inline uint64_t rdtsc()
 }
 
 // function to flush the I-cache
-static inline void flush()
+static inline void clflush()
 {
     asm volatile("fence.i" ::: "memory");
     asm volatile("fence" ::: "memory");
@@ -41,6 +41,7 @@ static inline sample_t timed_call(void* p, uint64_t offset)
     end = rdtsc();
     return (sample_t) {start, end - start};
 }
+
 
 // simple function multiplying two numbers
 uint64_t multiply(uint64_t x, uint64_t y)
@@ -107,13 +108,11 @@ int main()
         chached_timings_1[i] = timed_call(square, OFFSET_SQUARE).duration;
     }
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
-        flush();
+        fcllush();
         unchached_timings_1[i] = timed_call(square, OFFSET_SQUARE).duration;
     }
     uint64_t cached_median_1 = median(chached_timings_1, SAMPLE_SIZE);
-    printf("cached square access median: %lu\n", cached_median_1);
     uint64_t uncached_median_1 = median(unchached_timings_1, SAMPLE_SIZE);
-    printf("uncached square access median: %lu\n", uncached_median_1);
     threshold_1 = (uncached_median_1 + cached_median_1)/2;
     printf("threshold 1: %lu\n", threshold_1);
 
@@ -125,13 +124,11 @@ int main()
     }
     for (int i = 0; i < SAMPLE_SIZE; i++)
     {
-        flush();
+        clflush();
         unchached_timings_2[i] = timed_call(multiply, OFFSET_MULTIPLY).duration;
     }
     uint64_t cached_median_2 = median(chached_timings_2, SAMPLE_SIZE);
-    printf("cached multiply access median: %lu\n", cached_median_2);
     uint64_t uncached_median_2 = median(unchached_timings_2, SAMPLE_SIZE);
-    printf("uncached multiply access median: %lu\n", uncached_median_2);
     threshold_2 = (uncached_median_2 + cached_median_2)/2;
     printf("threshold 2: %lu\n", threshold_2);
 
@@ -143,13 +140,13 @@ int main()
         size_t done = 0;
         pthread_create(&calculate_thread, NULL, calculate, &done);
         uint64_t start = rdtsc();
-        flush();
+        clflush();
 
         while(done == 0)
         {   
             sample_t sq_timing = timed_call(square, OFFSET_SQUARE);
             // flush after call to reduce chance of access between measurement and flush
-            flush();
+            clflush();
             if (sq_timing.duration < threshold_1)
             {
                 fprintf(sq, "%lu\n", sq_timing.start - start);
@@ -168,13 +165,13 @@ int main()
         size_t done = 0;
         pthread_create(&calculate_thread, NULL, calculate, &done);
         uint64_t start = rdtsc();
-        flush();
+        clflush();
 
         while(done == 0)
         {   
             sample_t mul_timing = timed_call(multiply, OFFSET_MULTIPLY);
             // flush after call to reduce chance of access between measurement and flush
-            flush();
+            clflush();
             if (mul_timing.duration < threshold_2)
             {
                 fprintf(mul, "%lu\n", mul_timing.start - start);
