@@ -7,6 +7,8 @@
 
 #define SAMPLE_SIZE     10000
 #define RUNS            1000
+#define OFFSET_SQUARE   0x18
+#define OFFSET_MULTIPLY 0x20
 
 typedef struct {
     uint64_t start;
@@ -28,14 +30,14 @@ static inline void flush()
     asm volatile("fence" ::: "memory");
 }
 
-// measure the time it takes to execute function p(0) and return start and duration
-// square
-static inline sample_t timed_call_1(uint64_t (*p)(uint64_t))
+// measure the time it takes to execute function p and return start and duration
+// p is the function
+// offset is the offset from p to the ret instructions to reduce latency
+static inline sample_t timed_call(void* p, uint64_t offset)
 {
     uint64_t start, end;
     start = rdtsc();
-    // asm volatile("jal 0xd18\n" ::: "memory");
-    asm volatile("mv a5, %0; jalr a5\n" : : "r"(p + 0x18) :"a5","memory");
+    asm volatile("mv a5, %0; jalr a5\n" : : "r"(p + offset) :"a5","memory");
     end = rdtsc();
     return (sample_t) {start, end - start};
 }
@@ -112,11 +114,11 @@ int main()
     // get threshold for cached and uncached square access
     square(0);
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
-        chached_timings_1[i] = timed_call_1(square).duration;
+        chached_timings_1[i] = timed_call(square, OFFSET_SQUARE).duration;
     }
     for (size_t i=0; i<SAMPLE_SIZE; i++) {
         flush();
-        unchached_timings_1[i] = timed_call_1(square).duration;
+        unchached_timings_1[i] = timed_call(square, OFFSET_SQUARE).duration;
     }
     uint64_t cached_median_1 = median(chached_timings_1, SAMPLE_SIZE);
     printf("cached square access median: %lu\n", cached_median_1);
@@ -129,12 +131,12 @@ int main()
     multiply(0, 0);
     for (int i = 0; i < SAMPLE_SIZE; i++)
     {
-        chached_timings_2[i] = timed_call_2(multiply).duration;
+        chached_timings_2[i] = timed_call(multiply, OFFSET_MULTIPLY).duration;
     }
     for (int i = 0; i < SAMPLE_SIZE; i++)
     {
         flush();
-        unchached_timings_2[i] = timed_call_2(multiply).duration;
+        unchached_timings_2[i] = timed_call(multiply, OFFSET_MULTIPLY).duration;
     }
     uint64_t cached_median_2 = median(chached_timings_2, SAMPLE_SIZE);
     printf("cached multiply access median: %lu\n", cached_median_2);
@@ -155,7 +157,7 @@ int main()
 
         while(done == 0)
         {   
-            sample_t sq_timing = timed_call_1(square);
+            sample_t sq_timing = timed_call(square, OFFSET_SQUARE);
             // flush after call to reduce chance of access between measurement and flush
             flush();
             if (sq_timing.duration < threshold_1)
@@ -180,7 +182,7 @@ int main()
 
         while(done == 0)
         {   
-            sample_t mul_timing = timed_call_2(multiply);
+            sample_t mul_timing = timed_call(multiply, OFFSET_MULTIPLY);
             // flush after call to reduce chance of access between measurement and flush
             flush();
             if (mul_timing.duration < threshold_2)
