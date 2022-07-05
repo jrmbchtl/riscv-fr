@@ -6,7 +6,7 @@
 #include <unistd.h>
 
 #define SAMPLE_SIZE     10000
-#define RUNS            16000
+#define RUNS            1000
 #define OFFSET_SQUARE   0x18
 #define OFFSET_MULTIPLY 0x20
 
