@@ -117,7 +117,9 @@ int main()
         unchached_timings_1[i] = timed_call_1(square).duration;
     }
     uint64_t cached_median_1 = median(chached_timings_1, SAMPLE_SIZE);
+    printf("cached square access median: %lu\n", cached_median_1);
     uint64_t uncached_median_1 = median(unchached_timings_1, SAMPLE_SIZE);
+    printf("uncached square access median: %lu\n", uncached_median_1);
     threshold_1 = (uncached_median_1 + cached_median_1)/2;
     printf("threshold 1: %lu\n", threshold_1);
 
@@ -133,7 +135,9 @@ int main()
         unchached_timings_2[i] = timed_call_2(multiply).duration;
     }
     uint64_t cached_median_2 = median(chached_timings_2, SAMPLE_SIZE);
+    printf("cached multiply access median: %lu\n", cached_median_2);
     uint64_t uncached_median_2 = median(unchached_timings_2, SAMPLE_SIZE);
+    printf("uncached multiply access median: %lu\n", uncached_median_2);
     threshold_2 = (uncached_median_2 + cached_median_2)/2;
     printf("threshold 2: %lu\n", threshold_2);
 
