@@ -29,11 +29,12 @@ static inline void flush()
 }
 
 // measure the time it takes to execute function p(0) and return start and duration
+// square
 static inline sample_t timed_call_1(uint64_t (*p)(uint64_t))
 {
     uint64_t start, end;
     start = rdtsc();
-    p(0);
+    asm volatile("jal %0\n" : : "r"(p + 0x18));
     end = rdtsc();
     return (sample_t) {start, end - start};
 }
