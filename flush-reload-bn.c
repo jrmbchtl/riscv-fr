@@ -45,8 +45,8 @@ static inline sample_t timed_call_2(int (*p)(BIGNUM*, const BIGNUM*, const BIGNU
 {
     uint64_t start, end;
     start = rdtsc();
-    p(r, a, b, ctx);
-    // asm volatile("jal 0x14e56\n" ::: "memory");
+    // p(r, a, b, ctx);
+    asm volatile("jal 0x14e56\n" ::: "memory");
     end = rdtsc();
     return (sample_t) {start, end - start};
 }
