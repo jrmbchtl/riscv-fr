@@ -35,7 +35,7 @@ static inline sample_t timed_call_1(uint64_t (*p)(uint64_t))
     uint64_t start, end;
     start = rdtsc();
     // asm volatile("jal 0xd18\n" ::: "memory");
-    asm volatile("mv a5, %0; .jal a5\n" : : "r"(p + 0x18) :"a5","memory");
+    asm volatile("mv a5, %0; jal a5\n" : : "r"(p + 0x18) :"a5","memory");
     end = rdtsc();
     return (sample_t) {start, end - start};
 }
