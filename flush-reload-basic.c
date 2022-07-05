@@ -42,16 +42,6 @@ static inline sample_t timed_call(void* p, uint64_t offset)
     return (sample_t) {start, end - start};
 }
 
-// measure the time it takes to execute function p(0,0) and return start and duration
-static inline sample_t timed_call_2(uint64_t (*p)(uint64_t, uint64_t))
-{
-    uint64_t start, end;
-    start = rdtsc();
-    asm volatile("jal 0xca0\n" ::: "memory");
-    end = rdtsc();
-    return (sample_t) {start, end - start};
-}
-
 // simple function multiplying two numbers
 uint64_t multiply(uint64_t x, uint64_t y)
 {
