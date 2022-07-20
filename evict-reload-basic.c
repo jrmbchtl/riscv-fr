@@ -86,7 +86,7 @@ void get_eviction_set(void* target, void* eviction_set[]) {
 void* calculate(void* d) {
     size_t* done = (size_t*)d;
     void* address_0 = &data[0];
-    void* address_1 = &data[1 * CACHE_LINE_SIZE];
+    void* address_1 = &data[64 * CACHE_LINE_SIZE];
 
     for (int i = 0; i < 10; i++) {
         usleep(1000);
@@ -153,7 +153,7 @@ int main() {
     fclose(data_0);
     printf("Observing data[0] done\n");
 
-    get_eviction_set(&data[1 * CACHE_LINE_SIZE], addresses_evict);
+    get_eviction_set(&data[64 * CACHE_LINE_SIZE], addresses_evict);
     printf("Observing data[64]\n");
     evict(addresses_evict);
     FILE* data_1 = fopen("data_1.csv", "w");
@@ -164,7 +164,7 @@ int main() {
         evict(addresses_evict);
         
         while(!done) {
-            sample_t timing = timed_load(&data[1 * CACHE_LINE_SIZE]);
+            sample_t timing = timed_load(&data[64 * CACHE_LINE_SIZE]);
             
             evict(addresses_evict);
             if (timing.duration < threshold) {
