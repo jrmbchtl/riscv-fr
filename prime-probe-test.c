@@ -174,7 +174,7 @@ int main() {
         }
     }
     for (int i = 0; i < 128; i++) {
-        printf("i: %d\n", i, cache_set_hits[i]);
+        printf("%d: %d\n", i, cache_set_hits[i]);
     }
 
     printf("cache hits: %lu\n", cache_hits);
