@@ -8,7 +8,7 @@
 
 #define CACHE_LINES     512
 #define CACHE_LINE_SIZE 64
-#define RUNS            100
+#define RUNS            10000
 
 char __attribute__((aligned(8192))) dummy_data[8192];
 char __attribute__((aligned(8192))) evict_data[CACHE_LINES * CACHE_LINE_SIZE];
@@ -198,7 +198,7 @@ int main() {
     }
     // print possibe cache sets
     for (int i=0; i<128; i++) {
-        if (!possible_cache_sets[i]) {
+        if (possible_cache_sets[i]) {
             printf("%d\n", i);
         }
     }
