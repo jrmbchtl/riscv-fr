@@ -137,7 +137,8 @@ int main() {
     memset(evict_data, 0, CACHE_LINES * CACHE_LINE_SIZE);
     memset(prime_data, 0, CACHE_LINES * CACHE_LINE_SIZE);
     
-    uint8_t possible_cache_sets[128] = {1};
+    uint8_t possible_cache_sets[128];
+    memset(possible_cache_sets, 1, 128);
 
     // get threshold
     uint64_t threshold = get_threshold();
