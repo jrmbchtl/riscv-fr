@@ -12,8 +12,8 @@
 #define PRIME_RUNS      100
 #define RUNS            100
 #define CACHE_LINE_SIZE 64
-char __attribute__((aligned(4096))) data[SIZE];
-char __attribute__((aligned(4096))) eviction_data[EVICT_PAGES * CACHE_LINE_SIZE];
+char __attribute__((aligned(8192))) data[SIZE];
+char __attribute__((aligned(8192))) eviction_data[EVICT_PAGES * CACHE_LINE_SIZE];
 
 typedef struct {
     uint64_t start;
