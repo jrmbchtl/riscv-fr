@@ -1,0 +1,181 @@
+#include <assert.h>
+#include <pthread.h>
+#include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+#define CACHE_LINES     512
+#define CACHE_LINE_SIZE 64
+
+char __attribute__((aligned(8192))) dummy_data[8192];
+char __attribute__((aligned(8192))) evict_data[CACHE_LINES * CACHE_LINE_SIZE];
+char __attribute__((aligned(8192))) prime_data[CACHE_LINES * CACHE_LINE_SIZE];
+
+typedef struct {
+    uint64_t start;
+    uint64_t duration;
+} sample_t;
+
+// funtcion equivalent to rdtsc on x86, but implemented on RISC-V
+uint64_t rdtsc() { 
+    uint64_t val; 
+    asm volatile("rdcycle %0\n" : "=r"(val)::); 
+    return val; 
+}
+
+void maccess(void* p) {
+    *(volatile char*)p; 
+}
+
+sample_t timed_load(void* p) { 
+    uint64_t start, end; 
+    start = rdtsc(); 
+    maccess(p); 
+    end = rdtsc(); 
+    return (sample_t) {start, end - start};
+}
+
+// compare function for qsort
+int compare_uint64_t (const void * a, const void * b) 
+{
+   return ( *(int*)a - *(int*)b );
+}
+
+// evict by accessing all addresses in eviction_set
+// len of eviction_set has to be 4
+void evict(void* eviction_set[]) {
+    for (int i = 0; i < 4; i++) {
+        maccess(eviction_set[i]);
+    }
+} 
+
+// returns the median of a list given a list and its length
+// works by sorting the list and returning the middle element
+uint64_t median(uint64_t* list, uint64_t size)
+{
+    uint64_t* sorted = malloc(size * sizeof(uint64_t));
+    memcpy(sorted, list, size * sizeof(uint64_t));
+    qsort(sorted, size, sizeof(uint64_t), compare_uint64_t);
+    uint64_t median = sorted[size / 2];
+    free(sorted);
+    return median;
+}
+
+/* target is the address of the data to be evicted
+ * eviction_set is a list of addresses that will be used to evict the target
+ * eviction_set must be of length 4 and will be overwritten
+ * array is the array to get the eviction set from and has to be of size CACHE_LINES * CACHE_LINE_SIZE and needs to be page-aligned
+**/
+void get_eviction_set(void* target, void* eviction_set[], void* array[]) {
+    uint64_t base = ((uint64_t) target / 64) % 128;
+
+    for (int i = 0; i < 4; i++) {
+        eviction_set[i] = &array[(base + i * 128) * 64];
+    }
+}
+
+uint64_t get_threshold() {
+    uint64_t cached_timings[100];
+    for (int i = 0; i < 100; i++) {
+        maccess(&dummy_data[0]);
+        cached_timings[i] = timed_load(&dummy_data[0]).duration;
+    }
+    uint64_t cached_median = median(cached_timings, 100);
+
+    void* addresses_evict[4];
+    get_eviction_set(&dummy_data[0], addresses_evict, evict_data);
+
+    uint64_t uncached_timings[100];
+    for (int i = 0; i < 100; i++) {
+        evict(addresses_evict);
+        uncached_timings[i] = timed_load(&dummy_data[0]).duration;
+    }
+    uint64_t uncached_median = median(uncached_timings, 100);
+    return (cached_median + uncached_median) / 2;
+}
+
+typedef struct {
+    uint8_t proc_2_ready;
+    uint8_t proc_2_go;
+    uint8_t proc_2_done;
+} communication_t;
+
+void* process_2(void* p) {
+    communication_t* comm = (communication_t*) p;
+    uint64_t base;
+    // needs to be between 0 and 127
+    uint64_t cache_set_no = 51;
+    if (((uint64_t) &evict_data[0] / 64) % 128 == 0) {
+        base = cache_set_no;
+    } else {
+        base = (cache_set_no + 64) % 128;
+    }
+    
+    // get eviction set for cache_set_no
+    void* eviction_set[4];
+    for (int i = 0; i < 4; i++) {
+        eviction_set[i] = &evict_data[(base + i * 128) * 64];
+    }
+
+    // signal ready
+    comm->proc_2_ready = 1;
+    while (!comm->proc_2_go) {
+        usleep(1);
+    }
+
+    // evict cache_set_no
+    evict(eviction_set);
+    comm->proc_2_done = 1;
+}
+
+
+int main() {
+    // avoid lazy memory allocation
+    memset(dummy_data, 0, 4096);
+    memset(evict_data, 0, CACHE_LINES * CACHE_LINE_SIZE);
+    memset(prime_data, 0, CACHE_LINES * CACHE_LINE_SIZE);
+
+    // get threshold
+    uint64_t threshold = get_threshold();
+
+    // start process 2
+    communication_t comm;
+    comm.proc_2_ready = 0;
+    comm.proc_2_go = 0;
+    comm.proc_2_done = 0;
+    pthread_t thread;
+    pthread_create(&thread, NULL, process_2, &comm);
+
+    // wait for process 2 to be ready
+    while (!comm.proc_2_ready) {
+        usleep(1);
+    }
+    // prime cache
+    for (int i = 0; i < CACHE_LINES; i++) {
+        maccess(&prime_data[i * CACHE_LINE_SIZE]);
+    }
+
+    // let process 2 start
+    comm.proc_2_go = 1;
+    // wait for process 2 to finish
+    while (!comm.proc_2_done) {
+        usleep(1);
+    }
+    
+    // probe cache
+    uint64_t cached_timings[CACHE_LINES];
+    for (int i = 0; i < CACHE_LINES; i++) {
+        cached_timings[i] = timed_load(&prime_data[i * CACHE_LINE_SIZE]).duration;
+    }
+
+    // find all cache hits
+    uint64_t cache_hits = 0;
+    for (int i = 0; i < CACHE_LINES; i++) {
+        if (cached_timings[i] < threshold) {
+            cache_hits++;
+        }
+    }
+    printf("cache hits: %lu\n", cache_hits);
+}
