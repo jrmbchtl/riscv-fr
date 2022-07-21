@@ -187,10 +187,10 @@ int main() {
             cached_timings[i / 128] = timed_load(&prime_data[i * CACHE_LINE_SIZE]).duration;
         }
 
-        uint8_t is_target = 1;
+        uint8_t is_target = 0;
         for (int i=0; i<4; i++) {
-            if (cached_timings[i] > threshold) {
-                is_target = 0;
+            if (cached_timings[i] < threshold) {
+                is_target = 1;
                 break;
             }
         }
