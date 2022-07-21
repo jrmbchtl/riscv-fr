@@ -68,7 +68,7 @@ uint64_t median(uint64_t* list, uint64_t size)
  * eviction_set must be of length 4 and will be overwritten
  * array is the array to get the eviction set from and has to be of size CACHE_LINES * CACHE_LINE_SIZE and needs to be page-aligned
 **/
-void get_eviction_set(void* target, void* eviction_set[], void* array[]) {
+void get_eviction_set(void* target, void* eviction_set[], void* array) {
     uint64_t base = ((uint64_t) target / 64) % 128;
 
     for (int i = 0; i < 4; i++) {
@@ -85,7 +85,7 @@ uint64_t get_threshold() {
     uint64_t cached_median = median(cached_timings, 100);
 
     void* addresses_evict[4];
-    get_eviction_set(&dummy_data[0], addresses_evict, evict_data);
+    get_eviction_set(&dummy_data[0], addresses_evict, (void*) evict_data);
 
     uint64_t uncached_timings[100];
     for (int i = 0; i < 100; i++) {

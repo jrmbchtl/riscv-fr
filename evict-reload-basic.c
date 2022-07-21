@@ -70,15 +70,7 @@ uint64_t median(uint64_t* list, uint64_t size)
  * eviction_set must be of length 4 and will be overwritten
 **/
 void get_eviction_set(void* target, void* eviction_set[]) {
-    uint64_t base;
-    // since beginning of page can be offset by 64 * 64 bytes, this needs to be asjusted
-    if (((uint64_t) &eviction_data[0] / 64) % 128 == 0) {
-        base = ((uint64_t) target / 64) % 128;
-        printf("case 1\n");
-    } else {
-        base = (((uint64_t) target / 64) + 64) % 128;
-        printf("case 2\n");
-    }
+    uint64_t base = ((uint64_t) target / 64) % 128;
 
     for (int i = 0; i < 4; i++) {
         eviction_set[i] = &eviction_data[(base + i * 128) * 64];
