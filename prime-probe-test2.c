@@ -8,7 +8,7 @@
 
 #define CACHE_LINES     512
 #define CACHE_LINE_SIZE 64
-#define RUNS            10000
+#define RUNS            32768
 
 char __attribute__((aligned(8192))) dummy_data[8192];
 char __attribute__((aligned(8192))) evict_data[CACHE_LINES * CACHE_LINE_SIZE];
