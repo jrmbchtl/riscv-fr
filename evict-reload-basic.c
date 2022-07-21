@@ -10,7 +10,7 @@
 #define SIZE            16384
 #define EVICT_PAGES     512
 #define PRIME_RUNS      100
-#define RUNS            10000
+#define RUNS            100
 #define CACHE_LINE_SIZE 64
 char __attribute__((aligned(4096))) data[SIZE];
 char __attribute__((aligned(4096))) eviction_data[EVICT_PAGES * CACHE_LINE_SIZE];
@@ -74,8 +74,10 @@ void get_eviction_set(void* target, void* eviction_set[]) {
     // since beginning of page can be offset by 64 * 64 bytes, this needs to be asjusted
     if (((uint64_t) &eviction_data[0] / 64) % 128 == 0) {
         base = ((uint64_t) target / 64) % 128;
+        printf("case 1\n");
     } else {
         base = (((uint64_t) target / 64) + 64) % 128;
+        printf("case 2\n");
     }
 
     for (int i = 0; i < 4; i++) {
