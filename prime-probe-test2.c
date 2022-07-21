@@ -8,7 +8,7 @@
 
 #define CACHE_LINES     512
 #define CACHE_LINE_SIZE 64
-#define RUNS            10000
+#define RUNS            100
 
 char __attribute__((aligned(8192))) dummy_data[8192];
 char __attribute__((aligned(8192))) evict_data[CACHE_LINES * CACHE_LINE_SIZE];
@@ -179,17 +179,11 @@ int main() {
             
             // probe cache
             flush(&dummy_data[0]);
-            uint64_t cached_timings[4];
-            for (int i = j; i < CACHE_LINES; i+=128) {
-                cached_timings[i / 128] = timed_load(&prime_data[i * CACHE_LINE_SIZE]).duration;
-                flush(&prime_data[i * CACHE_LINE_SIZE]);
-            }
+            uint64_t cached_timing = 0;
+            cached_timing = timed_load(&prime_data[(j+3*128) * CACHE_LINE_SIZE]).duration;
 
-            for (int i=0; i<4; i++) {
-                if (cached_timings[i] < threshold) {
-                    possible_cache_sets[j] = 0;
-                    break;
-                }
+            if (cached_timing < threshold) {
+                possible_cache_sets[j] = 0;
             }
 
             // wait for process 2 to finish
