@@ -114,6 +114,7 @@ void* process_2(void* p) {
     // get eviction set for cache_set_no
     void* eviction_set[4];
     for (int i = 0; i < 4; i++) {
+        flush(&prime_data[0]);
         eviction_set[i] = &evict_data[(cache_set_no + i * 128) * 64];
     }
 
@@ -155,6 +156,7 @@ int main() {
 
     // prime cache
     for (int i = 0; i < CACHE_LINES; i++) {
+        flush(&prime_data[0]);
         maccess(&prime_data[i * CACHE_LINE_SIZE]);
     }
 
@@ -168,6 +170,7 @@ int main() {
     // probe cache
     uint64_t cached_timings[CACHE_LINES];
     for (int i = 0; i < CACHE_LINES; i++) {
+        flush(&prime_data[0]);
         cached_timings[i] = timed_load(&prime_data[i * CACHE_LINE_SIZE]).duration;
     }
 
