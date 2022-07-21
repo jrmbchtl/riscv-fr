@@ -25,6 +25,10 @@ uint64_t rdtsc() {
     return val; 
 }
 
+void flush(void* p) {
+    asm volatile("mv a5, %0; .word 0x0277800b\n" : : "r"(p) :"a5","memory");
+}
+
 void maccess(void* p) {
     *(volatile char*)p; 
 }
@@ -146,6 +150,9 @@ int main() {
     while (!comm.proc_2_ready) {
         usleep(1);
     }
+
+    flush(&prime_data[0]);
+
     // prime cache
     for (int i = 0; i < CACHE_LINES; i++) {
         maccess(&prime_data[i * CACHE_LINE_SIZE]);
