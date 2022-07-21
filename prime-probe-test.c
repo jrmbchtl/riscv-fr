@@ -8,6 +8,7 @@
 
 #define CACHE_LINES     512
 #define CACHE_LINE_SIZE 64
+#define RUNS            100
 
 char __attribute__((aligned(8192))) dummy_data[8192];
 char __attribute__((aligned(8192))) evict_data[CACHE_LINES * CACHE_LINE_SIZE];
@@ -114,7 +115,7 @@ void* process_2(void* p) {
     // get eviction set for cache_set_no
     void* eviction_set[4];
     for (int i = 0; i < 4; i++) {
-        flush(&prime_data[0]);
+        flush(&dummy_data[0]);
         eviction_set[i] = &evict_data[(cache_set_no + i * 128) * 64];
     }
 
@@ -135,57 +136,81 @@ int main() {
     memset(dummy_data, 0, 4096);
     memset(evict_data, 0, CACHE_LINES * CACHE_LINE_SIZE);
     memset(prime_data, 0, CACHE_LINES * CACHE_LINE_SIZE);
+    
+    uint8_t possible_cache_sets[128] = {1};
 
     // get threshold
     uint64_t threshold = get_threshold();
 
-    // start process 2
-    communication_t comm;
-    comm.proc_2_ready = 0;
-    comm.proc_2_go = 0;
-    comm.proc_2_done = 0;
-    pthread_t thread;
-    pthread_create(&thread, NULL, process_2, &comm);
+    for (int j=0; j<RUNS; j++) {
 
-    // wait for process 2 to be ready
-    while (!comm.proc_2_ready) {
-        usleep(1);
-    }
+        // start process 2
+        communication_t comm;
+        comm.proc_2_ready = 0;
+        comm.proc_2_go = 0;
+        comm.proc_2_done = 0;
+        pthread_t thread;
+        pthread_create(&thread, NULL, process_2, &comm);
 
-    flush(&prime_data[0]);
-
-    // prime cache
-    for (int i = 0; i < CACHE_LINES; i++) {
-        flush(&prime_data[0]);
-        maccess(&prime_data[i * CACHE_LINE_SIZE]);
-    }
-
-    // let process 2 start
-    comm.proc_2_go = 1;
-    // wait for process 2 to finish
-    while (!comm.proc_2_done) {
-        usleep(1);
-    }
-    
-    // probe cache
-    uint64_t cached_timings[CACHE_LINES];
-    for (int i = 0; i < CACHE_LINES; i++) {
-        flush(&prime_data[0]);
-        cached_timings[i] = timed_load(&prime_data[i * CACHE_LINE_SIZE]).duration;
-    }
-
-    // find all cache hits
-    uint64_t cache_hits = 0;
-    uint64_t cache_set_hits[128] = {0};
-    for (int i = 0; i < CACHE_LINES; i++) {
-        if (cached_timings[i] < threshold) {
-            cache_hits++;
-            cache_set_hits[i % 128]++;
+        // wait for process 2 to be ready
+        while (!comm.proc_2_ready) {
+            usleep(1);
         }
-    }
-    for (int i = 0; i < 128; i++) {
-        printf("%d: %d\n", i, cache_set_hits[i]);
-    }
 
-    printf("cache hits: %lu\n", cache_hits);
+        // disable prefetcher
+        flush(&dummy_data[0]);
+
+        // prime cache
+        for (int i = 0; i < CACHE_LINES; i++) {
+            flush(&dummy_data[0]);
+            maccess(&prime_data[i * CACHE_LINE_SIZE]);
+        }
+
+        // let process 2 start
+        comm.proc_2_go = 1;
+        // wait for process 2 to finish
+        while (!comm.proc_2_done) {
+            usleep(1);
+        }
+        
+        // probe cache
+        uint64_t cached_timings[CACHE_LINES];
+        for (int i = 0; i < CACHE_LINES; i++) {
+            flush(&dummy_data[0]);
+            cached_timings[i] = timed_load(&prime_data[i * CACHE_LINE_SIZE]).duration;
+        }
+
+        // find all cache hits
+        uint64_t cache_hits = 0;
+        uint64_t cache_set_hits[128] = {0};
+        for (int i = 0; i < CACHE_LINES; i++) {
+            if (cached_timings[i] < threshold) {
+                cache_hits++;
+                cache_set_hits[i % 128]++;
+            }
+        }
+        for (int i = 0; i < 128; i++) {
+            printf("%d: %d\n", i, cache_set_hits[i]);
+            if (cache_set_hits[i] > 0) {
+                possible_cache_sets[i] = 0;
+            }
+        }
+        printf("cache hits: %lu\n", cache_hits);
+        // count 1s in possible_cache_sets
+        uint64_t possible_cache_sets_count = 0;
+        for (int i = 0; i < 128; i++) {
+            possible_cache_sets_count += possible_cache_sets[i];
+        }
+        printf("possible cache sets: %lu\n", possible_cache_sets_count);
+        // print all possible cache sets
+        for (int i = 0; i < 128; i++) {
+            if (possible_cache_sets[i]) {
+                printf("%d ", i);
+            }
+        }
+        printf("\n");
+
+        // wait for process 2 to finish
+        pthread_join(thread, NULL);
+    }
 }
