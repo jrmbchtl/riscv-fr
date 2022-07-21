@@ -185,18 +185,21 @@ int main() {
                 flush(&prime_data[i * CACHE_LINE_SIZE]);
             }
 
-            uint8_t is_target = 0;
             for (int i=0; i<4; i++) {
                 if (cached_timings[i] < threshold) {
-                    is_target = 1;
-                    printf("cache set %d is target: %d\n", j, is_target);
-                    printf("values: %lu %lu %lu %lu\n", cached_timings[0], cached_timings[1], cached_timings[2], cached_timings[3]);
+                    possible_cache_sets[j] = 0;
                     break;
                 }
             }
 
             // wait for process 2 to finish
             pthread_join(thread, NULL);
+        }
+    }
+    // print possibe cache sets
+    for (int i=0; i<128; i++) {
+        if (possible_cache_sets[i]) {
+            printf("%d\n", i);
         }
     }
 }
