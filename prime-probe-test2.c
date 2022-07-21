@@ -196,7 +196,7 @@ int main() {
         printf("cache set %d is target: %d\n", j, is_target);
 
         // wait for process 2 to finish
-        pthread_join(thread, NULL);
+        // pthread_join(thread, NULL);
     }
     printf("\n");
 }
