@@ -202,13 +202,6 @@ int main() {
             possible_cache_sets_count += possible_cache_sets[i];
         }
         printf("possible cache sets: %lu\n", possible_cache_sets_count);
-        // print all possible cache sets
-        // for (int i = 0; i < 128; i++) {
-        //     if (possible_cache_sets[i]) {
-        //         printf("%d ", i);
-        //     }
-        // }
-        // printf("\n");
 
         if (possible_cache_sets_count <= 1) {
             // get cache_set_no
@@ -227,4 +220,12 @@ int main() {
         // wait for process 2 to finish
         pthread_join(thread, NULL);
     }
+
+    // print all possible cache sets
+    for (int i = 0; i < 128; i++) {
+        if (possible_cache_sets[i]) {
+            printf("%d ", i);
+        }
+    }
+    printf("\n");
 }
