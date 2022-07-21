@@ -68,7 +68,7 @@ uint64_t median(uint64_t* list, uint64_t size)
  * eviction_set must be of length 4 and will be overwritten
  * array is the array to get the eviction set from and has to be of size CACHE_LINES * CACHE_LINE_SIZE and needs to be page-aligned
 **/
-void get_eviction_set(void* target, void* eviction_set[], void* array) {
+void get_eviction_set(void* target, void* eviction_set[], char* array) {
     uint64_t base = ((uint64_t) target / 64) % 128;
 
     for (int i = 0; i < 4; i++) {
@@ -85,7 +85,7 @@ uint64_t get_threshold() {
     uint64_t cached_median = median(cached_timings, 100);
 
     void* addresses_evict[4];
-    get_eviction_set(&dummy_data[0], addresses_evict, (void*) evict_data);
+    get_eviction_set(&dummy_data[0], addresses_evict, evict_data);
 
     uint64_t uncached_timings[100];
     for (int i = 0; i < 100; i++) {
@@ -104,19 +104,13 @@ typedef struct {
 
 void* process_2(void* p) {
     communication_t* comm = (communication_t*) p;
-    uint64_t base;
     // needs to be between 0 and 127
     uint64_t cache_set_no = 51;
-    if (((uint64_t) &evict_data[0] / 64) % 128 == 0) {
-        base = cache_set_no;
-    } else {
-        base = (cache_set_no + 64) % 128;
-    }
-    
+
     // get eviction set for cache_set_no
     void* eviction_set[4];
     for (int i = 0; i < 4; i++) {
-        eviction_set[i] = &evict_data[(base + i * 128) * 64];
+        eviction_set[i] = &evict_data[(cache_set_no + i * 128) * 64];
     }
 
     // signal ready
@@ -172,10 +166,16 @@ int main() {
 
     // find all cache hits
     uint64_t cache_hits = 0;
+    uint64_t cache_set_hits[128] = {0};
     for (int i = 0; i < CACHE_LINES; i++) {
         if (cached_timings[i] < threshold) {
             cache_hits++;
+            cache_set_hits[i / CACHE_LINE_SIZE]++;
         }
     }
+    for (int i = 0; i < 128; i++) {
+        printf("i: %d\n", i, cache_set_hits[i]);
+    }
+
     printf("cache hits: %lu\n", cache_hits);
 }
