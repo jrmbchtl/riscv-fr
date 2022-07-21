@@ -170,7 +170,7 @@ int main() {
     for (int i = 0; i < CACHE_LINES; i++) {
         if (cached_timings[i] < threshold) {
             cache_hits++;
-            cache_set_hits[i / CACHE_LINE_SIZE]++;
+            cache_set_hits[i % 128]++;
         }
     }
     for (int i = 0; i < 128; i++) {
