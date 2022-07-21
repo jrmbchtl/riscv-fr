@@ -178,6 +178,7 @@ int main() {
             }
             
             // probe cache
+            flush(&dummy_data[0]);
             uint64_t cached_timings[4];
             for (int i = j; i < CACHE_LINES; i+=128) {
                 cached_timings[i / 128] = timed_load(&prime_data[i * CACHE_LINE_SIZE]).duration;
