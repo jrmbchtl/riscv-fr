@@ -142,6 +142,7 @@ int main() {
 
     // get threshold
     uint64_t threshold = get_threshold();
+    printf("threshold: %lu\n", threshold);
 
     for (int k=0; k<RUNS; k++) {
 
