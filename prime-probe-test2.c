@@ -184,7 +184,7 @@ int main() {
         uint64_t cached_timings[4];
         for (int i = j; i < CACHE_LINES; i+=128) {
             flush(&dummy_data[0]);
-            cached_timings[i] = timed_load(&prime_data[i * CACHE_LINE_SIZE]).duration;
+            cached_timings[i / 128] = timed_load(&prime_data[i * CACHE_LINE_SIZE]).duration;
         }
 
         uint8_t is_target = 1;
