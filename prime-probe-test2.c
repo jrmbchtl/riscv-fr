@@ -144,7 +144,7 @@ int main() {
     uint64_t threshold = get_threshold();
 
     for (int j=0; j<128; j++) {
-        printf("%d\n", j);
+        printf("j: %d\n", j);
 
         printf("1\n");
 
