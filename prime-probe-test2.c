@@ -145,6 +145,8 @@ int main() {
 
     for (int j=0; j<128; j++) {
 
+        printf("1\n");
+
         // start process 2
         communication_t comm;
         comm.proc_2_ready = 0;
@@ -157,6 +159,7 @@ int main() {
         while (!comm.proc_2_ready) {
             usleep(1);
         }
+        printf("2\n");
 
         // disable prefetcher
         flush(&dummy_data[0]);
@@ -166,6 +169,7 @@ int main() {
             flush(&dummy_data[0]);
             maccess(&prime_data[i * CACHE_LINE_SIZE]);
         }
+        printf("3\n");
 
         // let process 2 start
         comm.proc_2_go = 1;
@@ -173,6 +177,7 @@ int main() {
         while (!comm.proc_2_done) {
             usleep(1);
         }
+        printf("4\n");
         
         // probe cache
         uint64_t cached_timings[4];
