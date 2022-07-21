@@ -189,6 +189,7 @@ int main() {
                 if (cached_timings[i] < threshold) {
                     is_target = 1;
                     printf("cache set %d is target: %d\n", j, is_target);
+                    printf("values: %lu %lu %lu %lu\n", cached_timings[0], cached_timings[1], cached_timings[2], cached_timings[3]);
                     break;
                 }
             }
