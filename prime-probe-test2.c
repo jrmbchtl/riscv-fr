@@ -8,7 +8,7 @@
 
 #define CACHE_LINES     512
 #define CACHE_LINE_SIZE 64
-#define RUNS            10000
+#define RUNS            100
 
 char __attribute__((aligned(8192))) dummy_data[8192];
 char __attribute__((aligned(8192))) evict_data[CACHE_LINES * CACHE_LINE_SIZE];
@@ -143,61 +143,57 @@ int main() {
     // get threshold
     uint64_t threshold = get_threshold();
 
-    for (int j=0; j<128; j++) {
-        printf("j: %d\n", j);
+    for (int k=0; k<RUNS; k++) {
 
-        printf("1\n");
+        for (int j=0; j<128; j++) {
 
-        // start process 2
-        communication_t comm;
-        comm.proc_2_ready = 0;
-        comm.proc_2_go = 0;
-        comm.proc_2_done = 0;
-        pthread_t thread;
-        pthread_create(&thread, NULL, process_2, &comm);
+            // start process 2
+            communication_t comm;
+            comm.proc_2_ready = 0;
+            comm.proc_2_go = 0;
+            comm.proc_2_done = 0;
+            pthread_t thread;
+            pthread_create(&thread, NULL, process_2, &comm);
 
-        // wait for process 2 to be ready
-        while (!comm.proc_2_ready) {
-            usleep(1);
-        }
-        printf("2\n");
-
-        // disable prefetcher
-        flush(&dummy_data[0]);
-
-        // prime cache
-        for (int i = j; i < CACHE_LINES; i+=128) {
-            flush(&dummy_data[0]);
-            maccess(&prime_data[i * CACHE_LINE_SIZE]);
-        }
-        printf("3\n");
-
-        // let process 2 start
-        comm.proc_2_go = 1;
-        // wait for process 2 to finish
-        while (!comm.proc_2_done) {
-            usleep(1);
-        }
-        printf("4\n");
-        
-        // probe cache
-        uint64_t cached_timings[4];
-        for (int i = j; i < CACHE_LINES; i+=128) {
-            flush(&dummy_data[0]);
-            cached_timings[i / 128] = timed_load(&prime_data[i * CACHE_LINE_SIZE]).duration;
-        }
-
-        uint8_t is_target = 0;
-        for (int i=0; i<4; i++) {
-            if (cached_timings[i] < threshold) {
-                is_target = 1;
-                break;
+            // wait for process 2 to be ready
+            while (!comm.proc_2_ready) {
+                usleep(1);
             }
-        }
-        printf("cache set %d is target: %d\n", j, is_target);
 
-        // wait for process 2 to finish
-        // pthread_join(thread, NULL);
+            // disable prefetcher
+            flush(&dummy_data[0]);
+
+            // prime cache
+            for (int i = j; i < CACHE_LINES; i+=128) {
+                flush(&dummy_data[0]);
+                maccess(&prime_data[i * CACHE_LINE_SIZE]);
+            }
+
+            // let process 2 start
+            comm.proc_2_go = 1;
+            // wait for process 2 to finish
+            while (!comm.proc_2_done) {
+                usleep(1);
+            }
+            
+            // probe cache
+            uint64_t cached_timings[4];
+            for (int i = j; i < CACHE_LINES; i+=128) {
+                flush(&dummy_data[0]);
+                cached_timings[i / 128] = timed_load(&prime_data[i * CACHE_LINE_SIZE]).duration;
+            }
+
+            uint8_t is_target = 0;
+            for (int i=0; i<4; i++) {
+                if (cached_timings[i] < threshold) {
+                    is_target = 1;
+                    printf("cache set %d is target: %d\n", j, is_target);
+                    break;
+                }
+            }
+
+            // wait for process 2 to finish
+            pthread_join(thread, NULL);
+        }
     }
-    printf("\n");
 }
